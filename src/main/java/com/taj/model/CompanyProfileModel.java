@@ -14,7 +14,6 @@ public class CompanyProfileModel {
     private String company_website_url;
     private int    login_id_company;
 
-//tests
 
 
     public CompanyProfileModel(int company_id, String company_name, byte[] company_logo_image, String company_address,
