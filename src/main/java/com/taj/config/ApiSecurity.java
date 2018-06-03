@@ -30,6 +30,12 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String GET_PROFILES_URL = "/profile/getProfiles"; // here where error appear
     public static final String UPDATE_PROFILE_URL = "/profile/updateProfile/{id}";//updateProfile
     public static final String GET_PROFILE_URL = "/profile/getProfile/{id}";//updateProfile
+    public static final String ADD_SCHOOL_PROFILE_URL = "/schoolProfile/addProfile";//updateProfile
+    public static final String GET_SCHOOL_PROFILES_URL = "/schoolProfile/getProfiles"; // here where error appear
+    public static final String GET_SCHOOL_PROFILE_URL = "/schoolProfile/getProfile/{id}";//updateProfile
+    public static final String UPDATE_SCHOOL_PROFILE_URL = "/schoolProfile/updateProfile/{id}";//updateProfile
+
+
 
     @Autowired
     public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
@@ -57,6 +63,10 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 antMatchers(HttpMethod.GET, GET_PROFILES_URL).permitAll().
                 antMatchers(HttpMethod.PUT, UPDATE_PROFILE_URL).permitAll().
                 antMatchers(HttpMethod.GET, GET_PROFILE_URL).permitAll().
+                antMatchers(HttpMethod.POST, ADD_SCHOOL_PROFILE_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_SCHOOL_PROFILES_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_SCHOOL_PROFILE_URL).permitAll().
+                antMatchers(HttpMethod.PUT, UPDATE_SCHOOL_PROFILE_URL).permitAll().
                 anyRequest().authenticated();
     }
     @Override

@@ -1,13 +1,8 @@
 package com.taj.repository;
 
-import com.taj.model.LoginModel;
-import com.taj.model.ProfileModel;
+import com.taj.model.CompanyProfileModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.support.SqlLobValue;
-import org.springframework.jdbc.support.lob.DefaultLobHandler;
-import org.springframework.jdbc.support.lob.LobHandler;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -29,17 +24,17 @@ public class ProfileRepo {
     }
 
 
-    public List<ProfileModel> getProfiles(){
+    public List<CompanyProfileModel> getProfiles(){
         return jdbcTemplate.query("SELECT * FROM efaz_company_profile;",
-                (resultSet, i) -> new ProfileModel(resultSet.getInt(1),resultSet.getString(2),
+                (resultSet, i) -> new CompanyProfileModel(resultSet.getInt(1),resultSet.getString(2),
                         resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
                         resultSet.getString(6), resultSet.getString(7)));
     }
 
 
-    public ProfileModel getProfile(int id){
+    public CompanyProfileModel getProfile(int id){
         return jdbcTemplate.queryForObject("SELECT * FROM efaz_company_profile WHERE  company_id=?;",
-                new Object[]{id},(resultSet, i) -> new ProfileModel(resultSet.getInt(1),resultSet.getString(2),
+                new Object[]{id},(resultSet, i) -> new CompanyProfileModel(resultSet.getInt(1),resultSet.getString(2),
                         resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
                         resultSet.getString(6), resultSet.getString(7)));
     }
