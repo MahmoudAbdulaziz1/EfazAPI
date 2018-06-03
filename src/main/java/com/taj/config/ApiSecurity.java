@@ -35,7 +35,6 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String GET_SCHOOL_PROFILE_URL = "/schoolProfile/getProfile/{id}";//updateProfile
     public static final String UPDATE_SCHOOL_PROFILE_URL = "/schoolProfile/updateProfile/{id}";//updateProfile
 
-//tests
 
     @Autowired
     public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
