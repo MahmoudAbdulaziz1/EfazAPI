@@ -39,9 +39,6 @@ public class CompanyOfferController {
                 model.getOffer_cost(), model.getOffer_display_date(), model.getOffer_expired_date(), model.getOffer_deliver_date(),
                 model.getOffer_is_good(), model.getOffer_contact(), model.getOffer_website());
     }
-    @PutMapping("/deleteOffer/{id}")
-    public int deleteCompanyOffer(@PathVariable int id){
-        return repo.deleteCompanyOffer(id);
-    }
+
 
 }
