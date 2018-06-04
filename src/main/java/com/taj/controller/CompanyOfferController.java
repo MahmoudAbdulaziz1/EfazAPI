@@ -43,4 +43,6 @@ public class CompanyOfferController {
     public int deleteCompanyOffer(@PathVariable int id){
         return repo.deleteCompanyOffer(id);
     }
+
+    public void hasNew(){}
 }
