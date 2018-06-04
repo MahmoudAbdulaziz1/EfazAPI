@@ -44,5 +44,4 @@ public class CompanyOfferController {
         return repo.deleteCompanyOffer(id);
     }
 
-    public void hasNew(){}
 }
