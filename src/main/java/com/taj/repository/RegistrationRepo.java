@@ -21,10 +21,10 @@ public class RegistrationRepo {
     JdbcTemplate jdbcTemplate;
 
 
-    public int addUser(String email, String password, String userName, String phoneNumber, String companyName
+    public void addUser(String email, String password, String userName, String phoneNumber, String companyName
                       , String address , String website, int isSchool, int isActive){
 
-        return jdbcTemplate.update("INSERT INTO efaz_registration VALUES (?,?,?,?,?,?,?,?,?,?)", null, email, password, userName, phoneNumber
+        jdbcTemplate.update("INSERT INTO efaz_registration VALUES (?,?,?,?,?,?,?,?,?,?)", null, email, password, userName, phoneNumber
                 , companyName, address, website, isSchool, isActive);
     }
 

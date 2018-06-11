@@ -23,10 +23,10 @@ public class RegistrationController {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public int addUserRegistration(@RequestBody RegistrationModel registrationModel){
+    public void addUserRegistration(@RequestBody RegistrationModel registrationModel){
 
         String encodedPassword = bCryptPasswordEncoder.encode(registrationModel.getRegisteration_password());
-        return registrationRepo.addUser(registrationModel.getRegisteration_email(), encodedPassword,
+        registrationRepo.addUser(registrationModel.getRegisteration_email(), encodedPassword,
                  registrationModel.getRegisteration_username(), registrationModel.getRegisteration_phone_number(),
                 registrationModel.getRegistration_organization_name(), registrationModel.getRegistration_address_desc(),
                 registrationModel.getRegistration_website_url(), registrationModel.getRegistration_is_school(),

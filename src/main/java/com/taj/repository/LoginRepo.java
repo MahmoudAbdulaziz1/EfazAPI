@@ -2,11 +2,19 @@ package com.taj.repository;
 
 import com.taj.model.LoginModel;
 import com.taj.model.RegistrationModel;
+import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 /**
@@ -21,7 +29,8 @@ public class LoginRepo {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public int loginUser(String user_email, String user_password, int is_active, int login_type){
+    public LoginModel loginUser(String user_email, String user_password, int is_active, int login_type){
+
 
         RegistrationModel model = null;
         if (isExist(user_email)){
@@ -35,23 +44,44 @@ public class LoginRepo {
             //if (user_password.equals(model.getRegisteration_password())){
                 if (is_active ==1){
                     String encodedPassword = bCryptPasswordEncoder.encode(user_password);
-                    int log_id = jdbcTemplate.update("INSERT INTO efaz_login VALUES (?,?,?,?,?)", null, user_email,
-                            encodedPassword, is_active, login_type);
+                    KeyHolder key = new GeneratedKeyHolder();
+                    jdbcTemplate.update(new PreparedStatementCreator() {
+                        @Override
+                        public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                            final PreparedStatement ps = connection.prepareStatement("INSERT INTO efaz_login VALUES (?,?,?,?,?)",
+                                    Statement.RETURN_GENERATED_KEYS);
+                            ps.setString(1, null);
+                            ps.setString(2, user_email);
+                            ps.setString(3, encodedPassword);
+                            ps.setInt(4, is_active);
+                            ps.setInt(5, login_type);
+                            return ps;
+                        }
 
-                    return 1;
+                    }, key);
+                    //int log_id = jdbcTemplate.update("INSERT INTO efaz_login VALUES (?,?,?,?,?)", null, user_email,
+                    //        encodedPassword, is_active, login_type);
+                    return getLoggedUser(key.getKey().intValue());
                 }else {
-                    return 0;
+                    return null;
                 }
             }else {
-                return 0;
+                return null;
             }
         }else {
-            return 0;
+            return null;
         }
 
     }
 
     public boolean isExist(String email){
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_registration WHERE registeration_email=?;",
+                Integer.class, email);
+        return cnt != null && cnt > 0;
+    }
+
+    public boolean isLogged(String email, String password){
         Integer cnt = jdbcTemplate.queryForObject(
                 "SELECT count(*) FROM efaz_registration WHERE registeration_email=?;",
                 Integer.class, email);

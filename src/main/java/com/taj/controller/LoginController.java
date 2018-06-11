@@ -24,7 +24,7 @@ public class LoginController {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @PostMapping("/loginUser")
-    public int loginUsers(@RequestBody LoginModel model){
+    public LoginModel loginUsers(@RequestBody LoginModel model){
         return loginRepo.loginUser(model.getUser_email(), model.getUser_password(),
                 model.getIs_active(), model.getLogin_type());
     }

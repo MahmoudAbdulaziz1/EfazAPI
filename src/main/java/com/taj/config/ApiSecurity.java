@@ -44,6 +44,11 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String GET_COMPANY_OFFER_URL = "/companyOffer/getOffer/{id}";
     public static final String UPDATE_COMPANY_OFFERS_URL = "/companyOffer/updateOffer/{id}";
     public static final String DELETE_COMPANY_OFFERS_URL = "/companyOffer/deleteOffer/{id}";
+    public static final String GET_ALL_CATEGORIES = "/cat/getCategories";
+    public static final String GET_ALL_CATEGORY = "/cat/getCategory/{id}";
+    public static final String ADD_LOGIN_DETAILS_URL = "/details/add";
+    public static final String GET_LOGIN_DETAILS_URL = "/details/getAll";
+    public static final String GET_LOGIN_DETAIL_URL = "/details/get/{id}";
 
 
     @Autowired
@@ -86,6 +91,11 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 antMatchers(HttpMethod.GET, GET_COMPANY_OFFER_URL).permitAll().
                 antMatchers(HttpMethod.PUT, UPDATE_COMPANY_OFFERS_URL).permitAll().
                 antMatchers(HttpMethod.PUT, DELETE_COMPANY_OFFERS_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_ALL_CATEGORIES).permitAll().
+                antMatchers(HttpMethod.GET, GET_ALL_CATEGORY).permitAll().
+                antMatchers(HttpMethod.POST, ADD_LOGIN_DETAILS_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_LOGIN_DETAILS_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_LOGIN_DETAIL_URL).permitAll().
                 anyRequest().authenticated();
     }
     @Override

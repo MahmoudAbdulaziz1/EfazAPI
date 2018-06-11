@@ -25,20 +25,20 @@ public class ProfileController {
 
     @PostMapping("/addProfile")
     public int AddUserProfile(@RequestBody CompanyProfileModel model){
-        File imgPath = new File("cv.jpg");
-        BufferedImage bufferedImage = null;
-        try {
-            bufferedImage = ImageIO.read(imgPath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // get DataBufferBytes from Raster
-        WritableRaster raster = bufferedImage .getRaster();
-        DataBufferByte data   = (DataBufferByte) raster.getDataBuffer();
+//        File imgPath = new File("cv.jpg");
+//        BufferedImage bufferedImage = null;
+//        try {
+//            bufferedImage = ImageIO.read(imgPath);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        // get DataBufferBytes from Raster
+//        WritableRaster raster = bufferedImage .getRaster();
+//        DataBufferByte data   = (DataBufferByte) raster.getDataBuffer();
         //System.out.println("test \n"+data.getData().toString());
 
-        return profileRepo.addProfile(model.getCompany_id(), model.getCompany_name(), data.getData(),
+        return profileRepo.addProfile(model.getCompany_id(), model.getCompany_name(), model.getCompany_logo_image(),
                 model.getCompany_address(), model.getCompany_service_desc(), model.getCompany_link_youtube(),
                 model.getCompany_website_url());
 

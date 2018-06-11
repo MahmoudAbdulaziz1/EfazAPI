@@ -12,8 +12,6 @@ public class CompanyProfileModel {
     private String company_service_desc;
     private String company_link_youtube;
     private String company_website_url;
-    private int    login_id_company;
-
 
 
     public CompanyProfileModel(int company_id, String company_name, byte[] company_logo_image, String company_address,
@@ -86,12 +84,6 @@ public class CompanyProfileModel {
     public void setCompany_website_url(String company_website_url) {
         this.company_website_url = company_website_url;
     }
-
-    public int getLogin_id_company() {
-        return login_id_company;
-    }
-
-    public void setLogin_id_company(int login_id_company) {
-        this.login_id_company = login_id_company;
-    }
 }
+
+
