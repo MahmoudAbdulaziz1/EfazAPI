@@ -44,4 +44,10 @@ public class LoginController {
         return loginRepo.getLoggedUser(id);
     }
 
+    @GetMapping("/isLogged/{email}/{password}/{type}")
+    public boolean isLogged(@PathVariable String user_email, @PathVariable String user_password, @PathVariable int login_type){
+
+        return loginRepo.isLogged(user_email, user_password, login_type);
+    }
+
 }

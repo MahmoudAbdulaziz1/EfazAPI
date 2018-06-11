@@ -81,10 +81,10 @@ public class LoginRepo {
         return cnt != null && cnt > 0;
     }
 
-    public boolean isLogged(String email, String password){
+    public boolean isLogged(String user_email, String user_password, int login_type){
         Integer cnt = jdbcTemplate.queryForObject(
-                "SELECT count(*) FROM efaz_registration WHERE registeration_email=?;",
-                Integer.class, email);
+                "SELECT count(*) FROM efaz_login WHERE user_email=? AND user_password = ? AND login_type=? ;",
+                Integer.class, user_email, user_password, login_type);
         return cnt != null && cnt > 0;
     }
 
