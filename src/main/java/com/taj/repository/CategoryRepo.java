@@ -27,4 +27,19 @@ public class CategoryRepo {
         return jdbcTemplate.queryForObject("SELECT * FROM efaz_company_category WHERE  category_id=?;",
                 new Object[]{id},(resultSet, i) -> new CategoryModel(resultSet.getInt(1),resultSet.getString(2)));
     }
+
+    public void addCategory(String categoryName){
+
+        jdbcTemplate.update("INSERT INTO efaz_company_category VALUES (?,?)", null, categoryName);
+    }
+
+    public int updateCategory(int id, String categoryName){
+        return jdbcTemplate.update("update efaz_company_category set category_name=?" +
+                        " where category_id=?;", categoryName, id);
+    }
+
+    public int deleteCategory(int id){
+        return jdbcTemplate.update("DELETE FROM efaz_company_category WHERE category_id=?", id);
+    }
+
 }

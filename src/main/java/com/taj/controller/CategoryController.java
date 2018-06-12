@@ -28,4 +28,22 @@ public class CategoryController {
         return  repo.getCategory(id);
     }
 
+    @PostMapping("/addCategory")
+    public void addCategory(@RequestBody CategoryModel model){
+        repo.addCategory(model.getCategory_name());
+
+    }
+
+    @PutMapping("/updateCategory")
+    public void updateCategory(@RequestBody CategoryModel model){
+        repo.updateCategory(model.getCategory_id(), model.getCategory_name());
+
+    }
+
+    @PutMapping("/deleteCategory")
+    public void deleteCategory(@RequestBody CategoryModel model){
+        repo.deleteCategory(model.getCategory_id());
+
+    }
+
 }

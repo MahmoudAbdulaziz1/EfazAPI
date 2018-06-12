@@ -43,9 +43,9 @@ public class RegistrationController {
         return registrationRepo.getUser(id);
     }
 
-    @PutMapping("/update/{id}")
-    public int updateUser(@PathVariable int id, @RequestBody RegistrationModel model){
-        return registrationRepo.updateUser(id, model.getRegisteration_email(), model.getRegisteration_password(),
+    @PutMapping("/update")
+    public int updateUser(@RequestBody RegistrationModel model){
+        return registrationRepo.updateUser(model.getRegistration_id(), model.getRegisteration_email(), model.getRegisteration_password(),
                 model.getRegistration_organization_name(), model.getRegisteration_phone_number(), model.getRegistration_organization_name(), model.getRegistration_address_desc(),
                 model.getRegistration_website_url(), model.getRegistration_is_school(), model.getRegistration_isActive());
     }

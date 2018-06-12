@@ -15,16 +15,13 @@ public class CompanyOfferModel {
     private Timestamp offer_display_date;
     private Timestamp offer_expired_date;
     private Timestamp offer_deliver_date;
-    private int offer_is_good;
-    private String offer_contact;
-    private String offer_website;
+    private int company_id;
 
     public CompanyOfferModel() {
     }
 
     public CompanyOfferModel(int offer_id, byte[] offer_logo, String offer_title, String offer_explaination, double offer_cost,
-                             Timestamp offer_display_date, Timestamp offer_expired_date, Timestamp offer_deliver_date, int offer_is_good,
-                             String offer_contact, String offer_website) {
+                             Timestamp offer_display_date, Timestamp offer_expired_date, Timestamp offer_deliver_date, int company_id) {
         this.offer_id = offer_id;
         this.offer_logo = offer_logo;
         this.offer_title = offer_title;
@@ -33,9 +30,21 @@ public class CompanyOfferModel {
         this.offer_display_date = offer_display_date;
         this.offer_expired_date = offer_expired_date;
         this.offer_deliver_date = offer_deliver_date;
-        this.offer_is_good = offer_is_good;
-        this.offer_contact = offer_contact;
-        this.offer_website = offer_website;
+        this.company_id = company_id;
+
+    }
+
+    public CompanyOfferModel(byte[] offer_logo, String offer_title, String offer_explaination, double offer_cost,
+                             Timestamp offer_display_date, Timestamp offer_expired_date, Timestamp offer_deliver_date, int company_id) {
+        this.offer_logo = offer_logo;
+        this.offer_title = offer_title;
+        this.offer_explaination = offer_explaination;
+        this.offer_cost = offer_cost;
+        this.offer_display_date = offer_display_date;
+        this.offer_expired_date = offer_expired_date;
+        this.offer_deliver_date = offer_deliver_date;
+        this.company_id = company_id;
+
     }
 
     public int getOffer_id() {
@@ -102,27 +111,11 @@ public class CompanyOfferModel {
         this.offer_deliver_date = offer_deliver_date;
     }
 
-    public int getOffer_is_good() {
-        return offer_is_good;
+    public int getCompany_id() {
+        return company_id;
     }
 
-    public void setOffer_is_good(int offer_is_good) {
-        this.offer_is_good = offer_is_good;
-    }
-
-    public String getOffer_contact() {
-        return offer_contact;
-    }
-
-    public void setOffer_contact(String offer_contact) {
-        this.offer_contact = offer_contact;
-    }
-
-    public String getOffer_website() {
-        return offer_website;
-    }
-
-    public void setOffer_website(String offer_website) {
-        this.offer_website = offer_website;
+    public void setCompany_id(int company_id) {
+        this.company_id = company_id;
     }
 }

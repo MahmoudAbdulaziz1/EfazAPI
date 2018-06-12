@@ -19,9 +19,9 @@ public class CompanyOfferController {
 
     @PostMapping("/addOffer")
     public int addCompanyOffer(@RequestBody CompanyOfferModel model){
-        return repo.addCompanyOffer(model.getOffer_id(), model.getOffer_logo(), model.getOffer_title(), model.getOffer_explaination(),
+        return repo.addCompanyOffer( model.getOffer_logo(), model.getOffer_title(), model.getOffer_explaination(),
                 model.getOffer_cost(), model.getOffer_display_date(), model.getOffer_expired_date(), model.getOffer_deliver_date(),
-                model.getOffer_is_good(), model.getOffer_contact(), model.getOffer_website());
+                model.getCompany_id());
     }
 
     @GetMapping("/getOffers")
@@ -33,11 +33,11 @@ public class CompanyOfferController {
     public CompanyOfferModel getCompanyOffer(@PathVariable int id){
         return repo.getCompanyOffer(id);
     }
-    @PutMapping("/updateOffer/{id}")
-    public int updateCompanyOffer(@PathVariable int id, @RequestBody CompanyOfferModel model){
-        return repo.updateCompanyOffer(id, model.getOffer_logo(), model.getOffer_title(), model.getOffer_explaination(),
+    @PutMapping("/updateOffer")
+    public int updateCompanyOffer(@RequestBody CompanyOfferModel model){
+        return repo.updateCompanyOffer(model.getOffer_id(), model.getOffer_logo(), model.getOffer_title(), model.getOffer_explaination(),
                 model.getOffer_cost(), model.getOffer_display_date(), model.getOffer_expired_date(), model.getOffer_deliver_date(),
-                model.getOffer_is_good(), model.getOffer_contact(), model.getOffer_website());
+                model.getCompany_id());
     }
     @PutMapping("/deleteOffer/{id}")
     public int deleteCompanyOffer(@PathVariable int id){

@@ -34,20 +34,42 @@ public class LoginController {
         return loginRepo.getLoggedUsers();
     }
 
-    @PutMapping("/deleteLogged/{id}")
-    public int deleteLogged(@PathVariable int id){
-        return loginRepo.deleteLoggedUser(id);
-    }
+//    @PutMapping("/deleteLogged/{id}")
+//    public int deleteLogged(@PathVariable int id){
+//        return loginRepo.deleteLoggedUser(id);
+//    }
 
     @GetMapping("/getUser/{id}")
     public LoginModel getUser(@PathVariable int id){
         return loginRepo.getLoggedUser(id);
     }
 
-    @GetMapping("/isLogged/{email}/{password}/{type}")
-    public boolean isLogged(@PathVariable String user_email, @PathVariable String user_password, @PathVariable int login_type){
+    @PostMapping("/isLogged")
+    public boolean isLogged(@RequestBody LoginModel model){
 
-        return loginRepo.isLogged(user_email, user_password, login_type);
+        return loginRepo.isLogged(model.getUser_email(), model.getUser_password(), model.getLogin_type());
+    }
+
+    @PostMapping("/getLoginId")
+    public int getLoggedId(@RequestBody LoginModel model){
+
+        return loginRepo.getLoggedId(model.getUser_email(), model.getUser_password(), model.getLogin_type());
+    }
+
+
+    @PutMapping("/updatePassword")
+    public void updatePassword(@RequestBody LoginModel model){
+        loginRepo.updatePassword(model.getLogin_id(), model.getUser_email(), model.getUser_password());
+
+    }
+    @PutMapping("/updateActiveState")
+    public void updateActiveState(@RequestBody LoginModel model){
+        loginRepo.updateActiveState(model.getLogin_id(), model.getIs_active());
+    }
+    @PutMapping("/deleteUser")
+    public void deleteUser(@RequestBody LoginModel model){
+
+        loginRepo.deleteUser(model.getLogin_id(), model.getUser_email());
     }
 
 }

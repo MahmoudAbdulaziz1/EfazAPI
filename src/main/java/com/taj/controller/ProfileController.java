@@ -49,25 +49,25 @@ public class ProfileController {
     public List<CompanyProfileModel> getProfiles(){
         return profileRepo.getProfiles();
     }
-    @PutMapping("/updateProfile/{id}")
-    public int updateProfile(@PathVariable int id, @RequestBody CompanyProfileModel model){
+    @PutMapping("/updateProfile")
+    public int updateProfile(@RequestBody CompanyProfileModel model){
 
 
-        File imgPath = new File("cv2.jpg");
-        BufferedImage bufferedImage = null;
-        try {
-            bufferedImage = ImageIO.read(imgPath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        File imgPath = new File("cv2.jpg");
+//        BufferedImage bufferedImage = null;
+//        try {
+//            bufferedImage = ImageIO.read(imgPath);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        // get DataBufferBytes from Raster
+//        WritableRaster raster = bufferedImage .getRaster();
+//        DataBufferByte data   = (DataBufferByte) raster.getDataBuffer();
+//        //System.out.println("test \n"+data.getData().toString());
 
-        // get DataBufferBytes from Raster
-        WritableRaster raster = bufferedImage .getRaster();
-        DataBufferByte data   = (DataBufferByte) raster.getDataBuffer();
-        //System.out.println("test \n"+data.getData().toString());
 
-
-        return profileRepo.updateProfile(id, model.getCompany_name(), data.getData(),
+        return profileRepo.updateProfile(model.getCompany_id(), model.getCompany_name(), model.getCompany_logo_image(),
                 model.getCompany_address(), model.getCompany_service_desc(), model.getCompany_link_youtube(),
                 model.getCompany_website_url());
     }

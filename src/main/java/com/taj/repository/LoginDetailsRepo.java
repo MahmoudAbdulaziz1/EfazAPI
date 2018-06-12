@@ -17,20 +17,20 @@ public class LoginDetailsRepo {
     JdbcTemplate jdbcTemplate;
 
     public void addLoginDetails(int login_id, int is_school, String lgoin_time, String ip_address, int is_mobill){
-        jdbcTemplate.update("INSERT INTO login_details VALUES (?,?,?,?,?,?)", null, login_id, is_school,
+        jdbcTemplate.update("INSERT INTO efaz_login_details VALUES (?,?,?,?,?,?)", null, login_id, is_school,
                 lgoin_time, ip_address, is_mobill);
 
     }
 
     public List<LoginDetailsModel> getDetails(){
-        return  jdbcTemplate.query("SELECT * FROM login_details;",
+        return  jdbcTemplate.query("SELECT * FROM efaz_login_details;",
                 (resultSet, i) ->new LoginDetailsModel(resultSet.getInt(1),resultSet.getInt(2),
                         resultSet.getInt(3), resultSet.getString(4), resultSet.getString(5),
                         resultSet.getInt(6)));
     }
 
     public LoginDetailsModel getDetail(int id){
-        return  jdbcTemplate.queryForObject("SELECT * FROM login_details WHERE details_id=?;", new Object[]{id},
+        return  jdbcTemplate.queryForObject("SELECT * FROM efaz_login_details WHERE details_id=?;", new Object[]{id},
                 (resultSet, i) ->new LoginDetailsModel(resultSet.getInt(1),resultSet.getInt(2),
                         resultSet.getInt(3), resultSet.getString(4), resultSet.getString(5),
                         resultSet.getInt(6)));
