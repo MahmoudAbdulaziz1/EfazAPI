@@ -51,7 +51,7 @@ public class LoginController {
     }
 
     @PostMapping("/getLoginId")
-    public int getLoggedId(@RequestBody LoginModel model){
+    public LoginModel getLoggedId(@RequestBody LoginModel model){
 
         return loginRepo.getLoggedId(model.getUser_email(), model.getUser_password(), model.getLogin_type());
     }

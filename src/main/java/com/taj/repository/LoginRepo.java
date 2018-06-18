@@ -109,7 +109,29 @@ public class LoginRepo {
     }
 
 
-    public int getLoggedId(String user_email, String user_passwords, int login_type){
+
+//    LoginModel model = null;
+//    if (isExist(user_email)){
+//
+//        model = jdbcTemplate.queryForObject("select * from efaz_login WHERE user_email=?"
+//                , new Object[]{user_email},
+//                (resultSet, i) -> new LoginModel(resultSet.getInt(1),resultSet.getString(2),
+//                        resultSet.getString(3), resultSet.getInt(4), resultSet.getInt(5)));
+//        if (bCryptPasswordEncoder.matches(user_passwords, model.getUser_password())) {
+//
+//            Integer cnt = jdbcTemplate.queryForObject(
+//                    "SELECT login_id FROM efaz_login WHERE user_email=? AND login_type=?;",//"//AND user_password = ?  ;
+//                    Integer.class, user_email, login_type);//, bCryptPasswordEncoder.encode(user_passwords.trim()));
+//            return cnt ;
+//
+//        }else {
+//            return 1;
+//        }
+//    }else {
+//        return 2;
+//    }
+
+    public LoginModel getLoggedId(String user_email, String user_passwords, int login_type){
         LoginModel model = null;
         if (isExist(user_email)){
 
@@ -119,16 +141,20 @@ public class LoginRepo {
                             resultSet.getString(3), resultSet.getInt(4), resultSet.getInt(5)));
             if (bCryptPasswordEncoder.matches(user_passwords, model.getUser_password())) {
 
-                Integer cnt = jdbcTemplate.queryForObject(
-                        "SELECT login_id FROM efaz_login WHERE user_email=? AND login_type=?;",//"//AND user_password = ?  ;
-                        Integer.class, user_email, login_type);//, bCryptPasswordEncoder.encode(user_passwords.trim()));
-                return cnt ;
+
+                return jdbcTemplate.queryForObject("select * from efaz_login WHERE user_email=? AND login_type=?;" ,new Object[]{user_email, login_type},
+                        (resultSet, i) -> new LoginModel(resultSet.getInt(1),resultSet.getString(2),
+                                resultSet.getString(3), resultSet.getInt(4), resultSet.getInt(5)));
+//                Integer cnt = jdbcTemplate.queryForObject(
+//                        "SELECT login_id FROM efaz_login WHERE user_email=? AND login_type=?;",//"//AND user_password = ?  ;
+//                        Integer.class, user_email, login_type);//, bCryptPasswordEncoder.encode(user_passwords.trim()));
+//                return cnt ;
 
             }else {
-                return 1;
+                return null;
             }
         }else {
-            return 2;
+            return null;
         }
     }
 

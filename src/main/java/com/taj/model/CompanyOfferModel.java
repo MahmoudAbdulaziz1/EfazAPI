@@ -1,5 +1,6 @@
 package com.taj.model;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 
 /**
@@ -12,16 +13,16 @@ public class CompanyOfferModel {
     private String offer_title;
     private String offer_explaination;
     private double offer_cost;
-    private Timestamp offer_display_date;
-    private Timestamp offer_expired_date;
-    private Timestamp offer_deliver_date;
+    private Date offer_display_date;
+    private Date offer_expired_date;
+    private Date offer_deliver_date;
     private int company_id;
 
     public CompanyOfferModel() {
     }
 
     public CompanyOfferModel(int offer_id, byte[] offer_logo, String offer_title, String offer_explaination, double offer_cost,
-                             Timestamp offer_display_date, Timestamp offer_expired_date, Timestamp offer_deliver_date, int company_id) {
+                             Date offer_display_date, Date offer_expired_date, Date offer_deliver_date, int company_id) {
         this.offer_id = offer_id;
         this.offer_logo = offer_logo;
         this.offer_title = offer_title;
@@ -35,7 +36,7 @@ public class CompanyOfferModel {
     }
 
     public CompanyOfferModel(byte[] offer_logo, String offer_title, String offer_explaination, double offer_cost,
-                             Timestamp offer_display_date, Timestamp offer_expired_date, Timestamp offer_deliver_date, int company_id) {
+                             Date offer_display_date, Date offer_expired_date, Date offer_deliver_date, int company_id) {
         this.offer_logo = offer_logo;
         this.offer_title = offer_title;
         this.offer_explaination = offer_explaination;
@@ -87,27 +88,27 @@ public class CompanyOfferModel {
         this.offer_cost = offer_cost;
     }
 
-    public Timestamp getOffer_display_date() {
+    public Date getOffer_display_date() {
         return offer_display_date;
     }
 
-    public void setOffer_display_date(Timestamp offer_display_date) {
+    public void setOffer_display_date(Date offer_display_date) {
         this.offer_display_date = offer_display_date;
     }
 
-    public Timestamp getOffer_expired_date() {
+    public Date getOffer_expired_date() {
         return offer_expired_date;
     }
 
-    public void setOffer_expired_date(Timestamp offer_expired_date) {
+    public void setOffer_expired_date(Date offer_expired_date) {
         this.offer_expired_date = offer_expired_date;
     }
 
-    public Timestamp getOffer_deliver_date() {
+    public Date getOffer_deliver_date() {
         return offer_deliver_date;
     }
 
-    public void setOffer_deliver_date(Timestamp offer_deliver_date) {
+    public void setOffer_deliver_date(Date offer_deliver_date) {
         this.offer_deliver_date = offer_deliver_date;
     }
 
