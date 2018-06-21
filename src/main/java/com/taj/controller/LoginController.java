@@ -72,4 +72,23 @@ public class LoginController {
         loginRepo.deleteUser(model.getLogin_id(), model.getUser_email());
     }
 
+
+    @PutMapping("/activeUser/{id}")
+    public void activeUser(@PathVariable int id){
+        loginRepo.activeLogin(id);
+    }
+
+    @GetMapping("/inactiveCompanies")
+    public List<LoginModel> getInActiveCompanies(){
+        return loginRepo.getInActiveCompanies();
+    }
+    @GetMapping("/activeCompanies")
+    public List<LoginModel> getActiveCompanies(){
+        return loginRepo.getActiveCompanies();
+    }
+    @PutMapping("/inActiveUser/{id}")
+    public void inActiveUser(@PathVariable int id){
+        loginRepo.inActiveLogin(id);
+    }
+
 }

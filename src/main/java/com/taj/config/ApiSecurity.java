@@ -22,6 +22,10 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String UPDATE_USER_URL           = "/register/update";
     public static final String DELETE_USER_URL           = "/register/delete/{id}";
     public static final String GET_USER_URL              = "/register/get/{id}";
+    public static final String GET_INACTIVE_COMPANY_URL  = "/register/getInActive";
+    public static final String ACTIVE_COMPANIES_URL      = "/register/activeCompanyUser/{id}";
+    public static final String INACTIVE_COMPANIES_URL    = "/register/inActiveCompanyUser/{id}";
+    public static final String GET_ACTIVE_COMPANIES_URL  = "/register/getActive";
     public static final String LOGIN_USER_URL            = "/login/loginUser";
     public static final String LOGGED_USER_URL           = "/login/getLogged";
     public static final String LOGGED_1USER_URL          = "/login/getUser/{id}";
@@ -56,6 +60,10 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String UPDATE_PASSWORD_URL       = "/login/updatePassword";
     public static final String UPDATE_ACTIVE_URL         = "/login/updateActiveState";
     public static final String DELETE_LOGGED_USER_URL    = "/login/deleteUser";
+    public static final String GET_NOT_LOGED_COMPANY_URL = "/login/inactiveCompanies";
+    public static final String GET_LOGGED_COMPANIES_URL  = "/login/activeCompanies";
+    public static final String ACTIVE_LOGGED_USER_URL    ="/login/activeUser/{id}";
+    public static final String INACTIVE_LOGGED_USER_URL  = "/login/inActiveUser/{id}";
 
     //isLogged
 
@@ -112,6 +120,14 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 antMatchers(HttpMethod.PUT, UPDATE_PASSWORD_URL).permitAll().
                 antMatchers(HttpMethod.PUT, UPDATE_ACTIVE_URL).permitAll().
                 antMatchers(HttpMethod.PUT, DELETE_LOGGED_USER_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_INACTIVE_COMPANY_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_NOT_LOGED_COMPANY_URL).permitAll().
+                antMatchers(HttpMethod.PUT, ACTIVE_COMPANIES_URL).permitAll().
+                antMatchers(HttpMethod.PUT, ACTIVE_LOGGED_USER_URL).permitAll().
+                antMatchers(HttpMethod.PUT, INACTIVE_LOGGED_USER_URL).permitAll().
+                antMatchers(HttpMethod.PUT, INACTIVE_COMPANIES_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_ACTIVE_COMPANIES_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_LOGGED_COMPANIES_URL).permitAll().
                 anyRequest().authenticated();
     }
     @Override

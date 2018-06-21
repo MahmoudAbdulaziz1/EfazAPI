@@ -193,4 +193,26 @@ public class LoginRepo {
 
     }
 
+
+
+    public List<LoginModel>getInActiveCompanies(){
+        return jdbcTemplate.query("SELECT * FROM efaz_login WHERE is_active=0;",
+                (resultSet, i) -> new LoginModel(resultSet.getInt(1),resultSet.getString(2),
+                        resultSet.getString(3), resultSet.getInt(4), resultSet.getInt(5)));
+    }
+
+    public List<LoginModel>getActiveCompanies(){
+        return jdbcTemplate.query("SELECT * FROM efaz_login WHERE is_active=1;",
+                (resultSet, i) -> new LoginModel(resultSet.getInt(1),resultSet.getString(2),
+                        resultSet.getString(3), resultSet.getInt(4), resultSet.getInt(5)));
+    }
+
+    public void activeLogin(int id){
+        jdbcTemplate.update("update efaz_login set is_active=1 WHERE login_id=?", id);
+    }
+
+    public void inActiveLogin(int id){
+        jdbcTemplate.update("update efaz_login set is_active=0 WHERE login_id=?", id);
+    }
+
 }

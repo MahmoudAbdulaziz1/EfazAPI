@@ -56,4 +56,26 @@ public class RegistrationController {
     }
 
 
+
+    @GetMapping("/getInActive")
+    public List<RegistrationModel>getInActiveCompaines(){
+        return registrationRepo.getInActiveCompanies();
+    }
+
+    @PutMapping("/activeCompanyUser/{id}")
+    public void activeCompanyAccount(@PathVariable int id){
+        registrationRepo.activeCompanyAccount(id);
+    }
+
+    @GetMapping("/getActive")
+    public List<RegistrationModel>getActiveCompaines(){
+        return registrationRepo.getActiveCompanies();
+    }
+
+    @PutMapping("/inActiveCompanyUser/{id}")
+    public void inActiveCompanyAccount(@PathVariable int id){
+        registrationRepo.inActiveCompanyAccount(id);
+    }
+
+
 }

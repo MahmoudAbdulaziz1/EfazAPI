@@ -57,4 +57,27 @@ public class RegistrationRepo {
         return jdbcTemplate.update("DELETE FROM efaz_registration WHERE registration_id=?", id);
     }
 
+
+    public List<RegistrationModel>getInActiveCompanies(){
+        return jdbcTemplate.query("SELECT * FROM efaz_registration WHERE registration_isActive=0;",
+                (resultSet, i) -> new RegistrationModel(resultSet.getInt(1),resultSet.getString(2),
+                        resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
+                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getInt(10)));
+    }
+
+    public void activeCompanyAccount(int id){
+        jdbcTemplate.update("update efaz_registration set registration_isActive=1 WHERE registration_id=?", id);
+    }
+
+    public List<RegistrationModel>getActiveCompanies(){
+        return jdbcTemplate.query("SELECT * FROM efaz_registration WHERE registration_isActive=1;",
+                (resultSet, i) -> new RegistrationModel(resultSet.getInt(1),resultSet.getString(2),
+                        resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
+                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getInt(10)));
+    }
+
+    public void inActiveCompanyAccount(int id){
+        jdbcTemplate.update("update efaz_registration set registration_isActive=0 WHERE registration_id=?", id);
+    }
+
 }
