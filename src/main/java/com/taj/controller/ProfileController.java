@@ -77,4 +77,9 @@ public class ProfileController {
         return profileRepo.getProfile(id);
     }
 
+    @GetMapping("/profileExist/{id}")
+    public int isExist(@PathVariable int id){
+        return profileRepo.CheckProfile(id);
+    }
+
 }

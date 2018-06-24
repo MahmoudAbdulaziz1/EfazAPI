@@ -26,6 +26,7 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String ACTIVE_COMPANIES_URL      = "/register/activeCompanyUser/{id}";
     public static final String INACTIVE_COMPANIES_URL    = "/register/inActiveCompanyUser/{id}";
     public static final String GET_ACTIVE_COMPANIES_URL  = "/register/getActive";
+    public static final String CONFIRM_MAIL_COMPANY_URL  = "/register/confirm/{id}";
     public static final String LOGIN_USER_URL            = "/login/loginUser";
     public static final String LOGGED_USER_URL           = "/login/getLogged";
     public static final String LOGGED_1USER_URL          = "/login/getUser/{id}";
@@ -33,6 +34,7 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String GET_PROFILES_URL          = "/profile/getProfiles"; // here where error appear
     public static final String UPDATE_PROFILE_URL        = "/profile/updateProfile";//updateProfile
     public static final String GET_PROFILE_URL           = "/profile/getProfile/{id}";//updateProfile
+    public static final String EXIST_PROFILE_URL         = "/profile/profileExist/{id}";//updateProfile
     public static final String ADD_SCHOOL_PROFILE_URL    = "/schoolProfile/addProfile";//updateProfile
     public static final String GET_SCHOOL_PROFILES_URL   = "/schoolProfile/getProfiles"; // here where error appear
     public static final String GET_SCHOOL_PROFILE_URL    = "/schoolProfile/getProfile/{id}";
@@ -128,6 +130,8 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 antMatchers(HttpMethod.PUT, INACTIVE_COMPANIES_URL).permitAll().
                 antMatchers(HttpMethod.GET, GET_ACTIVE_COMPANIES_URL).permitAll().
                 antMatchers(HttpMethod.GET, GET_LOGGED_COMPANIES_URL).permitAll().
+                antMatchers(HttpMethod.GET, CONFIRM_MAIL_COMPANY_URL).permitAll().
+                antMatchers(HttpMethod.GET, EXIST_PROFILE_URL).permitAll().
                 anyRequest().authenticated();
     }
     @Override

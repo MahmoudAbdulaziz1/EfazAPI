@@ -53,7 +53,7 @@ public class LoginRepo {
                                     Statement.RETURN_GENERATED_KEYS);
                             ps.setString(1, null);
                             ps.setString(2, user_email);
-                            ps.setString(3, encodedPassword);
+                            ps.setString(3, encodedPassword);/////////
                             ps.setInt(4, is_active);
                             ps.setInt(5, login_type);
                             return ps;

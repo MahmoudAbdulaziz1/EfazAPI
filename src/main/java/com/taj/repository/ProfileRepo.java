@@ -39,6 +39,12 @@ public class ProfileRepo {
                         resultSet.getString(6), resultSet.getString(7)));
     }
 
+    public int CheckProfile(int id){
+        int count = jdbcTemplate.queryForObject("SELECT Count(*) FROM efaz_company_profile WHERE  company_id=?;",
+                Integer.class, id);
+        return count;
+    }
+
 
     public int updateProfile(int id, String company_name, byte[] company_logo_image, String company_address,
                               String company_service_desc, String company_link_youtube, String company_website_url){

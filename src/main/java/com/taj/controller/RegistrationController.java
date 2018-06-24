@@ -3,9 +3,12 @@ package com.taj.controller;
 import com.taj.model.RegistrationModel;
 import com.taj.repository.RegistrationRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.internet.MimeMessage;
 import java.util.List;
 
 /**
@@ -31,6 +34,14 @@ public class RegistrationController {
                 registrationModel.getRegistration_organization_name(), registrationModel.getRegistration_address_desc(),
                 registrationModel.getRegistration_website_url(), registrationModel.getRegistration_is_school(),
                 registrationModel.getRegistration_isActive());
+
+//        try {
+//            int id =
+//                    sendEmail(registrationModel.getRegisteration_email(), id);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
     }
 
     @GetMapping("/getAll")
@@ -76,6 +87,15 @@ public class RegistrationController {
     public void inActiveCompanyAccount(@PathVariable int id){
         registrationRepo.inActiveCompanyAccount(id);
     }
+
+
+
+    @GetMapping("/confirm/{id}")
+    public void confirmEmail(@PathVariable int id){
+        registrationRepo.confirmEmail(id);
+    }
+
+
 
 
 }
