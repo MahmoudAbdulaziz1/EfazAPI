@@ -46,8 +46,9 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String DELETE_SCHOOL_REQUEST_URL = "/schoolRequest/deleteRequest/{id}";
     public static final String ADD_COMPANY_OFFER_URL     = "/companyOffer/addOffer";
     public static final String GET_COMPANY_OFFERS_URL    = "/companyOffer/getOffers";
+    public static final String SINGLE_COMPANY_OFFER_URL  = "/companyOffer/getOffers/{id}";
     public static final String GET_COMPANY_OFFER_URL     = "/companyOffer/getOffer/{id}";
-    public static final String UPDATE_COMPANY_OFFERS_URL = "/companyOffer/updateOffer/{id}";
+    public static final String UPDATE_COMPANY_OFFERS_URL = "/companyOffer/updateOffer";
     public static final String DELETE_COMPANY_OFFERS_URL = "/companyOffer/deleteOffer/{id}";
     public static final String GET_ALL_CATEGORIES        = "/cat/getCategories";
     public static final String GET_ALL_CATEGORY          = "/cat/getCategory/{id}";
@@ -132,6 +133,7 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 antMatchers(HttpMethod.GET, GET_LOGGED_COMPANIES_URL).permitAll().
                 antMatchers(HttpMethod.GET, CONFIRM_MAIL_COMPANY_URL).permitAll().
                 antMatchers(HttpMethod.GET, EXIST_PROFILE_URL).permitAll().
+                antMatchers(HttpMethod.GET, SINGLE_COMPANY_OFFER_URL).permitAll().
                 anyRequest().authenticated();
     }
     @Override

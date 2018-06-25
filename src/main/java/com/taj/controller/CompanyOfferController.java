@@ -26,7 +26,7 @@ public class CompanyOfferController {
 
     @GetMapping("/getOffers")
     public List<CompanyOfferModel> getCompanyOffers(){
-        return repo.getCompanyOffers();
+        return repo.getAllOffers();
     }
 
     @GetMapping("/getOffer/{id}")
@@ -42,6 +42,11 @@ public class CompanyOfferController {
     @PutMapping("/deleteOffer/{id}")
     public int deleteCompanyOffer(@PathVariable int id){
         return repo.deleteCompanyOffer(id);
+    }
+
+    @GetMapping("/getOffers/{id}")
+    public List<CompanyOfferModel> getSingleCompanyOffer(@PathVariable int id){
+        return repo.getCompanyOffers(id);
     }
 
 }

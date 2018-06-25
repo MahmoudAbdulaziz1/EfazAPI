@@ -23,7 +23,7 @@ public class CompanyOfferRepo {
                 offer_cost, offer_display_date, offer_expired_date, offer_deliver_date, company_id);
     }
 
-    public List<CompanyOfferModel> getCompanyOffers(){
+    public List<CompanyOfferModel> getAllOffers(){
         return jdbcTemplate.query("SELECT * FROM efaz_company_offer;",
                 (resultSet, i) -> new CompanyOfferModel(resultSet.getInt(1),resultSet.getBytes(2), resultSet.getString(3)
                         , resultSet.getString(4), resultSet.getDouble(5), resultSet.getTimestamp(6),resultSet.getTimestamp(7),
@@ -38,11 +38,21 @@ public class CompanyOfferRepo {
     }
 
 
+    public List<CompanyOfferModel> getCompanyOffers(int id){
+        return jdbcTemplate.query("SELECT * FROM efaz_company_offer WHERE company_id=?;", new Object[]{id},
+                (resultSet, i) -> new CompanyOfferModel(resultSet.getInt(1),resultSet.getBytes(2), resultSet.getString(3)
+                        , resultSet.getString(4), resultSet.getDouble(5), resultSet.getTimestamp(6),resultSet.getTimestamp(7),
+                        resultSet.getTimestamp(8), resultSet.getInt(9)));
+    }
+
+
+
+
     public int updateCompanyOffer(int offer_id, byte[] offer_logo, String offer_title, String offer_explaination, double offer_cost,
                                   Timestamp offer_display_date, Timestamp offer_expired_date, Timestamp offer_deliver_date, int company_id){
         return jdbcTemplate.update("update efaz_company_offer set offer_logo=?," +
                         "offer_title=?, offer_explaination=?," + "offer_cost=?, offer_display_date=?, offer_expired_date=?,"+
-                        "offer_deliver_date=?,"+"offer_is_good=?,"+"offer_contact=?,"+"offer_website=?"+ " where offer_id=?", offer_logo,offer_title,
+                        "offer_deliver_date=?, company_id=?"+ " where offer_id=?", offer_logo,offer_title,
                         offer_explaination, offer_cost, offer_display_date, offer_expired_date, offer_deliver_date, company_id, offer_id);
     }
 
