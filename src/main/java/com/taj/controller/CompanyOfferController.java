@@ -49,4 +49,9 @@ public class CompanyOfferController {
         return repo.getCompanyOffers(id);
     }
 
+    @GetMapping("/getData/{id}")
+    public List<String> getData(@PathVariable int id){
+        return repo.getProgressDate(id);
+    }
+
 }

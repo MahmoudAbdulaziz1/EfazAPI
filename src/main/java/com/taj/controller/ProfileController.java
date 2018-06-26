@@ -5,11 +5,6 @@ import com.taj.repository.ProfileRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.awt.image.WritableRaster;
-import java.io.*;
 import java.util.List;
 
 /**
@@ -24,7 +19,7 @@ public class ProfileController {
     ProfileRepo profileRepo;
 
     @PostMapping("/addProfile")
-    public int AddUserProfile(@RequestBody CompanyProfileModel model){
+    public int AddUserProfile(@RequestBody CompanyProfileModel model) {
 //        File imgPath = new File("cv.jpg");
 //        BufferedImage bufferedImage = null;
 //        try {
@@ -46,26 +41,12 @@ public class ProfileController {
     }
 
     @GetMapping("/getProfiles")
-    public List<CompanyProfileModel> getProfiles(){
+    public List<CompanyProfileModel> getProfiles() {
         return profileRepo.getProfiles();
     }
+
     @PutMapping("/updateProfile")
-    public int updateProfile(@RequestBody CompanyProfileModel model){
-
-
-//        File imgPath = new File("cv2.jpg");
-//        BufferedImage bufferedImage = null;
-//        try {
-//            bufferedImage = ImageIO.read(imgPath);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        // get DataBufferBytes from Raster
-//        WritableRaster raster = bufferedImage .getRaster();
-//        DataBufferByte data   = (DataBufferByte) raster.getDataBuffer();
-//        //System.out.println("test \n"+data.getData().toString());
-
+    public int updateProfile(@RequestBody CompanyProfileModel model) {
 
         return profileRepo.updateProfile(model.getCompany_id(), model.getCompany_name(), model.getCompany_logo_image(),
                 model.getCompany_address(), model.getCompany_service_desc(), model.getCompany_link_youtube(),
@@ -73,12 +54,12 @@ public class ProfileController {
     }
 
     @GetMapping("/getProfile/{id}")
-    public CompanyProfileModel getProfile(@PathVariable int id){
+    public CompanyProfileModel getProfile(@PathVariable int id) {
         return profileRepo.getProfile(id);
     }
 
     @GetMapping("/profileExist/{id}")
-    public int isExist(@PathVariable int id){
+    public int isExist(@PathVariable int id) {
         return profileRepo.CheckProfile(id);
     }
 

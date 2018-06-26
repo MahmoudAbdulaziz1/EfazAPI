@@ -67,6 +67,7 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String GET_LOGGED_COMPANIES_URL  = "/login/activeCompanies";
     public static final String ACTIVE_LOGGED_USER_URL    ="/login/activeUser/{id}";
     public static final String INACTIVE_LOGGED_USER_URL  = "/login/inActiveUser/{id}";
+    public static final String GET_COMPANY_OFFER_DATA    = "/companyOffer/getData/{id}";
 
     //isLogged
 
@@ -134,6 +135,7 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 antMatchers(HttpMethod.GET, CONFIRM_MAIL_COMPANY_URL).permitAll().
                 antMatchers(HttpMethod.GET, EXIST_PROFILE_URL).permitAll().
                 antMatchers(HttpMethod.GET, SINGLE_COMPANY_OFFER_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_COMPANY_OFFER_DATA).permitAll().
                 anyRequest().authenticated();
     }
     @Override
