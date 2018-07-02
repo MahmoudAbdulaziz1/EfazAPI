@@ -23,32 +23,58 @@ public class LoginController {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+
+    /**
+     * add email of company to login table if email is found
+     * in registration and is activated by admin and password matched
+     * @param model
+     * @return object of logged company
+     */
     @PostMapping("/loginUser")
     public LoginModel loginUsers(@RequestBody LoginModel model){
         return loginRepo.loginUser(model.getUser_email(), model.getUser_password(),
                 model.getIs_active(), model.getLogin_type());
     }
 
+    /**
+     * get all login companies
+     * @return list of logged companies
+     */
+
     @GetMapping("/getLogged")
     public List<LoginModel> getLoggedUser(){
         return loginRepo.getLoggedUsers();
     }
 
-//    @PutMapping("/deleteLogged/{id}")
-//    public int deleteLogged(@PathVariable int id){
-//        return loginRepo.deleteLoggedUser(id);
-//    }
+
+    /**
+     * get logged user data by login id
+     * @param id
+     * @return logged user object
+     */
 
     @GetMapping("/getUser/{id}")
     public LoginModel getUser(@PathVariable int id){
         return loginRepo.getLoggedUser(id);
     }
 
+    /**
+     * check if company email is exist in login db
+     * @param model
+     * @return true if exist in table or not if not exist
+     */
+
     @PostMapping("/isLogged")
     public boolean isLogged(@RequestBody LoginModel model){
 
         return loginRepo.isLogged(model.getUser_email(), model.getUser_password(), model.getLogin_type());
     }
+
+    /**
+     * get logged data
+     * @param model
+     * @return logged data by email, password and loginType
+     */
 
     @PostMapping("/getLoginId")
     public LoginModel getLoggedId(@RequestBody LoginModel model){
@@ -57,15 +83,29 @@ public class LoginController {
     }
 
 
+    /**
+     * update user password
+     * @param model
+     */
     @PutMapping("/updatePassword")
     public void updatePassword(@RequestBody LoginModel model){
         loginRepo.updatePassword(model.getLogin_id(), model.getUser_email(), model.getUser_password());
 
     }
-    @PutMapping("/updateActiveState")
-    public void updateActiveState(@RequestBody LoginModel model){
-        loginRepo.updateActiveState(model.getLogin_id(), model.getIs_active());
-    }
+//
+//    /**
+//     *
+//     * @param model
+//     */
+//    @PutMapping("/updateActiveState")
+//    public void updateActiveState(@RequestBody LoginModel model){
+//        loginRepo.updateActiveState(model.getLogin_id(), model.getIs_active());
+//    }
+
+    /**
+     * delete company email from login
+     * @param model
+     */
     @PutMapping("/deleteUser")
     public void deleteUser(@RequestBody LoginModel model){
 
@@ -73,19 +113,39 @@ public class LoginController {
     }
 
 
+    /**
+     * active user when login
+     * use login id
+     * @param id
+     */
     @PutMapping("/activeUser/{id}")
     public void activeUser(@PathVariable int id){
         loginRepo.activeLogin(id);
     }
 
+    /**
+     * get all inactive companies
+     * @return list of inactive now companies
+     */
     @GetMapping("/inactiveCompanies")
     public List<LoginModel> getInActiveCompanies(){
         return loginRepo.getInActiveCompanies();
     }
+
+    /**
+     * get all active companies
+     * @return list of active now companies
+     */
     @GetMapping("/activeCompanies")
     public List<LoginModel> getActiveCompanies(){
         return loginRepo.getActiveCompanies();
     }
+
+    /**
+     * active user when login
+     * use login id
+     * @param id
+     */
     @PutMapping("/inActiveUser/{id}")
     public void inActiveUser(@PathVariable int id){
         loginRepo.inActiveLogin(id);

@@ -55,6 +55,7 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String ADD_LOGIN_DETAILS_URL     = "/details/add";
     public static final String GET_LOGIN_DETAILS_URL     = "/details/getAll";
     public static final String GET_LOGIN_DETAIL_URL      = "/details/get/{id}";
+    public static final String GET_LOGIN_LIST_DETAIL_URL = "/details/getDetails/{id}";
     public static final String CHECK_USER_URL            = "/login/isLogged";
     public static final String GET_USER_ID               = "/login/getLoginId";
     public static final String ADD_CATEGORY_URL          = "/cat/addCategory";
@@ -136,6 +137,7 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 antMatchers(HttpMethod.GET, EXIST_PROFILE_URL).permitAll().
                 antMatchers(HttpMethod.GET, SINGLE_COMPANY_OFFER_URL).permitAll().
                 antMatchers(HttpMethod.GET, GET_COMPANY_OFFER_DATA).permitAll().
+                antMatchers(HttpMethod.GET, GET_LOGIN_LIST_DETAIL_URL).permitAll().
                 anyRequest().authenticated();
     }
     @Override
