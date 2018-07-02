@@ -9,28 +9,48 @@ public class SchoolRequestsModel {
 
 
     private int request_id;
-    private byte[] request_logo;
+    private byte[] request_details_file;
     private String request_title;
     private String request_explaination;
-    private String request_category;
-    private Timestamp request_display_date;
-    private Timestamp request_expired_date;
-    private Timestamp request_deliver_date;
+
+    private Timestamp request_display_date, request_expired_date, request_deliver_date, request_payment_date;
+    private int request_is_available, request_is_conformied, school_id, request_category_id;
 
 
     public SchoolRequestsModel() {
     }
 
-    public SchoolRequestsModel(int request_id, byte[] request_logo, String request_title, String request_explaination,
-                               String request_category, Timestamp request_display_date, Timestamp request_expired_date, Timestamp request_deliver_date) {
+    public SchoolRequestsModel(int request_id, byte[] request_details_file, String request_title, String request_explaination,
+                               Timestamp request_display_date, Timestamp request_expired_date, Timestamp request_deliver_date,
+                               int request_is_available, int request_is_conformied, Timestamp request_payment_date, int school_id, int request_category_id) {
         this.request_id = request_id;
-        this.request_logo = request_logo;
+        this.request_details_file = request_details_file;
         this.request_title = request_title;
         this.request_explaination = request_explaination;
-        this.request_category = request_category;
         this.request_display_date = request_display_date;
         this.request_expired_date = request_expired_date;
         this.request_deliver_date = request_deliver_date;
+        this.request_payment_date = request_payment_date;
+        this.request_is_available = request_is_available;
+        this.request_is_conformied = request_is_conformied;
+        this.school_id = school_id;
+        this.request_category_id = request_category_id;
+    }
+
+    public SchoolRequestsModel(byte[] request_details_file, String request_title, String request_explaination,
+                               Timestamp request_display_date, Timestamp request_expired_date, Timestamp request_deliver_date,
+                               int request_is_available, int request_is_conformied, Timestamp request_payment_date, int school_id, int request_category_id) {
+        this.request_details_file = request_details_file;
+        this.request_title = request_title;
+        this.request_explaination = request_explaination;
+        this.request_display_date = request_display_date;
+        this.request_expired_date = request_expired_date;
+        this.request_deliver_date = request_deliver_date;
+        this.request_payment_date = request_payment_date;
+        this.request_is_available = request_is_available;
+        this.request_is_conformied = request_is_conformied;
+        this.school_id = school_id;
+        this.request_category_id = request_category_id;
     }
 
     public int getRequest_id() {
@@ -41,12 +61,12 @@ public class SchoolRequestsModel {
         this.request_id = request_id;
     }
 
-    public byte[] getRequest_logo() {
-        return request_logo;
+    public byte[] getRequest_details_file() {
+        return request_details_file;
     }
 
-    public void setRequest_logo(byte[] request_logo) {
-        this.request_logo = request_logo;
+    public void setRequest_details_file(byte[] request_details_file) {
+        this.request_details_file = request_details_file;
     }
 
     public String getRequest_title() {
@@ -65,13 +85,6 @@ public class SchoolRequestsModel {
         this.request_explaination = request_explaination;
     }
 
-    public String getRequest_category() {
-        return request_category;
-    }
-
-    public void setRequest_category(String request_category) {
-        this.request_category = request_category;
-    }
 
     public Timestamp getRequest_display_date() {
         return request_display_date;
@@ -95,5 +108,45 @@ public class SchoolRequestsModel {
 
     public void setRequest_deliver_date(Timestamp request_deliver_date) {
         this.request_deliver_date = request_deliver_date;
+    }
+
+    public Timestamp getRequest_payment_date() {
+        return request_payment_date;
+    }
+
+    public void setRequest_payment_date(Timestamp request_payment_date) {
+        this.request_payment_date = request_payment_date;
+    }
+
+    public int getRequest_is_available() {
+        return request_is_available;
+    }
+
+    public void setRequest_is_available(int request_is_available) {
+        this.request_is_available = request_is_available;
+    }
+
+    public int getRequest_is_conformied() {
+        return request_is_conformied;
+    }
+
+    public void setRequest_is_conformied(int request_is_conformied) {
+        this.request_is_conformied = request_is_conformied;
+    }
+
+    public int getSchool_id() {
+        return school_id;
+    }
+
+    public void setSchool_id(int school_id) {
+        this.school_id = school_id;
+    }
+
+    public int getRequest_category_id() {
+        return request_category_id;
+    }
+
+    public void setRequest_category_id(int request_category_id) {
+        this.request_category_id = request_category_id;
     }
 }

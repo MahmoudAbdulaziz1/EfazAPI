@@ -1,6 +1,5 @@
 package com.taj.controller;
 
-import com.taj.model.CompanyProfileModel;
 import com.taj.model.SchoolProfileModel;
 import com.taj.repository.SchoolProfileRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,63 +25,67 @@ public class SchoolProfileController {
     @Autowired
     private SchoolProfileRepo repo;
 
+    /**
+     * add profile data to db
+     *
+     * @param model
+     * @return 1 if added and 0  if not
+     */
     @PostMapping("/addProfile")
-    public int AddUserProfile(@RequestBody SchoolProfileModel model){
-        File imgPath = new File("cv.jpg");
-        BufferedImage bufferedImage = null;
-        try {
-            bufferedImage = ImageIO.read(imgPath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public int AddUserProfile(@RequestBody SchoolProfileModel model) {
 
-        // get DataBufferBytes from Raster
-        WritableRaster raster = bufferedImage .getRaster();
-        DataBufferByte data   = (DataBufferByte) raster.getDataBuffer();
-        //System.out.println("test \n"+data.getData().toString());
-
-        return repo.addSchoolProfile(model.getSchool_id(), model.getSchool_name(), data.getData(),
+        return repo.addSchoolProfile(model.getSchool_id(), model.getSchool_name(), model.getSchool_logo_image(),
                 model.getSchool_address(), model.getSchool_service_desc(), model.getSchool_link_youtube(),
                 model.getSchool_website_url());
 
 
     }
 
+    /**
+     * get all school profiles
+     *
+     * @return list of profiles
+     */
+
     @GetMapping("/getProfiles")
-    public List<SchoolProfileModel> getProfiles(){
+    public List<SchoolProfileModel> getProfiles() {
         return repo.getSchoolSProfiles();
     }
 
 
+    /**
+     * get single profile using school id
+     *
+     * @param id
+     * @return school profile by id
+     */
+
     @GetMapping("/getProfile/{id}")
-    public SchoolProfileModel getProfile(@PathVariable int id){
+    public SchoolProfileModel getProfile(@PathVariable int id) {
         return repo.getSchoolProfile(id);
     }
 
 
-    @PutMapping("/updateProfile/{id}")
-    public int updateProfile(@PathVariable int id, @RequestBody SchoolProfileModel model){
 
 
-        File imgPath = new File("cv2.jpg");
-        BufferedImage bufferedImage = null;
-        try {
-            bufferedImage = ImageIO.read(imgPath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @PutMapping("/updateProfile")
+    public int updateProfile(@RequestBody SchoolProfileModel model) {
 
-        // get DataBufferBytes from Raster
-        WritableRaster raster = bufferedImage .getRaster();
-        DataBufferByte data   = (DataBufferByte) raster.getDataBuffer();
-        //System.out.println("test \n"+data.getData().toString());
-
-
-        return repo.updateProfile(id, model.getSchool_name(), data.getData(),
+        return repo.updateProfile(model.getSchool_id(), model.getSchool_name(), model.getSchool_logo_image(),
                 model.getSchool_address(), model.getSchool_service_desc(), model.getSchool_link_youtube(),
                 model.getSchool_website_url());
     }
 
+
+    @GetMapping("/profileExist/{id}")
+    public int isExist(@PathVariable int id) {
+        return repo.checkSchoolProfile(id);
+    }
+
+    @PutMapping("/delete/{id}")
+    public int deleteSchoolProfile(@PathVariable int id) {
+        return repo.deleteSchoolProfile(id);
+    }
 
 
 }

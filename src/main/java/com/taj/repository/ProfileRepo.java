@@ -18,28 +18,28 @@ public class ProfileRepo {
     private JdbcTemplate jdbcTemplate;
 
     public int addProfile(int company_id, String company_name, byte[] company_logo_image, String company_address,
-                          String company_service_desc, String company_link_youtube, String company_website_url){
+                          String company_service_desc, String company_link_youtube, String company_website_url) {
         return jdbcTemplate.update("INSERT INTO efaz_company_profile VALUES (?,?,?,?,?,?,?)", company_id, company_name, company_logo_image,
                 company_address, company_service_desc, company_link_youtube, company_website_url);
     }
 
 
-    public List<CompanyProfileModel> getProfiles(){
+    public List<CompanyProfileModel> getProfiles() {
         return jdbcTemplate.query("SELECT * FROM efaz_company_profile;",
-                (resultSet, i) -> new CompanyProfileModel(resultSet.getInt(1),resultSet.getString(2),
+                (resultSet, i) -> new CompanyProfileModel(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
                         resultSet.getString(6), resultSet.getString(7)));
     }
 
 
-    public CompanyProfileModel getProfile(int id){
+    public CompanyProfileModel getProfile(int id) {
         return jdbcTemplate.queryForObject("SELECT * FROM efaz_company_profile WHERE  company_id=?;",
-                new Object[]{id},(resultSet, i) -> new CompanyProfileModel(resultSet.getInt(1),resultSet.getString(2),
+                new Object[]{id}, (resultSet, i) -> new CompanyProfileModel(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
                         resultSet.getString(6), resultSet.getString(7)));
     }
 
-    public int CheckProfile(int id){
+    public int CheckProfile(int id) {
         int count = jdbcTemplate.queryForObject("SELECT Count(*) FROM efaz_company_profile WHERE  company_id=?;",
                 Integer.class, id);
         return count;
@@ -47,17 +47,15 @@ public class ProfileRepo {
 
 
     public int updateProfile(int id, String company_name, byte[] company_logo_image, String company_address,
-                              String company_service_desc, String company_link_youtube, String company_website_url){
+                             String company_service_desc, String company_link_youtube, String company_website_url) {
 
         return jdbcTemplate.update("update efaz_company_profile set company_name=?," +
                         "company_logo_image=?, company_address=?," +
-                        "company_service_desc=?, company_link_youtube=?, company_website_url=?"+
+                        "company_service_desc=?, company_link_youtube=?, company_website_url=?" +
                         " where company_id=?", company_name, company_logo_image, company_address, company_service_desc
                 , company_link_youtube, company_website_url, id);
 
     }
-
-
 
 
 }
