@@ -73,6 +73,31 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String ACTIVE_LOGGED_USER_URL = "/login/activeUser/{id}";
     public static final String INACTIVE_LOGGED_USER_URL = "/login/inActiveUser/{id}";
     public static final String GET_COMPANY_OFFER_DATA = "/companyOffer/getData/{id}";
+    public static final String ADD_SCHOOL_CATEGORY_URL = "/schoolCategory/addCategory";
+    public static final String GET_SCHOOL_CATEGORIES_URL = "/schoolCategory/getCategories";
+    public static final String GET_SCHOOL_CATEGORY_URL = "/schoolCategory/getCategory/{id}";
+    public static final String UPDATE_SCHOOL_CATEGORY_URL = "/schoolCategory/updateCategory";
+    public static final String DELETE_SCHOOL_CATEGORY_URL = "/schoolCategory/deleteCategory";
+    public static final String ADD_COMPANY_SEE_REQUEST_URL = "/seen/add";//ADD_COMPANY_SEE_REQUEST_URL
+    public static final String GET_COMPANY_SEE_REQUEST_URL = "/seen/getAll";
+    public static final String GET_COMPANY_SEE_REQUEST_BYR_URL = "/seen/getRequest/{id}";//GET_COMPANY_SEE_REQUEST_BYR_URL
+    public static final String GET_COMPANY_SEE_REQUEST_BYC_URL = "/seen/getCompany/{id}";
+    public static final String GET_COMPANY_SEE_REQUEST_BYS_URL = "/seen/getSeen/{id}";
+    public static final String GET_COMPANY_SEE_REQUEST_BYB_URL = "/seen/getBoth/{requestId}/{companyId}";
+    public static final String UPDATE_COMPANY_SEE_REQUEST_URL = "/seen/updateCompanySeeRequest";
+    public static final String DElETE_COMPANY_SEE_REQUEST_URL = "/seen/deleteCompanySeeRequest";
+    public static final String ADD_REQUEST_ENQUIRY_URL = "/enquiry/add";
+    public static final String GET_REQUEST_ENQUIRIES_URL = "/enquiry/getAll";
+    public static final String GET_REQUEST_ENQUIRY_URL = "/enquiry/get/{id}";
+    public static final String GET_REQUEST_ENQUIRY_ID_URL = "/enquiry/getReq/{id}";
+    public static final String UPDATE_REQUEST_ENQUIRY_URL = "/enquiry/updateEnquiry";
+    public static final String DELETE_REQUEST_ENQUIRY_URL = "/enquiry/deleteEnquiry";
+    public static final String ADD_RESPONSE_ENQUIRY_URL = "/response/add";
+    public static final String GET_RESPONSE_ENQUIRIES_URL = "/response/getAll";
+    public static final String GET_RESPONSE_ENQUIRY_URL = "/response/get/{id}";
+    public static final String GET_RESPONSE_ENQUIRY_ID_URL = "/response/getReq/{id}";
+    public static final String UPDATE_RESPONSE_ENQUIRY_URL = "/response/updateEnquiry";
+    public static final String DELETE_RESPONSE_ENQUIRY_URL = "/response/deleteEnquiry";
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -151,6 +176,31 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 antMatchers(HttpMethod.GET, FILTER_IS_AVAILABLE_URL).permitAll().
                 antMatchers(HttpMethod.GET, FILTER_IS_CONFIRM_URL).permitAll().
                 antMatchers(HttpMethod.GET, FILTER_TITLE_URL).permitAll().
+                antMatchers(HttpMethod.POST, ADD_SCHOOL_CATEGORY_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_SCHOOL_CATEGORIES_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_SCHOOL_CATEGORY_URL).permitAll().
+                antMatchers(HttpMethod.PUT, UPDATE_SCHOOL_CATEGORY_URL).permitAll().
+                antMatchers(HttpMethod.PUT, DELETE_SCHOOL_CATEGORY_URL).permitAll().
+                antMatchers(HttpMethod.POST, ADD_COMPANY_SEE_REQUEST_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_COMPANY_SEE_REQUEST_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_COMPANY_SEE_REQUEST_BYR_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_COMPANY_SEE_REQUEST_BYC_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_COMPANY_SEE_REQUEST_BYS_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_COMPANY_SEE_REQUEST_BYB_URL).permitAll().
+                antMatchers(HttpMethod.PUT, UPDATE_COMPANY_SEE_REQUEST_URL).permitAll().
+                antMatchers(HttpMethod.PUT, DElETE_COMPANY_SEE_REQUEST_URL).permitAll().
+                antMatchers(HttpMethod.POST, ADD_REQUEST_ENQUIRY_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_REQUEST_ENQUIRIES_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_REQUEST_ENQUIRY_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_REQUEST_ENQUIRY_ID_URL).permitAll().
+                antMatchers(HttpMethod.PUT, UPDATE_REQUEST_ENQUIRY_URL).permitAll().
+                antMatchers(HttpMethod.PUT, DELETE_REQUEST_ENQUIRY_URL).permitAll().
+                antMatchers(HttpMethod.POST, ADD_RESPONSE_ENQUIRY_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_RESPONSE_ENQUIRIES_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_RESPONSE_ENQUIRY_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_RESPONSE_ENQUIRY_ID_URL).permitAll().
+                antMatchers(HttpMethod.PUT, UPDATE_RESPONSE_ENQUIRY_URL).permitAll().
+                antMatchers(HttpMethod.PUT, DELETE_RESPONSE_ENQUIRY_URL).permitAll().
                 anyRequest().authenticated();
     }
 

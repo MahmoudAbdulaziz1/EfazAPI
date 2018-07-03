@@ -81,12 +81,12 @@ public class SchoolRequestRepo {
     //"SELECT * FROM table WHERE `companyID` = $ID AND `title` LIKE '%" . $valueToSearch ."%'";
 
 
-//    public List<SchoolRequestsModel> filterByTitle(String title){
-//        return jdbcTemplate.query("SELECT * FROM efaz_school_tender WHERE  request_title LIKE '%?%';",
-//                new Object[]{title}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2),
-//                        resultSet.getString(3), resultSet.getString(4), resultSet.getTimestamp(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
-//                        resultSet.getInt(8), resultSet.getInt(9), resultSet.getTimestamp(10), resultSet.getInt(11), resultSet.getInt(12)));
-//    }
+    public List<SchoolRequestsModel> filterByTitle(String title){
+        return jdbcTemplate.query("SELECT * FROM efaz_school_tender WHERE  request_title LIKE '%?%;",
+                new Object[]{title}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2),
+                        resultSet.getString(3), resultSet.getString(4), resultSet.getTimestamp(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
+                        resultSet.getInt(8), resultSet.getInt(9), resultSet.getTimestamp(10), resultSet.getInt(11), resultSet.getInt(12)));
+    }
 
 
 }
