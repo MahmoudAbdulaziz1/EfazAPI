@@ -82,11 +82,25 @@ public class SchoolRequestRepo {
 
 
     public List<SchoolRequestsModel> filterByTitle(String title){
-        return jdbcTemplate.query("SELECT * FROM efaz_school_tender WHERE  request_title LIKE '%?%;",
+        return jdbcTemplate.query("SELECT * FROM efaz_school_tender WHERE  request_title LIKE ?;",
                 new Object[]{title}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2),
                         resultSet.getString(3), resultSet.getString(4), resultSet.getTimestamp(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
                         resultSet.getInt(8), resultSet.getInt(9), resultSet.getTimestamp(10), resultSet.getInt(11), resultSet.getInt(12)));
     }
+    public List<SchoolRequestsModel> filterByExplain(String explain){
+        return jdbcTemplate.query("SELECT * FROM efaz_school_tender WHERE  request_explaination LIKE ?;",
+                new Object[]{explain}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2),
+                        resultSet.getString(3), resultSet.getString(4), resultSet.getTimestamp(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
+                        resultSet.getInt(8), resultSet.getInt(9), resultSet.getTimestamp(10), resultSet.getInt(11), resultSet.getInt(12)));
+    }
+
+    public List<SchoolRequestsModel> filterByCategory(int cat){
+        return jdbcTemplate.query("SELECT * FROM efaz_school_tender WHERE  request_category_id LIKE ?;",
+                new Object[]{cat}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2),
+                        resultSet.getString(3), resultSet.getString(4), resultSet.getTimestamp(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
+                        resultSet.getInt(8), resultSet.getInt(9), resultSet.getTimestamp(10), resultSet.getInt(11), resultSet.getInt(12)));
+    }
+
 
 
 }

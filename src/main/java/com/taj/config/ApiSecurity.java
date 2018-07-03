@@ -48,6 +48,8 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String FILTER_IS_AVAILABLE_URL = "/schoolRequest/filterAvailable/{isAvailable}";
     public static final String FILTER_IS_CONFIRM_URL = "/schoolRequest/filterConfirm/{isConfirm}";
     public static final String FILTER_TITLE_URL = "/schoolRequest/filterTitle/{title}";
+    public static final String FILTER_EXPLAIN_URL = "/schoolRequest/filterExplain/{explain}";
+    public static final String FILTER_CAT_URL = "/schoolRequest/filterCat/{cat}";
     public static final String ADD_COMPANY_OFFER_URL = "/companyOffer/addOffer";
     public static final String GET_COMPANY_OFFERS_URL = "/companyOffer/getOffers";
     public static final String SINGLE_COMPANY_OFFER_URL = "/companyOffer/getOffers/{id}";
@@ -176,6 +178,8 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 antMatchers(HttpMethod.GET, FILTER_IS_AVAILABLE_URL).permitAll().
                 antMatchers(HttpMethod.GET, FILTER_IS_CONFIRM_URL).permitAll().
                 antMatchers(HttpMethod.GET, FILTER_TITLE_URL).permitAll().
+                antMatchers(HttpMethod.GET, FILTER_EXPLAIN_URL).permitAll().
+                antMatchers(HttpMethod.GET, FILTER_CAT_URL).permitAll().
                 antMatchers(HttpMethod.POST, ADD_SCHOOL_CATEGORY_URL).permitAll().
                 antMatchers(HttpMethod.GET, GET_SCHOOL_CATEGORIES_URL).permitAll().
                 antMatchers(HttpMethod.GET, GET_SCHOOL_CATEGORY_URL).permitAll().

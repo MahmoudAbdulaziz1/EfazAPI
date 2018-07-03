@@ -64,9 +64,19 @@ public class SchoolRequestController {
     }
 
 
-//    @GetMapping("/filterTitle/{title}")
-//    public List<SchoolRequestsModel> filterByTitle(@PathVariable String title) {
-//        return repo.filterByTitle(title);
-//    }
+    @GetMapping("/filterTitle/{title}")
+    public List<SchoolRequestsModel> filterByTitle(@PathVariable String title) {
+        return repo.filterByTitle(title);
+    }
+
+    @GetMapping("/filterExplain/{explain}")
+    public List<SchoolRequestsModel> filterByExplain(@PathVariable String explain) {
+        return repo.filterByExplain(explain);
+    }
+
+    @GetMapping("/filterCat/{cat}")
+    public List<SchoolRequestsModel> filterByExplain(@PathVariable int cat) {
+        return repo.filterByCategory(cat);
+    }
 
 }
