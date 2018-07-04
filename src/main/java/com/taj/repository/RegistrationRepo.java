@@ -25,9 +25,8 @@ public class RegistrationRepo {
     private JavaMailSender sender;
 
 
-
     public void addUser(String email, String password, String userName, String phoneNumber, String companyName
-                      , String address , String website, int isSchool, int isActive){
+            , String address, String website, int isSchool, int isActive) {
 
         jdbcTemplate.update("INSERT INTO efaz_registration VALUES (?,?,?,?,?,?,?,?,?,?)", null, email, password, userName, phoneNumber
                 , companyName, address, website, isSchool, isActive);
@@ -60,34 +59,31 @@ public class RegistrationRepo {
     }
 
 
-
-
-
-    public List<RegistrationModel> getUsers(){
-        return jdbcTemplate.query("select * from efaz_registration;" ,
-                (resultSet, i) -> new RegistrationModel(resultSet.getInt(1),resultSet.getString(2),
+    public List<RegistrationModel> getUsers() {
+        return jdbcTemplate.query("select * from efaz_registration;",
+                (resultSet, i) -> new RegistrationModel(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
                         resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getInt(10)));
     }
 
-    public RegistrationModel getUser(int id){
+    public RegistrationModel getUser(int id) {
         return jdbcTemplate.queryForObject("SELECT * From efaz_registration WHERE registration_id=?", new Object[]{id},
-                ((resultSet, i) -> new RegistrationModel(resultSet.getInt(1),resultSet.getString(2),
-                resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
-                resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getInt(10))));
+                ((resultSet, i) -> new RegistrationModel(resultSet.getInt(1), resultSet.getString(2),
+                        resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
+                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getInt(10))));
     }
 
     public int updateUser(int id, String email, String password, String userName, String phoneNumber, String companyName
-            , String address , String website, int isSchool, int isActive){
+            , String address, String website, int isSchool, int isActive) {
         return jdbcTemplate.update("update efaz_registration set registeration_email=?," +
-                "registeration_password=?, registeration_username=?, registeration_phone_number=?," +
-                "registration_organization_name=?, registration_address_desc=?, registration_website_url=?," +
-                "registration_is_school=?, registration_isActive=?" +
-                " where registration_id=?", email, password, userName, phoneNumber
+                        "registeration_password=?, registeration_username=?, registeration_phone_number=?," +
+                        "registration_organization_name=?, registration_address_desc=?, registration_website_url=?," +
+                        "registration_is_school=?, registration_isActive=?" +
+                        " where registration_id=?", email, password, userName, phoneNumber
                 , companyName, address, website, isSchool, isActive, id);
     }
 
-    public int deleteUser(int id){
+    public int deleteUser(int id) {
         RegistrationModel model = getUser(id);
         try {
             sendNotConfirmEmail(model.getRegisteration_email(), id);
@@ -98,34 +94,34 @@ public class RegistrationRepo {
     }
 
 
-    public List<RegistrationModel>getInActiveCompanies(){
+    public List<RegistrationModel> getInActiveCompanies() {
         return jdbcTemplate.query("SELECT * FROM efaz_registration WHERE registration_isActive=0;",
-                (resultSet, i) -> new RegistrationModel(resultSet.getInt(1),resultSet.getString(2),
+                (resultSet, i) -> new RegistrationModel(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
                         resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getInt(10)));
     }
 
-    public void activeCompanyAccount(int id){
+    public void activeCompanyAccount(int id) {
         jdbcTemplate.update("update efaz_registration set registration_isActive=1 WHERE registration_id=?", id);
         RegistrationModel model = getUser(id);
         //LoginModel loginModel = repo.loginUser(model.getRegisteration_email(), model.getRegisteration_password(), 1, model.getRegistration_is_school());
         jdbcTemplate.update("INSERT INTO efaz_login VALUES (?,?,?,?,?)", null, model.getRegisteration_email(),
-                        model.getRegisteration_password(), 1, model.getRegistration_is_school());
+                model.getRegisteration_password(), 1, model.getRegistration_is_school());
 
     }
 
-    public List<RegistrationModel>getActiveCompanies(){
+    public List<RegistrationModel> getActiveCompanies() {
         return jdbcTemplate.query("SELECT * FROM efaz_registration WHERE registration_isActive=1;",
-                (resultSet, i) -> new RegistrationModel(resultSet.getInt(1),resultSet.getString(2),
+                (resultSet, i) -> new RegistrationModel(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
                         resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getInt(10)));
     }
 
-    public void inActiveCompanyAccount(int id){
+    public void inActiveCompanyAccount(int id) {
         jdbcTemplate.update("update efaz_registration set registration_isActive=0 WHERE registration_id=?", id);
     }
 
-    public void confirmEmail(int id){
+    public void confirmEmail(int id) {
         jdbcTemplate.update("update efaz_registration set registration_isActive=1 WHERE registration_id=?", id);
         RegistrationModel model = getUser(id);
         //LoginModel loginModel = repo.loginUser(model.getRegisteration_email(), model.getRegisteration_password(), 1, model.getRegistration_is_school());
@@ -139,14 +135,12 @@ public class RegistrationRepo {
     }
 
 
-
     /**
-     *
      * @param email
      * @param createdId
      * @throws Exception
      */
-    private void sendEmail(String email,int createdId) throws Exception {
+    private void sendEmail(String email, int createdId) throws Exception {
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
         helper.setTo(email);
@@ -161,19 +155,18 @@ public class RegistrationRepo {
                         "        </td>" +
                         "    </tr>" +
                         "</table>"
-                ,true);
-        helper.setSubject("Complete Registration with id "+ createdId);
+                , true);
+        helper.setSubject("Complete Registration with id " + createdId);
         sender.send(message);
     }
 
 
     /**
-     *
      * @param email
      * @param createdId
      * @throws Exception
      */
-    private void sendNotConfirmEmail(String email,int createdId) throws Exception {
+    private void sendNotConfirmEmail(String email, int createdId) throws Exception {
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
         helper.setTo(email);
@@ -188,8 +181,8 @@ public class RegistrationRepo {
                         "        </td>" +
                         "    </tr>" +
                         "</table>"
-                ,true);
-        helper.setSubject("Complete Registration with id "+ createdId);
+                , true);
+        helper.setSubject("Complete Registration with id " + createdId);
         sender.send(message);
     }
 

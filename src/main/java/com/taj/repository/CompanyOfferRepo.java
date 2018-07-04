@@ -1,13 +1,10 @@
 package com.taj.repository;
 
 import com.taj.model.CompanyOfferModel;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.StringArrayPropertyEditor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,58 +20,55 @@ public class CompanyOfferRepo {
     private JdbcTemplate jdbcTemplate;
 
     public int addCompanyOffer(byte[] offer_logo, String offer_title, String offer_explaination, double offer_cost,
-                               Timestamp offer_display_date, Timestamp offer_expired_date, Timestamp offer_deliver_date, int company_id){
+                               Timestamp offer_display_date, Timestamp offer_expired_date, Timestamp offer_deliver_date, int company_id) {
         return jdbcTemplate.update("INSERT INTO efaz_company_offer VALUES (?,?,?,?,?,?,?,?,?)", null, offer_logo, offer_title, offer_explaination,
                 offer_cost, offer_display_date, offer_expired_date, offer_deliver_date, company_id);
     }
 
-    public List<CompanyOfferModel> getAllOffers(){
+    public List<CompanyOfferModel> getAllOffers() {
         return jdbcTemplate.query("SELECT * FROM efaz_company_offer;",
-                (resultSet, i) -> new CompanyOfferModel(resultSet.getInt(1),resultSet.getBytes(2), resultSet.getString(3)
-                        , resultSet.getString(4), resultSet.getDouble(5), resultSet.getTimestamp(6),resultSet.getTimestamp(7),
+                (resultSet, i) -> new CompanyOfferModel(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getString(3)
+                        , resultSet.getString(4), resultSet.getDouble(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
                         resultSet.getTimestamp(8), resultSet.getInt(9)));
     }
 
-    public CompanyOfferModel getCompanyOffer(int id){
+    public CompanyOfferModel getCompanyOffer(int id) {
         return jdbcTemplate.queryForObject("SELECT * FROM efaz_company_offer WHERE offer_id=?;", new Object[]{id},
-                (resultSet, i) -> new CompanyOfferModel(resultSet.getInt(1),resultSet.getBytes(2), resultSet.getString(3)
-                        , resultSet.getString(4), resultSet.getDouble(5), resultSet.getTimestamp(6),resultSet.getTimestamp(7),
+                (resultSet, i) -> new CompanyOfferModel(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getString(3)
+                        , resultSet.getString(4), resultSet.getDouble(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
                         resultSet.getTimestamp(8), resultSet.getInt(9)));
     }
 
 
-    public List<CompanyOfferModel> getCompanyOffers(int id){
+    public List<CompanyOfferModel> getCompanyOffers(int id) {
         return jdbcTemplate.query("SELECT * FROM efaz_company_offer WHERE company_id=?;", new Object[]{id},
-                (resultSet, i) -> new CompanyOfferModel(resultSet.getInt(1),resultSet.getBytes(2), resultSet.getString(3)
-                        , resultSet.getString(4), resultSet.getDouble(5), resultSet.getTimestamp(6),resultSet.getTimestamp(7),
+                (resultSet, i) -> new CompanyOfferModel(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getString(3)
+                        , resultSet.getString(4), resultSet.getDouble(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
                         resultSet.getTimestamp(8), resultSet.getInt(9)));
     }
-
-
 
 
     public int updateCompanyOffer(int offer_id, byte[] offer_logo, String offer_title, String offer_explaination, double offer_cost,
-                                  Timestamp offer_display_date, Timestamp offer_expired_date, Timestamp offer_deliver_date, int company_id){
+                                  Timestamp offer_display_date, Timestamp offer_expired_date, Timestamp offer_deliver_date, int company_id) {
         return jdbcTemplate.update("update efaz_company_offer set offer_logo=?," +
-                        "offer_title=?, offer_explaination=?," + "offer_cost=?, offer_display_date=?, offer_expired_date=?,"+
-                        "offer_deliver_date=?, company_id=?"+ " where offer_id=?", offer_logo,offer_title,
-                        offer_explaination, offer_cost, offer_display_date, offer_expired_date, offer_deliver_date, company_id, offer_id);
+                        "offer_title=?, offer_explaination=?," + "offer_cost=?, offer_display_date=?, offer_expired_date=?," +
+                        "offer_deliver_date=?, company_id=?" + " where offer_id=?", offer_logo, offer_title,
+                offer_explaination, offer_cost, offer_display_date, offer_expired_date, offer_deliver_date, company_id, offer_id);
     }
 
-    public int deleteCompanyOffer(int id){
+    public int deleteCompanyOffer(int id) {
         return jdbcTemplate.update("DELETE FROM efaz_company_offer WHERE offer_id=?", id);
     }
 
 
-
-    public List<String> getProgressDate(int id){
-        CompanyOfferModel s =  jdbcTemplate.queryForObject("SELECT * FROM efaz_company_offer WHERE offer_id=?;", new Object[]{id},
-                (resultSet, i) -> new CompanyOfferModel(resultSet.getInt(1),resultSet.getBytes(2), resultSet.getString(3)
-                        , resultSet.getString(4), resultSet.getDouble(5), resultSet.getTimestamp(6),resultSet.getTimestamp(7),
+    public List<String> getProgressDate(int id) {
+        CompanyOfferModel s = jdbcTemplate.queryForObject("SELECT * FROM efaz_company_offer WHERE offer_id=?;", new Object[]{id},
+                (resultSet, i) -> new CompanyOfferModel(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getString(3)
+                        , resultSet.getString(4), resultSet.getDouble(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
                         resultSet.getTimestamp(8), resultSet.getInt(9)));
 
         Timestamp display = s.getOffer_display_date();
-        Timestamp expire  = s.getOffer_expired_date();
+        Timestamp expire = s.getOffer_expired_date();
         Timestamp current = new Timestamp(Calendar.getInstance().getTime().getTime());
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");

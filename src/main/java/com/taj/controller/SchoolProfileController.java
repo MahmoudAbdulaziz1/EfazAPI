@@ -5,12 +5,6 @@ import com.taj.repository.SchoolProfileRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.awt.image.WritableRaster;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -36,7 +30,7 @@ public class SchoolProfileController {
 
         return repo.addSchoolProfile(model.getSchool_id(), model.getSchool_name(), model.getSchool_logo_image(),
                 model.getSchool_address(), model.getSchool_service_desc(), model.getSchool_link_youtube(),
-                model.getSchool_website_url());
+                model.getSchool_website_url(),model.getSchool_lng(), model.getSchool_lat());
 
 
     }
@@ -66,14 +60,12 @@ public class SchoolProfileController {
     }
 
 
-
-
     @PutMapping("/updateProfile")
     public int updateProfile(@RequestBody SchoolProfileModel model) {
 
         return repo.updateProfile(model.getSchool_id(), model.getSchool_name(), model.getSchool_logo_image(),
                 model.getSchool_address(), model.getSchool_service_desc(), model.getSchool_link_youtube(),
-                model.getSchool_website_url());
+                model.getSchool_website_url(), model.getSchool_lng(), model.getSchool_lat());
     }
 
 

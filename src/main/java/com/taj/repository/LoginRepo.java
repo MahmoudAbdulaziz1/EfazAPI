@@ -107,7 +107,6 @@ public class LoginRepo {
     }
 
 
-
     public LoginModel getLoggedId(String user_email, String user_passwords, int login_type) {
         LoginModel model = null;
         if (isExist(user_email)) {
@@ -152,10 +151,10 @@ public class LoginRepo {
     }
 
 
-    public void updatePassword(int login_id, String user_email, String user_password) {
+    public int updatePassword(int login_id, String user_email, String user_password) {
         String encodedPassword = bCryptPasswordEncoder.encode(user_password);
         jdbcTemplate.update("update efaz_login set user_password=? where login_id=?", encodedPassword, login_id);
-        jdbcTemplate.update("update efaz_registration set registeration_password=? where registeration_email=? AND registration_isActive=1", encodedPassword, user_email);
+        return jdbcTemplate.update("update efaz_registration set registeration_password=? where registeration_email=? AND registration_isActive=1", encodedPassword, user_email);
     }
 
     public void updateActiveState(int login_id, int is_active) {

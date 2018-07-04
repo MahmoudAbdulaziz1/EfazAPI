@@ -12,9 +12,10 @@ public class SchoolRequestsModel {
     private byte[] request_details_file;
     private String request_title;
     private String request_explaination;
-
     private Timestamp request_display_date, request_expired_date, request_deliver_date, request_payment_date;
     private int request_is_available, request_is_conformied, school_id, request_category_id;
+    private int receive_palce_id;
+    private int extended_payment;
 
 
     public SchoolRequestsModel() {
@@ -22,7 +23,8 @@ public class SchoolRequestsModel {
 
     public SchoolRequestsModel(int request_id, byte[] request_details_file, String request_title, String request_explaination,
                                Timestamp request_display_date, Timestamp request_expired_date, Timestamp request_deliver_date,
-                               int request_is_available, int request_is_conformied, Timestamp request_payment_date, int school_id, int request_category_id) {
+                               int request_is_available, int request_is_conformied, Timestamp request_payment_date, int school_id,
+                               int request_category_id, int receive_palce_id, int extended_payment) {
         this.request_id = request_id;
         this.request_details_file = request_details_file;
         this.request_title = request_title;
@@ -35,11 +37,14 @@ public class SchoolRequestsModel {
         this.request_is_conformied = request_is_conformied;
         this.school_id = school_id;
         this.request_category_id = request_category_id;
+        this.receive_palce_id = receive_palce_id;
+        this.extended_payment = extended_payment;
     }
 
     public SchoolRequestsModel(byte[] request_details_file, String request_title, String request_explaination,
                                Timestamp request_display_date, Timestamp request_expired_date, Timestamp request_deliver_date,
-                               int request_is_available, int request_is_conformied, Timestamp request_payment_date, int school_id, int request_category_id) {
+                               int request_is_available, int request_is_conformied, Timestamp request_payment_date, int school_id,
+                               int request_category_id, int receive_palce_id, int extended_payment) {
         this.request_details_file = request_details_file;
         this.request_title = request_title;
         this.request_explaination = request_explaination;
@@ -51,6 +56,8 @@ public class SchoolRequestsModel {
         this.request_is_conformied = request_is_conformied;
         this.school_id = school_id;
         this.request_category_id = request_category_id;
+        this.receive_palce_id = receive_palce_id;
+        this.extended_payment = extended_payment;
     }
 
     public int getRequest_id() {
@@ -148,5 +155,21 @@ public class SchoolRequestsModel {
 
     public void setRequest_category_id(int request_category_id) {
         this.request_category_id = request_category_id;
+    }
+
+    public int getReceive_palce_id() {
+        return receive_palce_id;
+    }
+
+    public void setReceive_palce_id(int receive_palce_id) {
+        this.receive_palce_id = receive_palce_id;
+    }
+
+    public int getExtended_payment() {
+        return extended_payment;
+    }
+
+    public void setExtended_payment(int extended_payment) {
+        this.extended_payment = extended_payment;
     }
 }

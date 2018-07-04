@@ -18,9 +18,9 @@ public class SchoolProfileRepo {
     private JdbcTemplate jdbcTemplate;
 
     public int addSchoolProfile(int school_id, String school_name, byte[] school_logo_image, String school_address,
-                                String school_service_desc, String school_link_youtube, String school_website_url) {
-        return jdbcTemplate.update("INSERT INTO efaz_school_profile VALUES (?,?,?,?,?,?,?)", school_id, school_name,
-                school_logo_image, school_address, school_service_desc, school_link_youtube, school_website_url);
+                                String school_service_desc, String school_link_youtube, String school_website_url, float school_lng, float school_lat) {
+        return jdbcTemplate.update("INSERT INTO efaz_school_profile VALUES (?,?,?,?,?,?,?,?,?)", school_id, school_name,
+                school_logo_image, school_address, school_service_desc, school_link_youtube, school_website_url, school_lng, school_lat);
     }
 
 
@@ -28,33 +28,34 @@ public class SchoolProfileRepo {
         return jdbcTemplate.query("SELECT * FROM efaz_school_profile;",
                 (resultSet, i) -> new SchoolProfileModel(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
-                        resultSet.getString(6), resultSet.getString(7)));
+                        resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9)));
     }
 
     public SchoolProfileModel getSchoolProfile(int id) {
         return jdbcTemplate.queryForObject("SELECT * FROM efaz_school_profile WHERE  school_id=?;",
                 new Object[]{id}, (resultSet, i) -> new SchoolProfileModel(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
-                        resultSet.getString(6), resultSet.getString(7)));
+                        resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9)));
     }
 
     public int updateProfile(int id, String school_name, byte[] school_logo_image, String school_address,
-                             String school_service_desc, String school_link_youtube, String school_website_url) {
+                             String school_service_desc, String school_link_youtube, String school_website_url, float school_lng, float school_lat) {
 
         return jdbcTemplate.update("update efaz_school_profile set school_name=?," +
                         "school_logo_image=?, school_address=?," +
-                        "school_service_desc=?, school_link_youtube=?, school_website_url=?" +
+                        "school_service_desc=?, school_link_youtube=?, school_website_url=?, school_lng=?, school_lat=?" +
                         " where school_id=?", school_name, school_logo_image, school_address, school_service_desc
-                , school_link_youtube, school_website_url, id);
+                , school_link_youtube, school_website_url, school_lng, school_lat, id);
 
     }
+
     public int checkSchoolProfile(int id) {
         int count = jdbcTemplate.queryForObject("SELECT Count(*) FROM efaz_school_profile WHERE  school_id=?;",
                 Integer.class, id);
         return count;
     }
 
-    public int deleteSchoolProfile(int id){
+    public int deleteSchoolProfile(int id) {
         return jdbcTemplate.update("DELETE FROM efaz_school_profile WHERE school_id=?", id);
     }
 

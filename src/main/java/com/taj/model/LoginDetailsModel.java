@@ -1,7 +1,5 @@
 package com.taj.model;
 
-import java.sql.Timestamp;
-
 /**
  * Created by Taj 51 on 6/11/2018.
  */
@@ -31,6 +29,7 @@ public class LoginDetailsModel {
         this.ip_address = ip_address;
         this.is_mobill = is_mobill;
     }
+
     public LoginDetailsModel() {
     }
 

@@ -23,7 +23,7 @@ public class SchoolRequestController {
 
         return repo.addRequest(model.getRequest_id(), model.getRequest_details_file(), model.getRequest_title(), model.getRequest_explaination(),
                 model.getRequest_display_date(), model.getRequest_expired_date(), model.getRequest_deliver_date(), model.getRequest_payment_date(),
-                model.getRequest_is_available(), model.getRequest_is_conformied(), model.getSchool_id(), model.getRequest_category_id());
+                model.getRequest_is_available(), model.getRequest_is_conformied(), model.getSchool_id(), model.getRequest_category_id(), model.getReceive_palce_id(), model.getExtended_payment());
     }
 
     @GetMapping("/getRequests")
@@ -31,7 +31,7 @@ public class SchoolRequestController {
         return repo.getRequests();
     }
 
-    @GetMapping("/getRequests/{id}")
+    @GetMapping("/getSchoolRequests/{id}")
     public List<SchoolRequestsModel> getSchoolRequests(@PathVariable int id) {
         return repo.getRequestsByID(id);
     }
@@ -45,7 +45,7 @@ public class SchoolRequestController {
     public int updateRequestModel(@RequestBody SchoolRequestsModel model) {
         return repo.updateRequest(model.getRequest_id(), model.getRequest_details_file(), model.getRequest_title(), model.getRequest_explaination(),
                 model.getRequest_display_date(), model.getRequest_expired_date(), model.getRequest_deliver_date(), model.getRequest_payment_date(),
-                model.getRequest_is_available(), model.getRequest_is_conformied(), model.getSchool_id(), model.getRequest_category_id());
+                model.getRequest_is_available(), model.getRequest_is_conformied(), model.getSchool_id(), model.getRequest_category_id(), model.getReceive_palce_id(), model.getExtended_payment());
     }
 
     @PutMapping("/deleteRequest/{id}")
@@ -75,8 +75,13 @@ public class SchoolRequestController {
     }
 
     @GetMapping("/filterCat/{cat}")
-    public List<SchoolRequestsModel> filterByExplain(@PathVariable int cat) {
+    public List<SchoolRequestsModel> filterByCategory(@PathVariable int cat) {
         return repo.filterByCategory(cat);
+    }
+
+    @GetMapping("/filterPlace/{place}")
+    public List<SchoolRequestsModel> filterByReceivePlace(@PathVariable int place) {
+        return repo.filterByReceivePlace(place);
     }
 
 }

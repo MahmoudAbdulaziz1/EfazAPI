@@ -30,7 +30,7 @@ public class ProfileController {
 
         return profileRepo.addProfile(model.getCompany_id(), model.getCompany_name(), model.getCompany_logo_image(),
                 model.getCompany_address(), model.getCompany_service_desc(), model.getCompany_link_youtube(),
-                model.getCompany_website_url());
+                model.getCompany_website_url(), model.getCompany_lng(), model.getCompany_lat());
 
 
     }
@@ -58,7 +58,7 @@ public class ProfileController {
 
         return profileRepo.updateProfile(model.getCompany_id(), model.getCompany_name(), model.getCompany_logo_image(),
                 model.getCompany_address(), model.getCompany_service_desc(), model.getCompany_link_youtube(),
-                model.getCompany_website_url());
+                model.getCompany_website_url(), model.getCompany_lng(), model.getCompany_lat());
     }
 
     /**

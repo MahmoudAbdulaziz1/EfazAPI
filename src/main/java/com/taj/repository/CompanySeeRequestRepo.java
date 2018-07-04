@@ -17,7 +17,7 @@ public class CompanySeeRequestRepo {
     JdbcTemplate jdbcTemplate;
 
     public int addCompanySeeRequest(int requestId, int companyId) {
-        return jdbcTemplate.update("INSERT INTO efaz_company_see_request VALUES (?,?,?);",null, requestId, companyId);
+        return jdbcTemplate.update("INSERT INTO efaz_company_see_request VALUES (?,?,?);", null, requestId, companyId);
     }
 
     public List<CompanySeeRequestModel> getCompanySeeRequests() {

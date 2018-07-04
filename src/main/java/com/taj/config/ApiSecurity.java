@@ -26,8 +26,8 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String GET_ACTIVE_COMPANIES_URL = "/register/getActive";
     public static final String CONFIRM_MAIL_COMPANY_URL = "/register/confirm/{id}";
     public static final String LOGIN_USER_URL = "/login/loginUser";
-    public static final String LOGGED_USER_URL = "/login/getLogged";
-    public static final String LOGGED_1USER_URL = "/login/getUser/{id}";
+    public static final String LOGGED_USER_URL = "/login/getAll";
+    public static final String LOGGED_1USER_URL = "/login/get/{id}";
     public static final String ADD_PROFILE_URL = "/profile/addProfile"; // here where error appear
     public static final String GET_PROFILES_URL = "/profile/getProfiles"; // here where error appear
     public static final String UPDATE_PROFILE_URL = "/profile/updateProfile";//updateProfile
@@ -41,8 +41,8 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String UPDATE_SCHOOL_PROFILE_URL = "/schoolProfile/updateProfile";//updateProfile
     public static final String ADD_SCHOOL_REQUEST_URL = "/schoolRequest/addRequest";
     public static final String GET_SCHOOL_ALL_REQUESTS = "/schoolRequest/getRequests";
-    public static final String GET_SCHOOL_REQUEST_URL = "/schoolRequest/getRequest/{id}";
-    public static final String GET_SCHOOL_REQUESTS_URL = "/schoolRequest/getRequests/{id}";
+    public static final String GET_SCHOOL_REQUEST_URL = "/schoolRequest/getSchoolRequests/{id}";
+    public static final String GET_SCHOOL_REQUESTS_URL = "/schoolRequest/getRequest/{id}";
     public static final String UPDATE_SCHOOL_REQUEST_URL = "/schoolRequest/updateRequest";
     public static final String DELETE_SCHOOL_REQUEST_URL = "/schoolRequest/deleteRequest/{id}";
     public static final String FILTER_IS_AVAILABLE_URL = "/schoolRequest/filterAvailable/{isAvailable}";
@@ -50,6 +50,7 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String FILTER_TITLE_URL = "/schoolRequest/filterTitle/{title}";
     public static final String FILTER_EXPLAIN_URL = "/schoolRequest/filterExplain/{explain}";
     public static final String FILTER_CAT_URL = "/schoolRequest/filterCat/{cat}";
+    public static final String FILTER_PLACE_URL = "/schoolRequest/filterPlace/{place}";
     public static final String ADD_COMPANY_OFFER_URL = "/companyOffer/addOffer";
     public static final String GET_COMPANY_OFFERS_URL = "/companyOffer/getOffers";
     public static final String SINGLE_COMPANY_OFFER_URL = "/companyOffer/getOffers/{id}";
@@ -61,7 +62,7 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String ADD_LOGIN_DETAILS_URL = "/details/add";
     public static final String GET_LOGIN_DETAILS_URL = "/details/getAll";
     public static final String GET_LOGIN_DETAIL_URL = "/details/get/{id}";
-    public static final String GET_LOGIN_LIST_DETAIL_URL = "/details/getDetails/{id}";
+    public static final String GET_LOGIN_LIST_DETAIL_URL = "/details/getCompanyDetails/{id}";
     public static final String CHECK_USER_URL = "/login/isLogged";
     public static final String GET_USER_ID = "/login/getLoginId";
     public static final String ADD_CATEGORY_URL = "/cat/addCategory";
@@ -100,6 +101,11 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String GET_RESPONSE_ENQUIRY_ID_URL = "/response/getReq/{id}";
     public static final String UPDATE_RESPONSE_ENQUIRY_URL = "/response/updateEnquiry";
     public static final String DELETE_RESPONSE_ENQUIRY_URL = "/response/deleteEnquiry";
+    public static final String ADD_RECEIVE_PLACE_URL = "/receivePlace/add";
+    public static final String GET_RECEIVE_PLACES_URL = "/receivePlace/getAll";
+    public static final String GET_RECEIVE_PLACE_URL = "/receivePlace/get/{id}";
+    public static final String UPDATE_RECEIVE_PLACE_URL = "/receivePlace/update";
+    public static final String DELETE_RECEIVE_PLACE_URL = "/receivePlace/delete";
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -180,6 +186,7 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 antMatchers(HttpMethod.GET, FILTER_TITLE_URL).permitAll().
                 antMatchers(HttpMethod.GET, FILTER_EXPLAIN_URL).permitAll().
                 antMatchers(HttpMethod.GET, FILTER_CAT_URL).permitAll().
+                antMatchers(HttpMethod.GET, FILTER_PLACE_URL).permitAll().
                 antMatchers(HttpMethod.POST, ADD_SCHOOL_CATEGORY_URL).permitAll().
                 antMatchers(HttpMethod.GET, GET_SCHOOL_CATEGORIES_URL).permitAll().
                 antMatchers(HttpMethod.GET, GET_SCHOOL_CATEGORY_URL).permitAll().
@@ -205,6 +212,11 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 antMatchers(HttpMethod.GET, GET_RESPONSE_ENQUIRY_ID_URL).permitAll().
                 antMatchers(HttpMethod.PUT, UPDATE_RESPONSE_ENQUIRY_URL).permitAll().
                 antMatchers(HttpMethod.PUT, DELETE_RESPONSE_ENQUIRY_URL).permitAll().
+                antMatchers(HttpMethod.POST, ADD_RECEIVE_PLACE_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_RECEIVE_PLACES_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_RECEIVE_PLACE_URL).permitAll().
+                antMatchers(HttpMethod.PUT, UPDATE_RECEIVE_PLACE_URL).permitAll().
+                antMatchers(HttpMethod.PUT, DELETE_RECEIVE_PLACE_URL).permitAll().
                 anyRequest().authenticated();
     }
 

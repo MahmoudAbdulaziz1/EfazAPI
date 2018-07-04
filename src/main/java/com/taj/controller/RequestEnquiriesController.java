@@ -1,7 +1,6 @@
 package com.taj.controller;
 
 import com.taj.model.RequestEnquiriesModel;
-import com.taj.model.SchoolRequestCategoryModel;
 import com.taj.repository.RequestEnquiriesRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +19,12 @@ public class RequestEnquiriesController {
     RequestEnquiriesRepo repo;
 
     @PostMapping("/add")
-    public int addRequestEnquiry(@RequestBody RequestEnquiriesModel model){
+    public int addRequestEnquiry(@RequestBody RequestEnquiriesModel model) {
         return repo.addNewEnquiry(model.getSchool_request_id(), model.getEnquiry_message());
     }
 
     @GetMapping("/getAll")
-    public List<RequestEnquiriesModel> getRequestEnquiry(){
+    public List<RequestEnquiriesModel> getRequestEnquiry() {
         return repo.getNewEnquiries();
     }
 
@@ -40,26 +39,21 @@ public class RequestEnquiriesController {
     }
 
     /**
-     *
-     * @param model
-     * update current category
+     * @param model update current category
      */
 
     @PutMapping("/updateEnquiry")
-    public void updateCategory(@RequestBody RequestEnquiriesModel model){
+    public void updateCategory(@RequestBody RequestEnquiriesModel model) {
         repo.updateNewEnquiry(model.getEnquiry_id(), model.getSchool_request_id(), model.getEnquiry_message());
 
     }
 
     /**
-     *
-     * @param model
-     *
-     * delete current category
+     * @param model delete current category
      */
 
     @PutMapping("/deleteEnquiry")
-    public void deleteCategory(@RequestBody RequestEnquiriesModel model){
+    public void deleteCategory(@RequestBody RequestEnquiriesModel model) {
         repo.deleteNewEnquiry(model.getEnquiry_id());
 
     }

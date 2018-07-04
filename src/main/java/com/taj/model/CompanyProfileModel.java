@@ -12,10 +12,11 @@ public class CompanyProfileModel {
     private String company_service_desc;
     private String company_link_youtube;
     private String company_website_url;
+    private float company_lng, company_lat;
 
 
     public CompanyProfileModel(int company_id, String company_name, byte[] company_logo_image, String company_address,
-                               String company_service_desc, String company_link_youtube, String company_website_url) {
+                               String company_service_desc, String company_link_youtube, String company_website_url, float company_lng, float company_lat) {
         this.company_id = company_id;
         this.company_name = company_name;
         this.company_logo_image = company_logo_image;
@@ -23,6 +24,8 @@ public class CompanyProfileModel {
         this.company_service_desc = company_service_desc;
         this.company_link_youtube = company_link_youtube;
         this.company_website_url = company_website_url;
+        this.company_lng = company_lng;
+        this.company_lat = company_lat;
         //this.login_id_company = login_id_company;
     }
 
@@ -83,6 +86,22 @@ public class CompanyProfileModel {
 
     public void setCompany_website_url(String company_website_url) {
         this.company_website_url = company_website_url;
+    }
+
+    public float getCompany_lng() {
+        return company_lng;
+    }
+
+    public void setCompany_lng(float company_lng) {
+        this.company_lng = company_lng;
+    }
+
+    public float getCompany_lat() {
+        return company_lat;
+    }
+
+    public void setCompany_lat(float company_lat) {
+        this.company_lat = company_lat;
     }
 }
 

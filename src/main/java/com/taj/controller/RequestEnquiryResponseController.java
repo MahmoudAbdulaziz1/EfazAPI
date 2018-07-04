@@ -1,8 +1,6 @@
 package com.taj.controller;
 
-import com.taj.model.RequestEnquiriesModel;
 import com.taj.model.RequestEnquiryResponseModel;
-import com.taj.repository.RequestEnquiriesRepo;
 import com.taj.repository.RequestEnquiryResponseRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +20,12 @@ public class RequestEnquiryResponseController {
     RequestEnquiryResponseRepo repo;
 
     @PostMapping("/add")
-    public int addRequestEnquiry(@RequestBody RequestEnquiryResponseModel model){
+    public int addRequestEnquiry(@RequestBody RequestEnquiryResponseModel model) {
         return repo.addNewResponse(model.getRequest_enquiry_id(), model.getResponse_message());
     }
 
     @GetMapping("/getAll")
-    public List<RequestEnquiryResponseModel> getRequestEnquiry(){
+    public List<RequestEnquiryResponseModel> getRequestEnquiry() {
         return repo.getNewResponses();
     }
 
@@ -42,26 +40,21 @@ public class RequestEnquiryResponseController {
     }
 
     /**
-     *
-     * @param model
-     * update current category
+     * @param model update current category
      */
 
     @PutMapping("/updateEnquiry")
-    public void updateCategory(@RequestBody RequestEnquiryResponseModel model){
+    public void updateCategory(@RequestBody RequestEnquiryResponseModel model) {
         repo.updateNewResponse(model.getResponse_id(), model.getRequest_enquiry_id(), model.getResponse_message());
 
     }
 
     /**
-     *
-     * @param model
-     *
-     * delete current category
+     * @param model delete current category
      */
 
     @PutMapping("/deleteEnquiry")
-    public void deleteCategory(@RequestBody RequestEnquiryResponseModel model){
+    public void deleteCategory(@RequestBody RequestEnquiryResponseModel model) {
         repo.deleteNewResponse(model.getResponse_id());
 
     }

@@ -1,7 +1,6 @@
 package com.taj.controller;
 
 import com.taj.model.CompanySeeRequestModel;
-import com.taj.model.SchoolRequestCategoryModel;
 import com.taj.repository.CompanySeeRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -51,26 +50,21 @@ public class CompanySeeRequestController {
     }
 
     /**
-     *
-     * @param model
-     * update current category
+     * @param model update current category
      */
 
     @PutMapping("/updateCompanySeeRequest")
-    public void updateCategory(@RequestBody CompanySeeRequestModel model){
+    public void updateCategory(@RequestBody CompanySeeRequestModel model) {
         repo.updateCompanySeeRequest(model.getSeen_id(), model.getRequest_company_id(), model.getRequest_id());
 
     }
 
     /**
-     *
-     * @param model
-     *
-     * delete current category
+     * @param model delete current category
      */
 
     @PutMapping("/deleteCompanySeeRequest")
-    public void deleteCategory(@RequestBody CompanySeeRequestModel model){
+    public void deleteCategory(@RequestBody CompanySeeRequestModel model) {
         repo.deleteCompanySeeRequest(model.getSeen_id());
 
     }

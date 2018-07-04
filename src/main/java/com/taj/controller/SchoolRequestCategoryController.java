@@ -1,6 +1,5 @@
 package com.taj.controller;
 
-import com.taj.model.CategoryModel;
 import com.taj.model.SchoolRequestCategoryModel;
 import com.taj.repository.SchoolRequestCategoryRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,60 +19,50 @@ public class SchoolRequestCategoryController {
     SchoolRequestCategoryRepo repo;
 
     /**
-     *
      * @return list of company categories
      */
 
     @GetMapping("/getCategories")
-    public List<SchoolRequestCategoryModel> getCategories(){
-        return  repo.getSchoolRequestCategories();
+    public List<SchoolRequestCategoryModel> getCategories() {
+        return repo.getSchoolRequestCategories();
     }
 
     /**
-     *
      * @param id
      * @return category by id
      */
 
     @GetMapping("/getCategory/{id}")
-    public SchoolRequestCategoryModel getCategory(@PathVariable int id){
-        return  repo.getSchoolRequestCategory(id);
+    public SchoolRequestCategoryModel getCategory(@PathVariable int id) {
+        return repo.getSchoolRequestCategory(id);
     }
 
 
     /**
-     *
-     * @param model
-     *
-     * add company category to database
+     * @param model add company category to database
      */
     @PostMapping("/addCategory")
-    public void addCategory(@RequestBody SchoolRequestCategoryModel model){
+    public void addCategory(@RequestBody SchoolRequestCategoryModel model) {
         repo.addSchoolRequestCategories(model.getRequest_category_name());
 
     }
 
     /**
-     *
-     * @param model
-     * update current category
+     * @param model update current category
      */
 
     @PutMapping("/updateCategory")
-    public void updateCategory(@RequestBody SchoolRequestCategoryModel model){
+    public void updateCategory(@RequestBody SchoolRequestCategoryModel model) {
         repo.updateSchoolRequestCategory(model.getRequest_category_id(), model.getRequest_category_name());
 
     }
 
     /**
-     *
-     * @param model
-     *
-     * delete current category
+     * @param model delete current category
      */
 
     @PutMapping("/deleteCategory")
-    public void deleteCategory(@RequestBody SchoolRequestCategoryModel model){
+    public void deleteCategory(@RequestBody SchoolRequestCategoryModel model) {
         repo.deleteSchoolRequestCategory(model.getRequest_category_id());
 
     }

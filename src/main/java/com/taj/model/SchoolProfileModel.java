@@ -13,9 +13,10 @@ public class SchoolProfileModel {
     private String school_service_desc;
     private String school_link_youtube;
     private String school_website_url;
+    private float school_lng, school_lat;
 
     public SchoolProfileModel(int school_id, String school_name, byte[] school_logo_image, String school_address,
-                              String school_service_desc, String school_link_youtube, String school_website_url) {
+                              String school_service_desc, String school_link_youtube, String school_website_url, float school_lng, float school_lat) {
         this.school_id = school_id;
         this.school_name = school_name;
         this.school_logo_image = school_logo_image;
@@ -23,6 +24,8 @@ public class SchoolProfileModel {
         this.school_service_desc = school_service_desc;
         this.school_link_youtube = school_link_youtube;
         this.school_website_url = school_website_url;
+        this.school_lng = school_lng;
+        this.school_lat = school_lat;
     }
 
     public SchoolProfileModel() {
@@ -82,5 +85,21 @@ public class SchoolProfileModel {
 
     public void setSchool_website_url(String school_website_url) {
         this.school_website_url = school_website_url;
+    }
+
+    public float getSchool_lng() {
+        return school_lng;
+    }
+
+    public void setSchool_lng(float school_lng) {
+        this.school_lng = school_lng;
+    }
+
+    public float getSchool_lat() {
+        return school_lat;
+    }
+
+    public void setSchool_lat(float school_lat) {
+        this.school_lat = school_lat;
     }
 }
