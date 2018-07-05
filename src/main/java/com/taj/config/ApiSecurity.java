@@ -76,6 +76,11 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String ACTIVE_LOGGED_USER_URL = "/login/activeUser/{id}";
     public static final String INACTIVE_LOGGED_USER_URL = "/login/inActiveUser/{id}";
     public static final String GET_COMPANY_OFFER_DATA = "/companyOffer/getData/{id}";
+    public static final String ADD_TAKATAF_CATEGORY_URL = "/takatafCategory/addCategory";
+    public static final String GET_TAKATAF_CATEGORIES_URL = "/takatafCategory/getCategories";
+    public static final String GET_TAKATAF_CATEGORY_URL = "/takatafCategory/getCategory/{id}";
+    public static final String UPDATE_TAKATAF_CATEGORY_URL = "/takatafCategory/updateCategory";
+    public static final String DELETE_TAKATAF_CATEGORY_URL = "/takatafCategory/deleteCategory";
     public static final String ADD_SCHOOL_CATEGORY_URL = "/schoolCategory/addCategory";
     public static final String GET_SCHOOL_CATEGORIES_URL = "/schoolCategory/getCategories";
     public static final String GET_SCHOOL_CATEGORY_URL = "/schoolCategory/getCategory/{id}";
@@ -106,6 +111,28 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String GET_RECEIVE_PLACE_URL = "/receivePlace/get/{id}";
     public static final String UPDATE_RECEIVE_PLACE_URL = "/receivePlace/update";
     public static final String DELETE_RECEIVE_PLACE_URL = "/receivePlace/delete";
+    public static final String ADD_FIRST_PRICE_URL = "/takatafFirst/addPrice";
+    public static final String GET_FIRST_PRICES_URL  = "/takatafFirst/getPrices";
+    public static final String GET_FIRST_PRICE_URL  = "/takatafFirst/getPrice/{id}";
+    public static final String UPDATE_FIRST_PRICE_URL  = "/takatafFirst/updatePrice";
+    public static final String DELETE_FIRST_PRICE_URL  = "/takatafFirst/deletePrice";
+    public static final String ADD_SECOND_PRICE_URL = "/takatafSecond/addPrice";
+    public static final String GET_SECOND_PRICES_URL  = "/takatafSecond/getPrices";
+    public static final String GET_SECOND_PRICE_URL  = "/takatafSecond/getPrice/{id}";
+    public static final String UPDATE_SECOND_PRICE_URL  = "/takatafSecond/updatePrice";
+    public static final String DELETE_SECOND_PRICE_URL  = "/takatafSecond/deletePrice";
+    public static final String ADD_THIRD_PRICE_URL = "/takatafThird/addPrice";
+    public static final String GET_THIRD_PRICES_URL  = "/takatafThird/getPrices";
+    public static final String GET_THIRD_PRICE_URL  = "/takatafThird/getPrice/{id}";
+    public static final String UPDATE_THIRD_PRICE_URL  = "/takatafThird/updatePrice";
+    public static final String DELETE_THIRD_PRICE_URL  = "/takatafThird/deletePrice";
+    public static final String ADD_TAKATF_TENDER_URL = "/takatafTender/add";
+    public static final String GET_TAKATF_TENDERS_URL = "/takatafTender/getAll";
+    public static final String GET_TAKATF_TENDER_URL = "/takatafTender/get/{id}";
+    public static final String GET_TAKATF_TENDER_C_URL = "/takatafTender/getCompany/{id}";
+    public static final String GET_TAKATF_TENDER_CAT_URL = "/takatafTender/getCategory/{id}";
+    public static final String GET_TAKATF_TENDER_AVAL_URL = "/takatafTender/getAvailable/{id}";
+    public static final String GET_TAKATF_TENDER_CONFIRM_URL = "/takatafTender/getConfirm/{id}";
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -217,6 +244,33 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 antMatchers(HttpMethod.GET, GET_RECEIVE_PLACE_URL).permitAll().
                 antMatchers(HttpMethod.PUT, UPDATE_RECEIVE_PLACE_URL).permitAll().
                 antMatchers(HttpMethod.PUT, DELETE_RECEIVE_PLACE_URL).permitAll().
+                antMatchers(HttpMethod.POST, ADD_TAKATAF_CATEGORY_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_TAKATAF_CATEGORIES_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_TAKATAF_CATEGORY_URL).permitAll().
+                antMatchers(HttpMethod.PUT, UPDATE_TAKATAF_CATEGORY_URL).permitAll().
+                antMatchers(HttpMethod.PUT, DELETE_TAKATAF_CATEGORY_URL).permitAll().
+                antMatchers(HttpMethod.POST, ADD_TAKATF_TENDER_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_TAKATF_TENDERS_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_TAKATF_TENDER_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_TAKATF_TENDER_C_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_TAKATF_TENDER_CAT_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_TAKATF_TENDER_AVAL_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_TAKATF_TENDER_CONFIRM_URL).permitAll().
+                antMatchers(HttpMethod.POST, ADD_FIRST_PRICE_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_FIRST_PRICES_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_FIRST_PRICE_URL).permitAll().
+                antMatchers(HttpMethod.PUT, UPDATE_FIRST_PRICE_URL).permitAll().
+                antMatchers(HttpMethod.PUT, DELETE_FIRST_PRICE_URL).permitAll().
+                antMatchers(HttpMethod.POST, ADD_SECOND_PRICE_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_SECOND_PRICES_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_SECOND_PRICE_URL).permitAll().
+                antMatchers(HttpMethod.PUT, UPDATE_SECOND_PRICE_URL).permitAll().
+                antMatchers(HttpMethod.PUT, DELETE_SECOND_PRICE_URL).permitAll().
+                antMatchers(HttpMethod.POST, ADD_THIRD_PRICE_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_THIRD_PRICES_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_THIRD_PRICE_URL).permitAll().
+                antMatchers(HttpMethod.PUT, UPDATE_THIRD_PRICE_URL).permitAll().
+                antMatchers(HttpMethod.PUT, DELETE_THIRD_PRICE_URL).permitAll().
                 anyRequest().authenticated();
     }
 
