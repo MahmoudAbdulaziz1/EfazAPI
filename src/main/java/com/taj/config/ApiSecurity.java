@@ -174,6 +174,27 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String REFUSE_SCHOOL_REQUEST_OFFER_URL = "/schoolRequestOffer/refuse/{id}";
     public static final String UPDATE_SCHOOL_REQUEST_OFFER_URL = "/schoolRequestOffer/update";
     public static final String DELETE_SCHOOL_REQUEST_OFFER_URL = "/schoolRequestOffer/delete/{id}";
+    public static final String ADD_SCHOOL_SEE_OFFER_URL = "/offerSeen/add";
+    public static final String GET_SCHOOL_SEE_OFFERS_URL = "/offerSeen/getAll";
+    public static final String GET_SCHOOL_SEE_OFFER_URL = "/offerSeen/get/{id}";
+    public static final String GET_SCHOOL_SEE_OFFER_SCHOOL_URL = "/offerSeen/getSchool/{schoolId}";
+    public static final String GET_SCHOOL_SEE_OFFER_OFFER_URL = "/offerSeen/getOffer/{offerId}";
+    public static final String UPDATE_SCHOOL_SEE_OFFER_URL = "/offerSeen/update";
+    public static final String DELETE_SCHOOL_SEE_OFFER_URL = "/offerSeen/delete/{id}";
+    public static final String LOGIN_DETAILS_PAGINATION_URL = "/admin/getAll?page={page}&limit={limit}";
+    public static final String LOGIN_DETAILS_PAGINATIONS_URL = "/admin/getAll";
+    public static final String SCHOOL_SEE_OFFER_PAGINATION_URL = "/admin/getSee?page={page}&limit={limit}";
+    public static final String SCHOOL_SEE_OFFER_PAGINATIONS_URL = "/admin/getSee";
+    public static final String SCHOOL_REQUEST_OFFER_PAGINATION_URL = "/admin/schoolRequestOffer?page={page}&limit={limit}";
+    public static final String SCHOOL_REQUEST_OFFER_PAGINATIONS_URL = "/admin/schoolRequestOffer";
+    public static final String COMPANY_SEE_REQUEST_PAGINATION_URL = "/admin/companySeeRequest?page={page}&limit={limit}";
+    public static final String COMPANY_SEE_REQUEST_PAGINATIONS_URL = "/admin/companySeeRequest";
+    public static final String COMPANY_RESPONSE_REQUEST_PAGINATION_URL = "/admin/companyResponseRequest?page={page}&limit={limit}";
+    public static final String COMPANY_RESPONSE_REQUEST_PAGINATIONS_URL = "/admin/companyResponseRequest";
+    public static final String SCHOOL_SEE_TENDER_PAGINATION_URL = "/admin/schoolSeeTender?page={page}&limit={limit}";
+    public static final String SCHOOL_SEE_TENDER_PAGINATIONS_URL = "/admin/schoolSeeTender";
+    public static final String SCHOOL_REQUEST_TENDER_PAGINATION_URL = "/admin/schoolRequestTender?page={page}&limit={limit}";
+    public static final String SCHOOL_REQUEST_TENDER_PAGINATIONS_URL = "/admin/schoolRequestTender";
 
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -344,7 +365,6 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 antMatchers(HttpMethod.PUT, REFUSE_COMAPNY_RESPONSE_SCHOOL_REQ_URL).permitAll().
                 antMatchers(HttpMethod.PUT, UPDATE_COMAPNY_RESPONSE_SCHOOL_REQ_URL).permitAll().
                 antMatchers(HttpMethod.PUT, DELETE_COMAPNY_RESPONSE_SCHOOL_REQ_URL).permitAll().
-
                 antMatchers(HttpMethod.POST, ADD_SCHOOL_REQUEST_OFFER_URL).permitAll().
                 antMatchers(HttpMethod.GET, GET_SCHOOL_REQUESTS_OFFER_URL).permitAll().
                 antMatchers(HttpMethod.GET, GET_SCHOOL_REQUEST_OFFER_URL).permitAll().
@@ -355,6 +375,27 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 antMatchers(HttpMethod.PUT, REFUSE_SCHOOL_REQUEST_OFFER_URL).permitAll().
                 antMatchers(HttpMethod.PUT, UPDATE_SCHOOL_REQUEST_OFFER_URL).permitAll().
                 antMatchers(HttpMethod.PUT, DELETE_SCHOOL_REQUEST_OFFER_URL).permitAll().
+                antMatchers(HttpMethod.POST, ADD_SCHOOL_SEE_OFFER_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_SCHOOL_SEE_OFFERS_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_SCHOOL_SEE_OFFER_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_SCHOOL_SEE_OFFER_OFFER_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_SCHOOL_SEE_OFFER_SCHOOL_URL).permitAll().
+                antMatchers(HttpMethod.PUT, UPDATE_SCHOOL_SEE_OFFER_URL).permitAll().
+                antMatchers(HttpMethod.PUT, DELETE_SCHOOL_SEE_OFFER_URL).permitAll().
+                antMatchers(HttpMethod.GET, LOGIN_DETAILS_PAGINATION_URL).permitAll().
+                antMatchers(HttpMethod.GET, LOGIN_DETAILS_PAGINATIONS_URL).permitAll().
+                antMatchers(HttpMethod.GET, SCHOOL_SEE_OFFER_PAGINATION_URL).permitAll().
+                antMatchers(HttpMethod.GET, SCHOOL_SEE_OFFER_PAGINATIONS_URL).permitAll().
+                antMatchers(HttpMethod.GET, SCHOOL_REQUEST_OFFER_PAGINATION_URL).permitAll().
+                antMatchers(HttpMethod.GET, SCHOOL_REQUEST_OFFER_PAGINATIONS_URL).permitAll().
+                antMatchers(HttpMethod.GET, COMPANY_SEE_REQUEST_PAGINATION_URL).permitAll().
+                antMatchers(HttpMethod.GET, COMPANY_SEE_REQUEST_PAGINATIONS_URL).permitAll().
+                antMatchers(HttpMethod.GET, COMPANY_RESPONSE_REQUEST_PAGINATION_URL).permitAll().
+                antMatchers(HttpMethod.GET, COMPANY_RESPONSE_REQUEST_PAGINATIONS_URL).permitAll().
+                antMatchers(HttpMethod.GET, SCHOOL_SEE_TENDER_PAGINATION_URL).permitAll().
+                antMatchers(HttpMethod.GET, SCHOOL_SEE_TENDER_PAGINATIONS_URL).permitAll().
+                antMatchers(HttpMethod.GET, SCHOOL_REQUEST_TENDER_PAGINATION_URL).permitAll().
+                antMatchers(HttpMethod.GET, SCHOOL_REQUEST_TENDER_PAGINATIONS_URL).permitAll().
                 anyRequest().authenticated();
     }
 
