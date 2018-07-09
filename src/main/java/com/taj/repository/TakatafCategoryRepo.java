@@ -1,6 +1,6 @@
 package com.taj.repository;
 
-import com.taj.model.TakatfCategoryModel;
+import com.taj.model.TakatafCategoryModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -20,14 +20,14 @@ public class TakatafCategoryRepo {
         return jdbcTemplate.update("INSERT INTO takatf_category VALUES (?,?)", null, categoryName);
     }
 
-    public List<TakatfCategoryModel> getTakatafCategories() {
+    public List<TakatafCategoryModel> getTakatafCategories() {
         return jdbcTemplate.query("SELECT * FROM takatf_category",
-                ((resultSet, i) -> new TakatfCategoryModel(resultSet.getInt(1), resultSet.getString(2))));
+                ((resultSet, i) -> new TakatafCategoryModel(resultSet.getInt(1), resultSet.getString(2))));
     }
 
-    public TakatfCategoryModel getTakatafCategory(int id) {
+    public TakatafCategoryModel getTakatafCategory(int id) {
         return jdbcTemplate.queryForObject("SELECT * FROM takatf_category WHERE cat_id=?", new Object[]{id},
-                ((resultSet, i) -> new TakatfCategoryModel(resultSet.getInt(1), resultSet.getString(2))));
+                ((resultSet, i) -> new TakatafCategoryModel(resultSet.getInt(1), resultSet.getString(2))));
     }
 
     public int updateTakatafCategory(int id, String name) {

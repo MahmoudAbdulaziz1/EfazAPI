@@ -112,20 +112,20 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String UPDATE_RECEIVE_PLACE_URL = "/receivePlace/update";
     public static final String DELETE_RECEIVE_PLACE_URL = "/receivePlace/delete";
     public static final String ADD_FIRST_PRICE_URL = "/takatafFirst/addPrice";
-    public static final String GET_FIRST_PRICES_URL  = "/takatafFirst/getPrices";
-    public static final String GET_FIRST_PRICE_URL  = "/takatafFirst/getPrice/{id}";
-    public static final String UPDATE_FIRST_PRICE_URL  = "/takatafFirst/updatePrice";
-    public static final String DELETE_FIRST_PRICE_URL  = "/takatafFirst/deletePrice";
+    public static final String GET_FIRST_PRICES_URL = "/takatafFirst/getPrices";
+    public static final String GET_FIRST_PRICE_URL = "/takatafFirst/getPrice/{id}";
+    public static final String UPDATE_FIRST_PRICE_URL = "/takatafFirst/updatePrice";
+    public static final String DELETE_FIRST_PRICE_URL = "/takatafFirst/deletePrice";
     public static final String ADD_SECOND_PRICE_URL = "/takatafSecond/addPrice";
-    public static final String GET_SECOND_PRICES_URL  = "/takatafSecond/getPrices";
-    public static final String GET_SECOND_PRICE_URL  = "/takatafSecond/getPrice/{id}";
-    public static final String UPDATE_SECOND_PRICE_URL  = "/takatafSecond/updatePrice";
-    public static final String DELETE_SECOND_PRICE_URL  = "/takatafSecond/deletePrice";
+    public static final String GET_SECOND_PRICES_URL = "/takatafSecond/getPrices";
+    public static final String GET_SECOND_PRICE_URL = "/takatafSecond/getPrice/{id}";
+    public static final String UPDATE_SECOND_PRICE_URL = "/takatafSecond/updatePrice";
+    public static final String DELETE_SECOND_PRICE_URL = "/takatafSecond/deletePrice";
     public static final String ADD_THIRD_PRICE_URL = "/takatafThird/addPrice";
-    public static final String GET_THIRD_PRICES_URL  = "/takatafThird/getPrices";
-    public static final String GET_THIRD_PRICE_URL  = "/takatafThird/getPrice/{id}";
-    public static final String UPDATE_THIRD_PRICE_URL  = "/takatafThird/updatePrice";
-    public static final String DELETE_THIRD_PRICE_URL  = "/takatafThird/deletePrice";
+    public static final String GET_THIRD_PRICES_URL = "/takatafThird/getPrices";
+    public static final String GET_THIRD_PRICE_URL = "/takatafThird/getPrice/{id}";
+    public static final String UPDATE_THIRD_PRICE_URL = "/takatafThird/updatePrice";
+    public static final String DELETE_THIRD_PRICE_URL = "/takatafThird/deletePrice";
     public static final String ADD_TAKATF_TENDER_URL = "/takatafTender/add";
     public static final String GET_TAKATF_TENDERS_URL = "/takatafTender/getAll";
     public static final String GET_TAKATF_TENDER_URL = "/takatafTender/get/{id}";
@@ -133,6 +133,48 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     public static final String GET_TAKATF_TENDER_CAT_URL = "/takatafTender/getCategory/{id}";
     public static final String GET_TAKATF_TENDER_AVAL_URL = "/takatafTender/getAvailable/{id}";
     public static final String GET_TAKATF_TENDER_CONFIRM_URL = "/takatafTender/getConfirm/{id}";
+    public static final String FILTER_TAKATF_TENDER_TITLE_URL = "/takatafTender/getTitle/{title}";
+    public static final String FILTER_TAKATF_TENDER_EXPLAIN_URL = "/takatafTender/getExplain/{explain}";
+    public static final String UPDATE_TAKATF_TENDER_URL = "/takatafTender/update";
+    public static final String DELETE_TAKATF_TENDER_URL = "/takatafTender/delete/{id}";
+    public static final String ADD_TAKATF_TENDER_SEE_URL = "/tenderSeen/add";
+    public static final String GET_TAKATF_TENDERS_SEE_URL = "/tenderSeen/getAll";
+    public static final String GET_TAKATF_TENDER_SEE_URL = "/tenderSeen/get/{id}";
+    public static final String GET_TAKATF_TENDERS_SEE_SCHOOL_URL = "/tenderSeen/getSchool/{schoolId}";
+    public static final String GET_TAKATF_TENDERS_SEE_TENDER_URL = "/tenderSeen/getTender/{tenderId}";
+    public static final String UPDATE_TAKATF_TENDERS_SEE_URL = "/tenderSeen/update";
+    public static final String DELETE_TAKATF_TENDERS_SEE_URL = "/tenderSeen/delete/{id}";
+    public static final String ADD_TAKATF_TENDER_REQUEST_URL = "/tenderRequest/add";
+    public static final String GET_TAKATF_TENDER_REQUESTS_URL = "/tenderRequest/getAll";
+    public static final String GET_TAKATF_TENDER_REQUEST_URL = "/tenderRequest/get/{id}";
+    public static final String GET_TAKATF_TENDER_REQUEST_APROVE_URL = "/tenderRequest/getAprove/{aproveId}";
+    public static final String GET_TAKATF_TENDER_REQUESTS_SCHOOL_URL = "/tenderRequest/getSchool/{schoolId}";
+    public static final String GET_TAKATF_TENDER_REQUESTS_TENDER_URL = "/tenderRequest/getTender/{tenderId}";
+    public static final String UPDATE_TAKATF_TENDER_REQUEST_URL = "/tenderRequest/update";
+    public static final String ACCEPT_TAKATF_TENDER_REQUEST_URL = "/tenderRequest/accept/{id}";
+    public static final String REFUSE_TAKATF_TENDER_REQUEST_URL = "/tenderRequest/refuse/{id}";
+    public static final String DELETE_TAKATF_TENDER_REQUEST_URL = "/tenderRequest/delete/{id}";
+    public static final String ADD_COMAPNY_RESPONSE_SCHOOL_REQ_URL = "/responseSchoolRequest/add";
+    public static final String GET_COMAPNY_RESPONSE_SCHOOL_REQS_URL = "/responseSchoolRequest/getAll";
+    public static final String GET_COMAPNY_RESPONSE_SCHOOL_REQ_URL = "/responseSchoolRequest/get/{id}";
+    public static final String GET_COMAPNY_RESPONSE_SCHOOL_REQ_COMPANY_URL = "/responseSchoolRequest/getCompany/{companyId}";
+    public static final String GET_COMAPNY_RESPONSE_SCHOOL_REQ_REQUEST_URL = "/responseSchoolRequest/getRequest/{requestId}";
+    public static final String GET_COMAPNY_RESPONSE_SCHOOL_REQ_ACCEPT_URL = "/responseSchoolRequest/getAccept/{accept}";
+    public static final String ACCEPT_COMAPNY_RESPONSE_SCHOOL_REQ_URL = "/responseSchoolRequest/accept/{id}";
+    public static final String REFUSE_COMAPNY_RESPONSE_SCHOOL_REQ_URL = "/responseSchoolRequest/refuse/{id}";
+    public static final String UPDATE_COMAPNY_RESPONSE_SCHOOL_REQ_URL = "/responseSchoolRequest/update";
+    public static final String DELETE_COMAPNY_RESPONSE_SCHOOL_REQ_URL = "/responseSchoolRequest/delete/{id}";
+    public static final String ADD_SCHOOL_REQUEST_OFFER_URL = "/schoolRequestOffer/add";
+    public static final String GET_SCHOOL_REQUESTS_OFFER_URL = "/schoolRequestOffer/getAll";
+    public static final String GET_SCHOOL_REQUEST_OFFER_URL = "/schoolRequestOffer/get/{id}";
+    public static final String GET_SCHOOL_REQUEST_OFFER_SCHOOL_URL = "/schoolRequestOffer/getSchool/{schoolId}";
+    public static final String GET_SCHOOL_REQUEST_OFFER_OFFER_URL = "/schoolRequestOffer/getOffer/{offerId}";
+    public static final String GET_SCHOOL_REQUEST_OFFER_ACCEPT_URL = "/schoolRequestOffer/getAccept/{accept}";
+    public static final String ACCEPT_SCHOOL_REQUEST_OFFER_URL = "/schoolRequestOffer/accept/{id}";
+    public static final String REFUSE_SCHOOL_REQUEST_OFFER_URL = "/schoolRequestOffer/refuse/{id}";
+    public static final String UPDATE_SCHOOL_REQUEST_OFFER_URL = "/schoolRequestOffer/update";
+    public static final String DELETE_SCHOOL_REQUEST_OFFER_URL = "/schoolRequestOffer/delete/{id}";
+
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -256,6 +298,10 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 antMatchers(HttpMethod.GET, GET_TAKATF_TENDER_CAT_URL).permitAll().
                 antMatchers(HttpMethod.GET, GET_TAKATF_TENDER_AVAL_URL).permitAll().
                 antMatchers(HttpMethod.GET, GET_TAKATF_TENDER_CONFIRM_URL).permitAll().
+                antMatchers(HttpMethod.GET, FILTER_TAKATF_TENDER_TITLE_URL).permitAll().
+                antMatchers(HttpMethod.GET, FILTER_TAKATF_TENDER_EXPLAIN_URL).permitAll().
+                antMatchers(HttpMethod.PUT, UPDATE_TAKATF_TENDER_URL).permitAll().
+                antMatchers(HttpMethod.PUT, DELETE_TAKATF_TENDER_URL).permitAll().
                 antMatchers(HttpMethod.POST, ADD_FIRST_PRICE_URL).permitAll().
                 antMatchers(HttpMethod.GET, GET_FIRST_PRICES_URL).permitAll().
                 antMatchers(HttpMethod.GET, GET_FIRST_PRICE_URL).permitAll().
@@ -271,6 +317,44 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 antMatchers(HttpMethod.GET, GET_THIRD_PRICE_URL).permitAll().
                 antMatchers(HttpMethod.PUT, UPDATE_THIRD_PRICE_URL).permitAll().
                 antMatchers(HttpMethod.PUT, DELETE_THIRD_PRICE_URL).permitAll().
+                antMatchers(HttpMethod.POST, ADD_TAKATF_TENDER_SEE_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_TAKATF_TENDERS_SEE_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_TAKATF_TENDER_SEE_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_TAKATF_TENDERS_SEE_SCHOOL_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_TAKATF_TENDERS_SEE_TENDER_URL).permitAll().
+                antMatchers(HttpMethod.PUT, UPDATE_TAKATF_TENDERS_SEE_URL).permitAll().
+                antMatchers(HttpMethod.PUT, DELETE_TAKATF_TENDERS_SEE_URL).permitAll().
+                antMatchers(HttpMethod.POST, ADD_TAKATF_TENDER_REQUEST_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_TAKATF_TENDER_REQUESTS_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_TAKATF_TENDER_REQUEST_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_TAKATF_TENDER_REQUESTS_SCHOOL_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_TAKATF_TENDER_REQUESTS_TENDER_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_TAKATF_TENDER_REQUEST_APROVE_URL).permitAll().
+                antMatchers(HttpMethod.PUT, ACCEPT_TAKATF_TENDER_REQUEST_URL).permitAll().
+                antMatchers(HttpMethod.PUT, REFUSE_TAKATF_TENDER_REQUEST_URL).permitAll().
+                antMatchers(HttpMethod.PUT, UPDATE_TAKATF_TENDER_REQUEST_URL).permitAll().
+                antMatchers(HttpMethod.PUT, DELETE_TAKATF_TENDER_REQUEST_URL).permitAll().
+                antMatchers(HttpMethod.POST, ADD_COMAPNY_RESPONSE_SCHOOL_REQ_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_COMAPNY_RESPONSE_SCHOOL_REQS_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_COMAPNY_RESPONSE_SCHOOL_REQ_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_COMAPNY_RESPONSE_SCHOOL_REQ_COMPANY_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_COMAPNY_RESPONSE_SCHOOL_REQ_REQUEST_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_COMAPNY_RESPONSE_SCHOOL_REQ_ACCEPT_URL).permitAll().
+                antMatchers(HttpMethod.PUT, ACCEPT_COMAPNY_RESPONSE_SCHOOL_REQ_URL).permitAll().
+                antMatchers(HttpMethod.PUT, REFUSE_COMAPNY_RESPONSE_SCHOOL_REQ_URL).permitAll().
+                antMatchers(HttpMethod.PUT, UPDATE_COMAPNY_RESPONSE_SCHOOL_REQ_URL).permitAll().
+                antMatchers(HttpMethod.PUT, DELETE_COMAPNY_RESPONSE_SCHOOL_REQ_URL).permitAll().
+
+                antMatchers(HttpMethod.POST, ADD_SCHOOL_REQUEST_OFFER_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_SCHOOL_REQUESTS_OFFER_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_SCHOOL_REQUEST_OFFER_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_SCHOOL_REQUEST_OFFER_SCHOOL_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_SCHOOL_REQUEST_OFFER_OFFER_URL).permitAll().
+                antMatchers(HttpMethod.GET, GET_SCHOOL_REQUEST_OFFER_ACCEPT_URL).permitAll().
+                antMatchers(HttpMethod.PUT, ACCEPT_SCHOOL_REQUEST_OFFER_URL).permitAll().
+                antMatchers(HttpMethod.PUT, REFUSE_SCHOOL_REQUEST_OFFER_URL).permitAll().
+                antMatchers(HttpMethod.PUT, UPDATE_SCHOOL_REQUEST_OFFER_URL).permitAll().
+                antMatchers(HttpMethod.PUT, DELETE_SCHOOL_REQUEST_OFFER_URL).permitAll().
                 anyRequest().authenticated();
     }
 

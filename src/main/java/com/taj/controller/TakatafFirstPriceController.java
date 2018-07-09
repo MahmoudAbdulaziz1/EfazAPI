@@ -1,8 +1,6 @@
 package com.taj.controller;
 
 import com.taj.model.TakatafFirstPriceModel;
-import com.taj.model.TakatfCategoryModel;
-import com.taj.repository.TakatafCategoryRepo;
 import com.taj.repository.TakatafFirstPriceRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

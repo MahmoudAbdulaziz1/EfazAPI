@@ -3,19 +3,19 @@ package com.taj.model;
 /**
  * Created by User on 7/5/2018.
  */
-public class TakatfCategoryModel {
+public class TakatafCategoryModel {
     private int cat_id;
     private String cat_name;
 
-    public TakatfCategoryModel() {
+    public TakatafCategoryModel() {
     }
 
-    public TakatfCategoryModel(int cat_id, String cat_name) {
+    public TakatafCategoryModel(int cat_id, String cat_name) {
         this.cat_id = cat_id;
         this.cat_name = cat_name;
     }
 
-    public TakatfCategoryModel(String cat_name) {
+    public TakatafCategoryModel(String cat_name) {
         this.cat_name = cat_name;
     }
 

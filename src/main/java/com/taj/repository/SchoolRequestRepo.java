@@ -6,9 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by MahmoudAhmed on 6/3/2018.
@@ -87,25 +85,17 @@ public class SchoolRequestRepo {
 
     public List<SchoolRequestsModel> filterByTitle(String title) {
         String sql = "SELECT * FROM efaz_school_tender WHERE  request_title LIKE ?;";
-        return jdbcTemplate.query(sql, new String[] { "%" + title + "%" },(resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2),
-                        resultSet.getString(3), resultSet.getString(4), resultSet.getTimestamp(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
-                        resultSet.getInt(8), resultSet.getInt(9), resultSet.getTimestamp(10), resultSet.getInt(11), resultSet.getInt(12), resultSet.getInt(13), resultSet.getInt(14)));
-    }
-
-    public List<SchoolRequestsModel> filterByExplain(String explain) {
-        String sql = "SELECT * FROM efaz_school_tender WHERE  request_explaination LIKE ?;";
-        return jdbcTemplate.query(sql, new String[] { "%" + explain + "%" },(resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2),
+        return jdbcTemplate.query(sql, new String[]{"%" + title + "%"}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2),
                 resultSet.getString(3), resultSet.getString(4), resultSet.getTimestamp(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
                 resultSet.getInt(8), resultSet.getInt(9), resultSet.getTimestamp(10), resultSet.getInt(11), resultSet.getInt(12), resultSet.getInt(13), resultSet.getInt(14)));
     }
 
-
-//    public List<SchoolRequestsModel> filterByExplain(String explain) {
-//        return jdbcTemplate.query("SELECT * FROM efaz_school_tender WHERE  request_explaination LIKE ?;",
-//                new Object[]{explain}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2),
-//                        resultSet.getString(3), resultSet.getString(4), resultSet.getTimestamp(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
-//                        resultSet.getInt(8), resultSet.getInt(9), resultSet.getTimestamp(10), resultSet.getInt(11), resultSet.getInt(12), resultSet.getInt(13), resultSet.getInt(14)));
-//    }
+    public List<SchoolRequestsModel> filterByExplain(String explain) {
+        String sql = "SELECT * FROM efaz_school_tender WHERE  request_explaination LIKE ?;";
+        return jdbcTemplate.query(sql, new String[]{"%" + explain + "%"}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2),
+                resultSet.getString(3), resultSet.getString(4), resultSet.getTimestamp(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
+                resultSet.getInt(8), resultSet.getInt(9), resultSet.getTimestamp(10), resultSet.getInt(11), resultSet.getInt(12), resultSet.getInt(13), resultSet.getInt(14)));
+    }
 
     public List<SchoolRequestsModel> filterByCategory(int cat) {
         return jdbcTemplate.query("SELECT * FROM efaz_school_tender WHERE  request_category_id=?;",

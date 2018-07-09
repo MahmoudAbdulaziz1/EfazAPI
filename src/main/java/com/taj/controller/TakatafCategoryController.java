@@ -1,8 +1,6 @@
 package com.taj.controller;
 
-import com.taj.model.SchoolRequestCategoryModel;
-import com.taj.model.TakatfCategoryModel;
-import com.taj.repository.SchoolRequestCategoryRepo;
+import com.taj.model.TakatafCategoryModel;
 import com.taj.repository.TakatafCategoryRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +23,7 @@ public class TakatafCategoryController {
      */
 
     @GetMapping("/getCategories")
-    public List<TakatfCategoryModel> getCategories() {
+    public List<TakatafCategoryModel> getCategories() {
         return repo.getTakatafCategories();
     }
 
@@ -35,7 +33,7 @@ public class TakatafCategoryController {
      */
 
     @GetMapping("/getCategory/{id}")
-    public TakatfCategoryModel getCategory(@PathVariable int id) {
+    public TakatafCategoryModel getCategory(@PathVariable int id) {
         return repo.getTakatafCategory(id);
     }
 
@@ -44,7 +42,7 @@ public class TakatafCategoryController {
      * @param model add company category to database
      */
     @PostMapping("/addCategory")
-    public void addCategory(@RequestBody TakatfCategoryModel model) {
+    public void addCategory(@RequestBody TakatafCategoryModel model) {
         repo.addTkatafCategories(model.getCat_name());
 
     }
@@ -54,7 +52,7 @@ public class TakatafCategoryController {
      */
 
     @PutMapping("/updateCategory")
-    public void updateCategory(@RequestBody TakatfCategoryModel model) {
+    public void updateCategory(@RequestBody TakatafCategoryModel model) {
         repo.updateTakatafCategory(model.getCat_id(), model.getCat_name());
 
     }
@@ -64,7 +62,7 @@ public class TakatafCategoryController {
      */
 
     @PutMapping("/deleteCategory")
-    public void deleteCategory(@RequestBody TakatfCategoryModel model) {
+    public void deleteCategory(@RequestBody TakatafCategoryModel model) {
         repo.deleteTakatafCategory(model.getCat_id());
 
     }

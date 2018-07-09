@@ -1,7 +1,6 @@
 package com.taj.repository;
 
 import com.taj.model.TakatafFirstPriceModel;
-import com.taj.model.TakatfCategoryModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
