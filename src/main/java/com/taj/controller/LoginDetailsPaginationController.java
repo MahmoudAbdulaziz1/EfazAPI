@@ -22,7 +22,7 @@ public class LoginDetailsPaginationController {
     LoginDetailsService userService;
 
 
-    @GetMapping(value = "/getAll",
+    @GetMapping(value = "/login/details/getAll",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
     public List<LoginDetailsEntity> getUsers(@RequestParam(value = "page", defaultValue = "0") int page,
@@ -39,7 +39,7 @@ public class LoginDetailsPaginationController {
     SchoolSeeOfferService seeOfferService;
 
 
-    @GetMapping(value = "/getSee",
+    @GetMapping(value = "/get/schools/see/requests",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
     public List<SchoolSeeOfferEntity> getSchoolSeeOffer(@RequestParam(value = "page", defaultValue = "0") int page,
@@ -55,7 +55,7 @@ public class LoginDetailsPaginationController {
     SchoolRequestOfferService requestOfferService;
 
 
-    @GetMapping(value = "/schoolRequestOffer",
+    @GetMapping(value = "/get/school/request/offer",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
     public List<SchoolRequestOfferEntity> getSchoolRequestOffer(@RequestParam(value = "page", defaultValue = "0") int page,
@@ -70,7 +70,7 @@ public class LoginDetailsPaginationController {
     @Autowired
     CompanySeeRequestService companySeeRequestService;
 
-    @GetMapping(value = "/companySeeRequest",
+    @GetMapping(value = "/get/company/see/request",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
     public List<CompanySeeRequestEntity> getCompanySeeRequest(@RequestParam(value = "page", defaultValue = "0") int page,
@@ -85,7 +85,7 @@ public class LoginDetailsPaginationController {
     @Autowired
     CompanyResponseRequestService companyResponseRequestService;
 
-    @GetMapping(value = "/companyResponseRequest",
+    @GetMapping(value = "/get/company/response/request",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
     public List<CompanyResponseRequestEntity> getCompanyResponseRequest(@RequestParam(value = "page", defaultValue = "0") int page,
@@ -99,7 +99,7 @@ public class LoginDetailsPaginationController {
 
     @Autowired
     SchoolSeeTenderService schoolSeeTenderService;
-    @GetMapping(value = "/schoolSeeTender",
+    @GetMapping(value = "/get/school/see/tender",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
     public List<SchoolSeeTenderEntity> getSchoolSeeTender(@RequestParam(value = "page", defaultValue = "0") int page,
@@ -113,7 +113,7 @@ public class LoginDetailsPaginationController {
 
     @Autowired
     SchoolRequestTenderService schoolRequestTenderService;
-    @GetMapping(value = "/schoolRequestTender",
+    @GetMapping(value = "/get/school/request/tender",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
     public List<SchoolRequestTenderEntity> getSchoolRequestTender(@RequestParam(value = "page", defaultValue = "0") int page,

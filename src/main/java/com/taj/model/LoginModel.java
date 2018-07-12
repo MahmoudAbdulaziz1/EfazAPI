@@ -10,14 +10,26 @@ public class LoginModel {
     private String user_password;
     private int is_active;
     private int login_type;
+    private String login_role;
+    private String login_token;
 
-    public LoginModel(int login_id, String user_email, String user_password, int is_active, int login_type) {
+    public LoginModel(int login_id, String user_email, String user_password, int is_active, int login_type, String login_role, String login_token) {
         this.login_id = login_id;
         this.user_email = user_email;
         this.user_password = user_password;
         this.is_active = is_active;
         this.login_type = login_type;
+        this.login_role = login_role;
+        this.login_token = login_token;
     }
+
+//    public LoginModel(int login_id, String user_email, String user_password, int is_active, int login_type) {
+//        this.login_id = login_id;
+//        this.user_email = user_email;
+//        this.user_password = user_password;
+//        this.is_active = is_active;
+//        this.login_type = login_type;
+//    }
 
     public LoginModel() {
     }
@@ -60,5 +72,21 @@ public class LoginModel {
 
     public void setLogin_type(int login_type) {
         this.login_type = login_type;
+    }
+
+    public String getLogin_role() {
+        return login_role;
+    }
+
+    public void setLogin_role(String login_role) {
+        this.login_role = login_role;
+    }
+
+    public String getLogin_token() {
+        return login_token;
+    }
+
+    public void setLogin_token(String login_token) {
+        this.login_token = login_token;
     }
 }

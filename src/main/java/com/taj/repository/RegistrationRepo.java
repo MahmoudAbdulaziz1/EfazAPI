@@ -1,6 +1,8 @@
 package com.taj.repository;
 
+import com.taj.controller.TokenController;
 import com.taj.model.RegistrationModel;
+import com.taj.security.JwtGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -24,12 +26,17 @@ public class RegistrationRepo {
     @Autowired
     private JavaMailSender sender;
 
+    @Autowired
+    JwtGenerator generator;
+//    @Autowired
+//    RegistrationModel model;
+
 
     public void addUser(String email, String password, String userName, String phoneNumber, String companyName
-            , String address, String website, int isSchool, int isActive) {
+            , String address, String website, int isSchool, int isActive, String registration_role) {
 
-        jdbcTemplate.update("INSERT INTO efaz_registration VALUES (?,?,?,?,?,?,?,?,?,?)", null, email, password, userName, phoneNumber
-                , companyName, address, website, isSchool, isActive);
+        jdbcTemplate.update("INSERT INTO efaz_registration VALUES (?,?,?,?,?,?,?,?,?,?,?)", null, email, password, userName, phoneNumber
+                , companyName, address, website, isSchool, isActive, registration_role);
 
 //        KeyHolder holder = new GeneratedKeyHolder();
 //
@@ -63,24 +70,24 @@ public class RegistrationRepo {
         return jdbcTemplate.query("select * from efaz_registration;",
                 (resultSet, i) -> new RegistrationModel(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
-                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getInt(10)));
+                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getInt(10), resultSet.getString(11)));
     }
 
     public RegistrationModel getUser(int id) {
         return jdbcTemplate.queryForObject("SELECT * From efaz_registration WHERE registration_id=?", new Object[]{id},
                 ((resultSet, i) -> new RegistrationModel(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
-                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getInt(10))));
+                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getInt(10), resultSet.getString(11))));
     }
 
     public int updateUser(int id, String email, String password, String userName, String phoneNumber, String companyName
-            , String address, String website, int isSchool, int isActive) {
+            , String address, String website, int isSchool, int isActive, String registration_role) {
         return jdbcTemplate.update("update efaz_registration set registeration_email=?," +
                         "registeration_password=?, registeration_username=?, registeration_phone_number=?," +
                         "registration_organization_name=?, registration_address_desc=?, registration_website_url=?," +
-                        "registration_is_school=?, registration_isActive=?" +
+                        "registration_is_school=?, registration_isActive=?, registration_role=?" +
                         " where registration_id=?", email, password, userName, phoneNumber
-                , companyName, address, website, isSchool, isActive, id);
+                , companyName, address, website, isSchool, isActive, registration_role, id);
     }
 
     public int deleteUser(int id) {
@@ -98,13 +105,13 @@ public class RegistrationRepo {
         return jdbcTemplate.query("SELECT * FROM efaz_registration WHERE registration_isActive=0;",
                 (resultSet, i) -> new RegistrationModel(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
-                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getInt(10)));
+                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getInt(10), resultSet.getString(11)));
     }
 
     public void activeCompanyAccount(int id) {
         jdbcTemplate.update("update efaz_registration set registration_isActive=1 WHERE registration_id=?", id);
         RegistrationModel model = getUser(id);
-        //LoginModel loginModel = repo.loginUser(model.getRegisteration_email(), model.getRegisteration_password(), 1, model.getRegistration_is_school());
+
         jdbcTemplate.update("INSERT INTO efaz_login VALUES (?,?,?,?,?)", null, model.getRegisteration_email(),
                 model.getRegisteration_password(), 1, model.getRegistration_is_school());
 
@@ -114,7 +121,7 @@ public class RegistrationRepo {
         return jdbcTemplate.query("SELECT * FROM efaz_registration WHERE registration_isActive=1;",
                 (resultSet, i) -> new RegistrationModel(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
-                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getInt(10)));
+                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getInt(10), resultSet.getString(11)));
     }
 
     public void inActiveCompanyAccount(int id) {
@@ -124,9 +131,11 @@ public class RegistrationRepo {
     public void confirmEmail(int id) {
         jdbcTemplate.update("update efaz_registration set registration_isActive=1 WHERE registration_id=?", id);
         RegistrationModel model = getUser(id);
-        //LoginModel loginModel = repo.loginUser(model.getRegisteration_email(), model.getRegisteration_password(), 1, model.getRegistration_is_school());
-        jdbcTemplate.update("INSERT INTO efaz_login VALUES (?,?,?,?,?)", null, model.getRegisteration_email(),
-                model.getRegisteration_password(), 0, model.getRegistration_is_school());
+
+        RegistrationModel models = new RegistrationModel();
+
+        jdbcTemplate.update("INSERT INTO efaz_login VALUES (?,?,?,?,?,?,?)", null, model.getRegisteration_email(),
+                model.getRegisteration_password(), 0, model.getRegistration_is_school() , model.getRegistration_role(), "Token="+ generator.generate(models));
         try {
             sendEmail(model.getRegisteration_email(), id);
         } catch (Exception e) {

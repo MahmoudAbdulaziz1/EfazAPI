@@ -3,6 +3,7 @@ package com.taj.controller;
 import com.taj.model.RegistrationModel;
 import com.taj.repository.RegistrationRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +38,7 @@ public class RegistrationController {
                 registrationModel.getRegisteration_username(), registrationModel.getRegisteration_phone_number(),
                 registrationModel.getRegistration_organization_name(), registrationModel.getRegistration_address_desc(),
                 registrationModel.getRegistration_website_url(), registrationModel.getRegistration_is_school(),
-                registrationModel.getRegistration_isActive());
+                registrationModel.getRegistration_isActive(), registrationModel.getRegistration_role());
 
     }
 
@@ -47,6 +48,7 @@ public class RegistrationController {
      * @return List of registered company data
      */
 
+    //@PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     @GetMapping("/getAll")
     public List<RegistrationModel> getAllUsers() {
         return registrationRepo.getUsers();
@@ -59,6 +61,7 @@ public class RegistrationController {
      * @return
      */
 
+    //@PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     @GetMapping("/get/{id}")
     public RegistrationModel getUser(@PathVariable int id) {
         return registrationRepo.getUser(id);
@@ -75,7 +78,7 @@ public class RegistrationController {
     public int updateUser(@RequestBody RegistrationModel model) {
         return registrationRepo.updateUser(model.getRegistration_id(), model.getRegisteration_email(), model.getRegisteration_password(),
                 model.getRegisteration_username(), model.getRegisteration_phone_number(), model.getRegistration_organization_name(), model.getRegistration_address_desc(),
-                model.getRegistration_website_url(), model.getRegistration_is_school(), model.getRegistration_isActive());
+                model.getRegistration_website_url(), model.getRegistration_is_school(), model.getRegistration_isActive(), model.getRegistration_role());
     }
 
     /**
@@ -84,6 +87,7 @@ public class RegistrationController {
      * @param id
      * @return
      */
+    //@PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     @PutMapping("/delete/{id}")
     public int deleteUser(@PathVariable int id) {
         return registrationRepo.deleteUser(id);
@@ -95,6 +99,7 @@ public class RegistrationController {
      *
      * @return
      */
+    //@PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     @GetMapping("/getInActive")
     public List<RegistrationModel> getInActiveCompaines() {
         return registrationRepo.getInActiveCompanies();
@@ -116,6 +121,7 @@ public class RegistrationController {
      * @return
      */
 
+    //@PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     @GetMapping("/getActive")
     public List<RegistrationModel> getActiveCompaines() {
         return registrationRepo.getActiveCompanies();
@@ -136,6 +142,7 @@ public class RegistrationController {
      *
      * @param id
      */
+    //@PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     @GetMapping("/confirm/{id}")
     public void confirmEmail(@PathVariable int id) {
         registrationRepo.confirmEmail(id);

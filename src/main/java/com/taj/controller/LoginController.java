@@ -33,7 +33,7 @@ public class LoginController {
     @PostMapping("/loginUser")
     public LoginModel loginUsers(@RequestBody LoginModel model) {
         return loginRepo.loginUser(model.getUser_email(), model.getUser_password(),
-                model.getIs_active(), model.getLogin_type());
+                model.getIs_active(), model.getLogin_type(), model.getLogin_role(), model.getLogin_token());
     }
 
     /**

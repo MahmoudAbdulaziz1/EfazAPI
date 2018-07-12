@@ -53,7 +53,7 @@ public class CompanySeeRequestController {
      * @param model update current category
      */
 
-    @PutMapping("/updateCompanySeeRequest")
+    @PutMapping("/update")
     public void updateCategory(@RequestBody CompanySeeRequestModel model) {
         repo.updateCompanySeeRequest(model.getSeen_id(), model.getRequest_company_id(), model.getRequest_id());
 
@@ -63,7 +63,7 @@ public class CompanySeeRequestController {
      * @param model delete current category
      */
 
-    @PutMapping("/deleteCompanySeeRequest")
+    @PutMapping("/delete")
     public void deleteCategory(@RequestBody CompanySeeRequestModel model) {
         repo.deleteCompanySeeRequest(model.getSeen_id());
 

@@ -15,11 +15,13 @@ public class RegistrationModel {
     private String registration_address_desc;
     private String registration_website_url;
     private int registration_is_school;
-    private int registration_isActive; //for confirmation
+    private int registration_isActive;
+    private String registration_role;//for confirmation
 
 
     public RegistrationModel(int registration_id, String registeration_email, String registeration_password, String registeration_username,
-                             String registeration_phone_number, String registration_organization_name, String registration_address_desc, String registration_website_url, int registration_is_school, int registration_isActive) {
+                             String registeration_phone_number, String registration_organization_name, String registration_address_desc, String registration_website_url,
+                             int registration_is_school, int registration_isActive, String registration_role) {
         this.registration_id = registration_id;
         this.registeration_email = registeration_email;
         this.registeration_password = registeration_password;
@@ -30,12 +32,13 @@ public class RegistrationModel {
         this.registration_website_url = registration_website_url;
         this.registration_is_school = registration_is_school;
         this.registration_isActive = registration_isActive;
+        this.registration_role = registration_role;
     }
 
     public RegistrationModel(String registeration_email, String registeration_password, String registeration_username,
                              String registeration_phone_number, String registration_organization_name,
                              String registration_address_desc, String registration_website_url, int registration_is_school,
-                             int registration_isActive) {
+                             int registration_isActive, String registration_role) {
         this.registeration_email = registeration_email;
         this.registeration_password = registeration_password;
         this.registeration_username = registeration_username;
@@ -45,6 +48,7 @@ public class RegistrationModel {
         this.registration_website_url = registration_website_url;
         this.registration_is_school = registration_is_school;
         this.registration_isActive = registration_isActive;
+        this.registration_role = registration_role;
     }
 
     public RegistrationModel() {
@@ -128,5 +132,13 @@ public class RegistrationModel {
 
     public void setRegistration_isActive(int registration_isActive) {
         this.registration_isActive = registration_isActive;
+    }
+
+    public String getRegistration_role() {
+        return registration_role;
+    }
+
+    public void setRegistration_role(String registration_role) {
+        this.registration_role = registration_role;
     }
 }

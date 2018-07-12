@@ -3,6 +3,7 @@ package com.taj.controller;
 import com.taj.model.CompanyOfferModel;
 import com.taj.repository.CompanyOfferRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * Created by MahmoudAhmed on 6/4/2018.
  */
-@RequestMapping("/companyOffer")
+@RequestMapping("/evvaz/companyOffer")
 @RestController
 @CrossOrigin
 public class CompanyOfferController {
@@ -25,6 +26,7 @@ public class CompanyOfferController {
      */
 
     @PostMapping("/addOffer")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public int addCompanyOffer(@RequestBody CompanyOfferModel model) {
         return repo.addCompanyOffer(model.getOffer_logo(), model.getOffer_title(), model.getOffer_explaination(),
                 model.getOffer_cost(), model.getOffer_display_date(), model.getOffer_expired_date(), model.getOffer_deliver_date(),
@@ -36,6 +38,7 @@ public class CompanyOfferController {
      */
 
     @GetMapping("/getOffers")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public List<CompanyOfferModel> getCompanyOffers() {
         return repo.getAllOffers();
     }
@@ -48,6 +51,7 @@ public class CompanyOfferController {
      */
 
     @GetMapping("/getOffer/{id}")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public CompanyOfferModel getCompanyOffer(@PathVariable int id) {
         return repo.getCompanyOffer(id);
     }
@@ -59,6 +63,7 @@ public class CompanyOfferController {
      * @return 1 if success or 0 if failed
      */
     @PutMapping("/updateOffer")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public int updateCompanyOffer(@RequestBody CompanyOfferModel model) {
         return repo.updateCompanyOffer(model.getOffer_id(), model.getOffer_logo(), model.getOffer_title(), model.getOffer_explaination(),
                 model.getOffer_cost(), model.getOffer_display_date(), model.getOffer_expired_date(), model.getOffer_deliver_date(),
@@ -72,6 +77,7 @@ public class CompanyOfferController {
      * @return 1 if success or 0 if failed
      */
     @PutMapping("/deleteOffer/{id}")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public int deleteCompanyOffer(@PathVariable int id) {
         return repo.deleteCompanyOffer(id);
     }
@@ -83,7 +89,8 @@ public class CompanyOfferController {
      * @return list of company offer
      */
 
-    @GetMapping("/getOffers/{id}")
+    @GetMapping("/getOffers/company/{id}")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public List<CompanyOfferModel> getSingleCompanyOffer(@PathVariable int id) {
         return repo.getCompanyOffers(id);
     }
@@ -98,6 +105,7 @@ public class CompanyOfferController {
      */
 
     @GetMapping("/getData/{id}")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public List<String> getData(@PathVariable int id) {
         return repo.getProgressDate(id);
     }

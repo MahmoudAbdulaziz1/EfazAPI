@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by User on 7/8/2018.
  */
-@RequestMapping("/responseSchoolRequest")
+@RequestMapping("/response/school/request")
 @RestController
 @CrossOrigin
 public class CompanyResponseSchoolRequestController {

@@ -12,7 +12,7 @@ import java.util.List;
  * Created by User on 7/8/2018.
  */
 
-@RequestMapping("/schoolRequestOffer")
+@RequestMapping("/school/request/offer")
 @RestController
 @CrossOrigin
 public class SchoolRequestOfferController {
