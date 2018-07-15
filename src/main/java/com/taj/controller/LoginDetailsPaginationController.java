@@ -5,6 +5,7 @@ import com.taj.model.LoginDetailsModel;
 import com.taj.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  * Created by User on 7/9/2018.
  */
-@RequestMapping("/admin")
+@RequestMapping("/evvaz/admin")
 @RestController
 @CrossOrigin
 public class LoginDetailsPaginationController {
@@ -22,6 +23,7 @@ public class LoginDetailsPaginationController {
     LoginDetailsService userService;
 
 
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping(value = "/login/details/getAll",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
@@ -39,6 +41,7 @@ public class LoginDetailsPaginationController {
     SchoolSeeOfferService seeOfferService;
 
 
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping(value = "/get/schools/see/requests",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
@@ -55,6 +58,7 @@ public class LoginDetailsPaginationController {
     SchoolRequestOfferService requestOfferService;
 
 
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping(value = "/get/school/request/offer",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
@@ -70,6 +74,7 @@ public class LoginDetailsPaginationController {
     @Autowired
     CompanySeeRequestService companySeeRequestService;
 
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping(value = "/get/company/see/request",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
@@ -85,6 +90,7 @@ public class LoginDetailsPaginationController {
     @Autowired
     CompanyResponseRequestService companyResponseRequestService;
 
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping(value = "/get/company/response/request",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
@@ -99,6 +105,8 @@ public class LoginDetailsPaginationController {
 
     @Autowired
     SchoolSeeTenderService schoolSeeTenderService;
+
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping(value = "/get/school/see/tender",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
@@ -113,6 +121,8 @@ public class LoginDetailsPaginationController {
 
     @Autowired
     SchoolRequestTenderService schoolRequestTenderService;
+
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping(value = "/get/school/request/tender",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )

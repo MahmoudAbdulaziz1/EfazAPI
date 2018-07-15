@@ -3,6 +3,8 @@ package com.taj.controller;
 import com.taj.model.TakatafCategoryModel;
 import com.taj.repository.TakatafCategoryRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,9 +12,10 @@ import java.util.List;
 /**
  * Created by User on 7/5/2018.
  */
-@RequestMapping("/takatafCategory")
+@RequestMapping("/evvaz/takataf/category")
 @RestController
 @CrossOrigin
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class TakatafCategoryController {
 
     @Autowired
@@ -22,7 +25,8 @@ public class TakatafCategoryController {
      * @return list of company categories
      */
 
-    @GetMapping("/getCategories")
+    @GetMapping("/getAll")
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('company')")
     public List<TakatafCategoryModel> getCategories() {
         return repo.getTakatafCategories();
     }
@@ -32,7 +36,8 @@ public class TakatafCategoryController {
      * @return category by id
      */
 
-    @GetMapping("/getCategory/{id}")
+    @GetMapping("/get/{id}")
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('company')")
     public TakatafCategoryModel getCategory(@PathVariable int id) {
         return repo.getTakatafCategory(id);
     }
@@ -41,7 +46,8 @@ public class TakatafCategoryController {
     /**
      * @param model add company category to database
      */
-    @PostMapping("/addCategory")
+    @PostMapping("/add")
+    @PreAuthorize("hasAuthority('admin')")
     public void addCategory(@RequestBody TakatafCategoryModel model) {
         repo.addTkatafCategories(model.getCat_name());
 
@@ -51,7 +57,8 @@ public class TakatafCategoryController {
      * @param model update current category
      */
 
-    @PutMapping("/updateCategory")
+    @PutMapping("/update")
+    @PreAuthorize("hasAuthority('admin')")
     public void updateCategory(@RequestBody TakatafCategoryModel model) {
         repo.updateTakatafCategory(model.getCat_id(), model.getCat_name());
 
@@ -61,7 +68,8 @@ public class TakatafCategoryController {
      * @param model delete current category
      */
 
-    @PutMapping("/deleteCategory")
+    @PutMapping("/delete")
+    @PreAuthorize("hasAuthority('admin')")
     public void deleteCategory(@RequestBody TakatafCategoryModel model) {
         repo.deleteTakatafCategory(model.getCat_id());
 

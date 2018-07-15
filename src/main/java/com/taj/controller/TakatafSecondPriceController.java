@@ -5,6 +5,8 @@ import com.taj.model.TakatafSecondPriceModel;
 import com.taj.repository.TakatafFirstPriceRepo;
 import com.taj.repository.TakatafSecondPriceRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,9 +14,10 @@ import java.util.List;
 /**
  * Created by User on 7/5/2018.
  */
-@RequestMapping("/takatafSecond")
+@RequestMapping("/evvaz/takataf/second")
 @RestController
 @CrossOrigin
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class TakatafSecondPriceController {
 
     @Autowired
@@ -24,8 +27,9 @@ public class TakatafSecondPriceController {
      * @return list of company categories
      */
 
-    @GetMapping("/getPrices")
-    public List<TakatafSecondPriceModel> getCategories() {
+    @GetMapping("/getAll")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
+    public List<TakatafSecondPriceModel> getAll() {
         return repo.getTkatafFirstPrices();
     }
 
@@ -34,8 +38,9 @@ public class TakatafSecondPriceController {
      * @return category by id
      */
 
-    @GetMapping("/getPrice/{id}")
-    public TakatafSecondPriceModel getCategory(@PathVariable int id) {
+    @GetMapping("/get/{id}")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
+    public TakatafSecondPriceModel getPrice(@PathVariable int id) {
         return repo.getTkatafSecondPrice(id);
     }
 
@@ -43,8 +48,9 @@ public class TakatafSecondPriceController {
     /**
      * @param model add company category to database
      */
-    @PostMapping("/addPrice")
-    public void addCategory(@RequestBody TakatafSecondPriceModel model) {
+    @PostMapping("/add")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
+    public void addPrice(@RequestBody TakatafSecondPriceModel model) {
         repo.addTkatafSecondPrice(model.getS_from(), model.getS_to(), model.getS_price());
 
     }
@@ -53,8 +59,9 @@ public class TakatafSecondPriceController {
      * @param model update current category
      */
 
-    @PutMapping("/updatePrice")
-    public void updateCategory(@RequestBody TakatafSecondPriceModel model) {
+    @PutMapping("/update")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
+    public void updatePrice(@RequestBody TakatafSecondPriceModel model) {
         repo.updateTkatafSecondPrice(model.getS_id(), model.getS_from(), model.getS_to(), model.getS_price());
 
     }
@@ -63,8 +70,9 @@ public class TakatafSecondPriceController {
      * @param model delete current category
      */
 
-    @PutMapping("/deletePrice")
-    public void deleteCategory(@RequestBody TakatafSecondPriceModel model) {
+    @PutMapping("/delete")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
+    public void deletePrice(@RequestBody TakatafSecondPriceModel model) {
         repo.deleteTkatafSecondPrice(model.getS_id());
 
     }

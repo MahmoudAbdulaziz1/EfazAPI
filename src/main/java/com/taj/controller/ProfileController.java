@@ -3,6 +3,8 @@ package com.taj.controller;
 import com.taj.model.CompanyProfileModel;
 import com.taj.repository.ProfileRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,9 +12,10 @@ import java.util.List;
 /**
  * Created by MahmoudAhmed on 5/31/2018.
  */
-@RequestMapping("/profile")
+@RequestMapping("/evvaz/profile")
 @RestController
 @CrossOrigin
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ProfileController {
 
     @Autowired
@@ -25,7 +28,8 @@ public class ProfileController {
      * @return 1 if added or 0  if false
      */
 
-    @PostMapping("/addProfile")
+    @PostMapping("/add")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public int AddUserProfile(@RequestBody CompanyProfileModel model) {
 
         return profileRepo.addProfile(model.getCompany_id(), model.getCompany_name(), model.getCompany_logo_image(),
@@ -41,7 +45,8 @@ public class ProfileController {
      * @return list of profiles
      */
 
-    @GetMapping("/getProfiles")
+    @GetMapping("/getAll")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public List<CompanyProfileModel> getProfiles() {
         return profileRepo.getProfiles();
     }
@@ -53,7 +58,8 @@ public class ProfileController {
      * @return 1 if updated and 0 if not updated
      */
 
-    @PutMapping("/updateProfile")
+    @PutMapping("/update")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public int updateProfile(@RequestBody CompanyProfileModel model) {
 
         return profileRepo.updateProfile(model.getCompany_id(), model.getCompany_name(), model.getCompany_logo_image(),
@@ -68,7 +74,8 @@ public class ProfileController {
      * @return profile model
      */
 
-    @GetMapping("/getProfile/{id}")
+    @GetMapping("/get/{id}")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public CompanyProfileModel getProfile(@PathVariable int id) {
         return profileRepo.getProfile(id);
     }
@@ -81,6 +88,7 @@ public class ProfileController {
      * @return if >0  true else  0 not found
      */
     @GetMapping("/profileExist/{id}")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public int isExist(@PathVariable int id) {
         return profileRepo.CheckProfile(id);
     }

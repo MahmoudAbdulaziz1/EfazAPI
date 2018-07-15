@@ -5,6 +5,8 @@ import com.taj.model.SchoolRequestCategoryModel;
 import com.taj.repository.SchoolReceivePlaceRepo;
 import com.taj.repository.SchoolRequestCategoryRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,9 +14,10 @@ import java.util.List;
 /**
  * Created by User on 7/4/2018.
  */
-@RequestMapping("/receivePlace")
+@RequestMapping("/evvaz/receive/place")
 @RestController
 @CrossOrigin
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SchoolReceivePlaceController {
 
     @Autowired
@@ -24,6 +27,7 @@ public class SchoolReceivePlaceController {
      * @return list of company categories
      */
 
+    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @GetMapping("/getAll")
     public List<SchoolReceivePlaceModel> getCategories() {
         return repo.getSchoolPlaces();
@@ -34,6 +38,7 @@ public class SchoolReceivePlaceController {
      * @return category by id
      */
 
+    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @GetMapping("/get/{id}")
     public SchoolReceivePlaceModel getCategory(@PathVariable int id) {
         return repo.getPlace(id);
@@ -43,6 +48,7 @@ public class SchoolReceivePlaceController {
     /**
      * @param model add company category to database
      */
+    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PostMapping("/add")
     public void addCategory(@RequestBody SchoolReceivePlaceModel model) {
         repo.addSchoolPlace(model.getPlace_name());
@@ -53,6 +59,7 @@ public class SchoolReceivePlaceController {
      * @param model update current category
      */
 
+    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PutMapping("/update")
     public void updateCategory(@RequestBody SchoolReceivePlaceModel model) {
         repo.updateSchoolPlace(model.getPlace_id(), model.getPlace_name());
@@ -63,6 +70,7 @@ public class SchoolReceivePlaceController {
      * @param model delete current category
      */
 
+    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PutMapping("/delete")
     public void deleteCategory(@RequestBody SchoolReceivePlaceModel model) {
         repo.deleteSchoolPlace(model.getPlace_id());

@@ -3,6 +3,8 @@ package com.taj.controller;
 import com.taj.model.TakatafFirstPriceModel;
 import com.taj.repository.TakatafFirstPriceRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,9 +12,10 @@ import java.util.List;
 /**
  * Created by User on 7/5/2018.
  */
-@RequestMapping("/takatafFirst")
+@RequestMapping("/evvaz/takataf/first")
 @RestController
 @CrossOrigin
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class TakatafFirstPriceController {
 
 
@@ -23,8 +26,9 @@ public class TakatafFirstPriceController {
      * @return list of company categories
      */
 
-    @GetMapping("/getPrices")
-    public List<TakatafFirstPriceModel> getCategories() {
+    @GetMapping("/getAll")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
+    public List<TakatafFirstPriceModel> getAll() {
         return repo.getTkatafFirstPrices();
     }
 
@@ -33,8 +37,9 @@ public class TakatafFirstPriceController {
      * @return category by id
      */
 
-    @GetMapping("/getPrice/{id}")
-    public TakatafFirstPriceModel getCategory(@PathVariable int id) {
+    @GetMapping("/get/{id}")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
+    public TakatafFirstPriceModel getPrice(@PathVariable int id) {
         return repo.getTkatafFirstPrice(id);
     }
 
@@ -42,8 +47,9 @@ public class TakatafFirstPriceController {
     /**
      * @param model add company category to database
      */
-    @PostMapping("/addPrice")
-    public void addCategory(@RequestBody TakatafFirstPriceModel model) {
+    @PostMapping("/add")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
+    public void addPrice(@RequestBody TakatafFirstPriceModel model) {
         repo.addTkatafFirstPrice(model.getF_from(), model.getF_to(), model.getF_price());
 
     }
@@ -52,8 +58,9 @@ public class TakatafFirstPriceController {
      * @param model update current category
      */
 
-    @PutMapping("/updatePrice")
-    public void updateCategory(@RequestBody TakatafFirstPriceModel model) {
+    @PutMapping("/update")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
+    public void updatePrice(@RequestBody TakatafFirstPriceModel model) {
         repo.updateTkatafFirstPrice(model.getF_id(), model.getF_from(), model.getF_to(), model.getF_price());
 
     }
@@ -62,8 +69,9 @@ public class TakatafFirstPriceController {
      * @param model delete current category
      */
 
-    @PutMapping("/deletePrice")
-    public void deleteCategory(@RequestBody TakatafFirstPriceModel model) {
+    @PutMapping("/delete")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
+    public void deletePrice(@RequestBody TakatafFirstPriceModel model) {
         repo.deleteTkatafFirstPrice(model.getF_id());
 
     }

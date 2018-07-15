@@ -4,6 +4,8 @@ import com.taj.model.TakatafSecondPriceModel;
 import com.taj.model.TakatafThirdPriceModel;
 import com.taj.repository.TakatafThirdPriceRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,9 +13,10 @@ import java.util.List;
 /**
  * Created by User on 7/5/2018.
  */
-@RequestMapping("/takatafThird")
+@RequestMapping("/evvaz/takataf/third")
 @RestController
 @CrossOrigin
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class TakatafThirdPriceController {
 
     @Autowired
@@ -23,7 +26,8 @@ public class TakatafThirdPriceController {
      * @return list of company categories
      */
 
-    @GetMapping("/getPrices")
+    @GetMapping("/getAll")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public List<TakatafThirdPriceModel> getCategories() {
         return repo.getTkatafThirdPrices();
     }
@@ -33,7 +37,8 @@ public class TakatafThirdPriceController {
      * @return category by id
      */
 
-    @GetMapping("/getPrice/{id}")
+    @GetMapping("/get/{id}")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public TakatafThirdPriceModel getCategory(@PathVariable int id) {
         return repo.getTkatafThirdPrice(id);
     }
@@ -42,7 +47,8 @@ public class TakatafThirdPriceController {
     /**
      * @param model add company category to database
      */
-    @PostMapping("/addPrice")
+    @PostMapping("/add")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public void addCategory(@RequestBody TakatafThirdPriceModel model) {
         repo.addTkatafThirdPrice(model.getT_from(), model.getT_to(), model.getT_price());
 
@@ -52,7 +58,8 @@ public class TakatafThirdPriceController {
      * @param model update current category
      */
 
-    @PutMapping("/updatePrice")
+    @PutMapping("/update")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public void updateCategory(@RequestBody TakatafThirdPriceModel model) {
         repo.updateTkatafSThirdPrice(model.getT_id(), model.getT_from(), model.getT_to(), model.getT_price());
 
@@ -62,7 +69,8 @@ public class TakatafThirdPriceController {
      * @param model delete current category
      */
 
-    @PutMapping("/deletePrice")
+    @PutMapping("/delete")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public void deleteCategory(@RequestBody TakatafThirdPriceModel model) {
         repo.deleteTkatafThirdPrice(model.getT_id());
 

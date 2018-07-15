@@ -25,7 +25,7 @@ public class CompanyOfferController {
      * @return 1 if success or 0 if failed
      */
 
-    @PostMapping("/addOffer")
+    @PostMapping("/add")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public int addCompanyOffer(@RequestBody CompanyOfferModel model) {
         return repo.addCompanyOffer(model.getOffer_logo(), model.getOffer_title(), model.getOffer_explaination(),
@@ -37,7 +37,7 @@ public class CompanyOfferController {
      * @return all offers of all companies
      */
 
-    @GetMapping("/getOffers")
+    @GetMapping("/getAll")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public List<CompanyOfferModel> getCompanyOffers() {
         return repo.getAllOffers();
@@ -50,7 +50,7 @@ public class CompanyOfferController {
      * @return offer by offer id
      */
 
-    @GetMapping("/getOffer/{id}")
+    @GetMapping("/get/{id}")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public CompanyOfferModel getCompanyOffer(@PathVariable int id) {
         return repo.getCompanyOffer(id);
@@ -62,7 +62,7 @@ public class CompanyOfferController {
      * @param model
      * @return 1 if success or 0 if failed
      */
-    @PutMapping("/updateOffer")
+    @PutMapping("/update")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public int updateCompanyOffer(@RequestBody CompanyOfferModel model) {
         return repo.updateCompanyOffer(model.getOffer_id(), model.getOffer_logo(), model.getOffer_title(), model.getOffer_explaination(),
@@ -76,7 +76,7 @@ public class CompanyOfferController {
      * @param id
      * @return 1 if success or 0 if failed
      */
-    @PutMapping("/deleteOffer/{id}")
+    @PutMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public int deleteCompanyOffer(@PathVariable int id) {
         return repo.deleteCompanyOffer(id);
@@ -89,7 +89,7 @@ public class CompanyOfferController {
      * @return list of company offer
      */
 
-    @GetMapping("/getOffers/company/{id}")
+    @GetMapping("/get/company/{id}")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public List<CompanyOfferModel> getSingleCompanyOffer(@PathVariable int id) {
         return repo.getCompanyOffers(id);
@@ -104,7 +104,7 @@ public class CompanyOfferController {
      * @return list(1- )
      */
 
-    @GetMapping("/getData/{id}")
+    @GetMapping("/get/data/{id}")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public List<String> getData(@PathVariable int id) {
         return repo.getProgressDate(id);

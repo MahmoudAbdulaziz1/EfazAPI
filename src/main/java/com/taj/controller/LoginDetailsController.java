@@ -3,6 +3,8 @@ package com.taj.controller;
 import com.taj.model.LoginDetailsModel;
 import com.taj.repository.LoginDetailsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,9 +12,10 @@ import java.util.List;
 /**
  * Created by Taj 51 on 6/11/2018.
  */
-@RequestMapping("/details")
+@RequestMapping("/evvaz/details")
 @RestController
 @CrossOrigin
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class LoginDetailsController {
 
     @Autowired
@@ -24,6 +27,7 @@ public class LoginDetailsController {
      *
      * @param detailsModel
      */
+    @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
     @PostMapping("/add")
     public void addLoginDetails(@RequestBody LoginDetailsModel detailsModel) {
         repo.addLoginDetails(detailsModel.getLogin_id(), detailsModel.getIs_school(), detailsModel.getLgoin_time(),
@@ -35,6 +39,7 @@ public class LoginDetailsController {
     /**
      * @return list of all details in db
      */
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping("/getAll")
     public List<LoginDetailsModel> getLoginDetails() {
         return repo.getDetails();
@@ -46,7 +51,7 @@ public class LoginDetailsController {
      * @param id
      * @return
      */
-
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping("/get/{id}")
     public LoginDetailsModel getLoginDetail(@PathVariable int id) {
         return repo.getDetail(id);
@@ -58,8 +63,8 @@ public class LoginDetailsController {
      * @param id
      * @return list of details for company
      */
-
-    @GetMapping("/getCompanyDetails/{id}")
+    @PreAuthorize("hasAuthority('admin')")
+    @GetMapping("/organization/details/{id}")
     public List<LoginDetailsModel> getLoginDetailsForCompany(@PathVariable int id) {
         return repo.getDetailForCompany(id);
     }
