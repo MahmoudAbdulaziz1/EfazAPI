@@ -31,10 +31,10 @@ public class RegistrationController {
      */
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public void addUserRegistration(@RequestBody RegistrationModel registrationModel) {
+    public int addUserRegistration(@RequestBody RegistrationModel registrationModel) {
 
         String encodedPassword = bCryptPasswordEncoder.encode(registrationModel.getRegisteration_password());
-        registrationRepo.addUser(registrationModel.getRegisteration_email(), encodedPassword,
+        return registrationRepo.addUser(registrationModel.getRegisteration_email(), encodedPassword,
                 registrationModel.getRegisteration_username(), registrationModel.getRegisteration_phone_number(),
                 registrationModel.getRegistration_organization_name(), registrationModel.getRegistration_address_desc(),
                 registrationModel.getRegistration_website_url(), registrationModel.getRegistration_is_school(),
@@ -144,8 +144,8 @@ public class RegistrationController {
      */
     //@PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     @GetMapping("/confirm/{id}")
-    public void confirmEmail(@PathVariable int id) {
-        registrationRepo.confirmEmail(id);
+    public int  confirmEmail(@PathVariable int id) {
+        return registrationRepo.confirmEmail(id);
     }
 
 

@@ -32,10 +32,10 @@ public class RegistrationRepo {
 //    RegistrationModel model;
 
 
-    public void addUser(String email, String password, String userName, String phoneNumber, String companyName
+    public int addUser(String email, String password, String userName, String phoneNumber, String companyName
             , String address, String website, int isSchool, int isActive, String registration_role) {
 
-        jdbcTemplate.update("INSERT INTO efaz_registration VALUES (?,?,?,?,?,?,?,?,?,?,?)", null, email, password, userName, phoneNumber
+        return jdbcTemplate.update("INSERT INTO efaz_registration VALUES (?,?,?,?,?,?,?,?,?,?,?)", null, email, password, userName, phoneNumber
                 , companyName, address, website, isSchool, isActive, registration_role);
 
 //        KeyHolder holder = new GeneratedKeyHolder();
@@ -108,11 +108,11 @@ public class RegistrationRepo {
                         resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getInt(10), resultSet.getString(11)));
     }
 
-    public void activeCompanyAccount(int id) {
+    public int activeCompanyAccount(int id) {
         jdbcTemplate.update("update efaz_registration set registration_isActive=1 WHERE registration_id=?", id);
         RegistrationModel model = getUser(id);
 
-        jdbcTemplate.update("INSERT INTO efaz_login VALUES (?,?,?,?,?)", null, model.getRegisteration_email(),
+        return jdbcTemplate.update("INSERT INTO efaz_login VALUES (?,?,?,?,?)", null, model.getRegisteration_email(),
                 model.getRegisteration_password(), 1, model.getRegistration_is_school());
 
     }
@@ -124,23 +124,24 @@ public class RegistrationRepo {
                         resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getInt(10), resultSet.getString(11)));
     }
 
-    public void inActiveCompanyAccount(int id) {
-        jdbcTemplate.update("update efaz_registration set registration_isActive=0 WHERE registration_id=?", id);
+    public int inActiveCompanyAccount(int id) {
+        return jdbcTemplate.update("update efaz_registration set registration_isActive=0 WHERE registration_id=?", id);
     }
 
-    public void confirmEmail(int id) {
+    public int  confirmEmail(int id) {
         jdbcTemplate.update("update efaz_registration set registration_isActive=1 WHERE registration_id=?", id);
         RegistrationModel model = getUser(id);
 
         RegistrationModel models = new RegistrationModel();
 
-        jdbcTemplate.update("INSERT INTO efaz_login VALUES (?,?,?,?,?,?,?)", null, model.getRegisteration_email(),
-                model.getRegisteration_password(), 0, model.getRegistration_is_school() , model.getRegistration_role(), "Token="+ generator.generate(models));
         try {
             sendEmail(model.getRegisteration_email(), id);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return jdbcTemplate.update("INSERT INTO efaz_login VALUES (?,?,?,?,?,?,?)", null, model.getRegisteration_email(),
+                model.getRegisteration_password(), 0, model.getRegistration_is_school() , model.getRegistration_role(), "Token="+ generator.generate(models));
+
     }
 
 

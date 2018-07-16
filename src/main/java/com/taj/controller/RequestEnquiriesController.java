@@ -51,8 +51,8 @@ public class RequestEnquiriesController {
 
     @PutMapping("/updateEnquiry")
     @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
-    public void updateCategory(@RequestBody RequestEnquiriesModel model) {
-        repo.updateNewEnquiry(model.getEnquiry_id(), model.getSchool_request_id(), model.getEnquiry_message());
+    public int updateCategory(@RequestBody RequestEnquiriesModel model) {
+        return repo.updateNewEnquiry(model.getEnquiry_id(), model.getSchool_request_id(), model.getEnquiry_message());
 
     }
 
@@ -62,8 +62,8 @@ public class RequestEnquiriesController {
 
     @PutMapping("/deleteEnquiry")
     @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
-    public void deleteCategory(@RequestBody RequestEnquiriesModel model) {
-        repo.deleteNewEnquiry(model.getEnquiry_id());
+    public int deleteCategory(@RequestBody RequestEnquiriesModel model) {
+        return repo.deleteNewEnquiry(model.getEnquiry_id());
 
     }
 }

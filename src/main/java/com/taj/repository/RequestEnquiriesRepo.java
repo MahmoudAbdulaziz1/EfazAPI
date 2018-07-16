@@ -36,17 +36,17 @@ public class RequestEnquiriesRepo {
                 ((resultSet, i) -> new RequestEnquiriesModel(resultSet.getInt(1), resultSet.getInt(2), resultSet.getString(3))));
     }
 
-    public void updateNewEnquiry(int id, int requestId, String message) {
+    public int updateNewEnquiry(int id, int requestId, String message) {
         jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=0;");
         jdbcTemplate.update("UPDATE request_enquiries SET school_request_id=?, enquiry_message=? WHERE enquiry_id=?",
                 requestId, message, id);
-        jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=1;");
+        return jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=1;");
     }
 
-    public void deleteNewEnquiry(int id) {
+    public int deleteNewEnquiry(int id) {
         jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=0;");
         jdbcTemplate.update("DELETE FROM request_enquiries WHERE enquiry_id=?", id);
-        jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=1;");
+        return jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=1;");
     }
 
 

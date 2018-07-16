@@ -64,8 +64,8 @@ public class CompanySeeRequestController {
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PutMapping("/update")
-    public void updateCategory(@RequestBody CompanySeeRequestModel model) {
-        repo.updateCompanySeeRequest(model.getSeen_id(), model.getRequest_company_id(), model.getRequest_id());
+    public int  updateCategory(@RequestBody CompanySeeRequestModel model) {
+        return repo.updateCompanySeeRequest(model.getSeen_id(), model.getRequest_company_id(), model.getRequest_id());
 
     }
 
@@ -75,8 +75,8 @@ public class CompanySeeRequestController {
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PutMapping("/delete")
-    public void deleteCategory(@RequestBody CompanySeeRequestModel model) {
-        repo.deleteCompanySeeRequest(model.getSeen_id());
+    public int  deleteCategory(@RequestBody CompanySeeRequestModel model) {
+        return repo.deleteCompanySeeRequest(model.getSeen_id());
 
     }
 }

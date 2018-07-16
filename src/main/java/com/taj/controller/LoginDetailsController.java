@@ -29,8 +29,8 @@ public class LoginDetailsController {
      */
     @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
     @PostMapping("/add")
-    public void addLoginDetails(@RequestBody LoginDetailsModel detailsModel) {
-        repo.addLoginDetails(detailsModel.getLogin_id(), detailsModel.getIs_school(), detailsModel.getLgoin_time(),
+    public int addLoginDetails(@RequestBody LoginDetailsModel detailsModel) {
+         return repo.addLoginDetails(detailsModel.getLogin_id(), detailsModel.getIs_school(), detailsModel.getLgoin_time(),
                 detailsModel.getIp_address(), detailsModel.getIs_mobill());
 
     }

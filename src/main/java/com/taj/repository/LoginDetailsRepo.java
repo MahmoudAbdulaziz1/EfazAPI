@@ -15,8 +15,8 @@ public class LoginDetailsRepo {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    public void addLoginDetails(int login_id, int is_school, String lgoin_time, String ip_address, int is_mobill) {
-        jdbcTemplate.update("INSERT INTO efaz_login_details VALUES (?,?,?,?,?,?)", null, login_id, is_school,
+    public int addLoginDetails(int login_id, int is_school, String lgoin_time, String ip_address, int is_mobill) {
+        return jdbcTemplate.update("INSERT INTO efaz_login_details VALUES (?,?,?,?,?,?)", null, login_id, is_school,
                 lgoin_time, ip_address, is_mobill);
 
     }

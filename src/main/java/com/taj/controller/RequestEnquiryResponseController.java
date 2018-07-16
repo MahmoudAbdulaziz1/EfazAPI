@@ -52,8 +52,8 @@ public class RequestEnquiryResponseController {
 
     @PutMapping("/updateEnquiry")
     @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
-    public void updateCategory(@RequestBody RequestEnquiryResponseModel model) {
-        repo.updateNewResponse(model.getResponse_id(), model.getRequest_enquiry_id(), model.getResponse_message());
+    public int updateCategory(@RequestBody RequestEnquiryResponseModel model) {
+        return repo.updateNewResponse(model.getResponse_id(), model.getRequest_enquiry_id(), model.getResponse_message());
 
     }
 
@@ -63,8 +63,8 @@ public class RequestEnquiryResponseController {
 
     @PutMapping("/deleteEnquiry")
     @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
-    public void deleteCategory(@RequestBody RequestEnquiryResponseModel model) {
-        repo.deleteNewResponse(model.getResponse_id());
+    public int deleteCategory(@RequestBody RequestEnquiryResponseModel model) {
+        return repo.deleteNewResponse(model.getResponse_id());
 
     }
 

@@ -113,9 +113,9 @@ public class LoginController {
      * @param model
      */
     @PutMapping("/deleteUser")
-    public void deleteUser(@RequestBody LoginModel model) {
+    public int deleteUser(@RequestBody LoginModel model) {
 
-        loginRepo.deleteUser(model.getLogin_id(), model.getUser_email());
+        return loginRepo.deleteUser(model.getLogin_id(), model.getUser_email());
     }
 
 
@@ -126,8 +126,8 @@ public class LoginController {
      * @param id
      */
     @PutMapping("/activeUser/{id}")
-    public void activeUser(@PathVariable int id) {
-        loginRepo.activeLogin(id);
+    public int activeUser(@PathVariable int id) {
+        return loginRepo.activeLogin(id);
     }
 
     /**
@@ -157,8 +157,8 @@ public class LoginController {
      * @param id
      */
     @PutMapping("/inActiveUser/{id}")
-    public void inActiveUser(@PathVariable int id) {
-        loginRepo.inActiveLogin(id);
+    public int  inActiveUser(@PathVariable int id) {
+        return loginRepo.inActiveLogin(id);
     }
 
 }

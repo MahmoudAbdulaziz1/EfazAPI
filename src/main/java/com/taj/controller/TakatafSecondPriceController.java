@@ -50,8 +50,8 @@ public class TakatafSecondPriceController {
      */
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public void addPrice(@RequestBody TakatafSecondPriceModel model) {
-        repo.addTkatafSecondPrice(model.getS_from(), model.getS_to(), model.getS_price());
+    public int addPrice(@RequestBody TakatafSecondPriceModel model) {
+        return repo.addTkatafSecondPrice(model.getS_from(), model.getS_to(), model.getS_price());
 
     }
 
@@ -61,8 +61,8 @@ public class TakatafSecondPriceController {
 
     @PutMapping("/update")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public void updatePrice(@RequestBody TakatafSecondPriceModel model) {
-        repo.updateTkatafSecondPrice(model.getS_id(), model.getS_from(), model.getS_to(), model.getS_price());
+    public int updatePrice(@RequestBody TakatafSecondPriceModel model) {
+        return repo.updateTkatafSecondPrice(model.getS_id(), model.getS_from(), model.getS_to(), model.getS_price());
 
     }
 
@@ -72,8 +72,8 @@ public class TakatafSecondPriceController {
 
     @PutMapping("/delete")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public void deletePrice(@RequestBody TakatafSecondPriceModel model) {
-        repo.deleteTkatafSecondPrice(model.getS_id());
+    public int deletePrice(@RequestBody TakatafSecondPriceModel model) {
+        return repo.deleteTkatafSecondPrice(model.getS_id());
 
     }
 

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/evvaz/token")
+@RequestMapping("/token")
 public class TokenController {
 
 
@@ -20,7 +20,6 @@ public class TokenController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('admin')")
     public String generate(@RequestBody final RegistrationModel jwtUser) {
 
         return jwtGenerator.generate(jwtUser);

@@ -27,9 +27,9 @@ public class CategoryRepo {
                 new Object[]{id}, (resultSet, i) -> new CategoryModel(resultSet.getInt(1), resultSet.getString(2)));
     }
 
-    public void addCategory(String categoryName) {
+    public int addCategory(String categoryName) {
 
-        jdbcTemplate.update("INSERT INTO efaz_company_category VALUES (?,?)", null, categoryName);
+        return jdbcTemplate.update("INSERT INTO efaz_company_category VALUES (?,?)", null, categoryName);
     }
 
     public int updateCategory(int id, String categoryName) {

@@ -50,8 +50,8 @@ public class SchoolReceivePlaceController {
      */
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PostMapping("/add")
-    public void addCategory(@RequestBody SchoolReceivePlaceModel model) {
-        repo.addSchoolPlace(model.getPlace_name());
+    public int addCategory(@RequestBody SchoolReceivePlaceModel model) {
+        return repo.addSchoolPlace(model.getPlace_name());
 
     }
 
@@ -61,8 +61,8 @@ public class SchoolReceivePlaceController {
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PutMapping("/update")
-    public void updateCategory(@RequestBody SchoolReceivePlaceModel model) {
-        repo.updateSchoolPlace(model.getPlace_id(), model.getPlace_name());
+    public int  updateCategory(@RequestBody SchoolReceivePlaceModel model) {
+        return repo.updateSchoolPlace(model.getPlace_id(), model.getPlace_name());
 
     }
 
@@ -72,8 +72,8 @@ public class SchoolReceivePlaceController {
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PutMapping("/delete")
-    public void deleteCategory(@RequestBody SchoolReceivePlaceModel model) {
-        repo.deleteSchoolPlace(model.getPlace_id());
+    public int  deleteCategory(@RequestBody SchoolReceivePlaceModel model) {
+        return repo.deleteSchoolPlace(model.getPlace_id());
 
     }
 

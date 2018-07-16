@@ -26,8 +26,8 @@ public class TakatafTenderController {
      */
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public void addTender(@RequestBody TakatafTenderModel model) {
-        repo.addTender(model.getTender_id(), model.getTender_logo(), model.getTender_title(), model.getTender_explain(), model.getTender_display_date(), model.getTender_expire_date(),
+    public int addTender(@RequestBody TakatafTenderModel model) {
+        return repo.addTender(model.getTender_id(), model.getTender_logo(), model.getTender_title(), model.getTender_explain(), model.getTender_display_date(), model.getTender_expire_date(),
                 model.getTender_deliver_date(), model.getTender_company_id(), model.getTender_is_confirmed(), model.getTender_is_available(), model.getTender_f_id(),
                 model.getTender_s_id(), model.getTender_t_id(), model.getTender_cat_id());
 

@@ -101,6 +101,7 @@ public class LoginRepo {
                 Integer cnt = jdbcTemplate.queryForObject(
                         "SELECT count(*) FROM efaz_login WHERE user_email=? AND login_type=?;",//"//AND user_password = ?  ;
                         Integer.class, user_email, login_type);//, bCryptPasswordEncoder.encode(user_passwords.trim()));
+
                 return cnt != null && cnt > 0;
 
             } else {
@@ -162,15 +163,15 @@ public class LoginRepo {
                 encodedPassword, user_email);
     }
 
-    public void updateActiveState(int login_id, int is_active) {
-        jdbcTemplate.update("update efaz_login set is_active=? where login_id=?", is_active, login_id);
+    public int  updateActiveState(int login_id, int is_active) {
+        return jdbcTemplate.update("update efaz_login set is_active=? where login_id=?", is_active, login_id);
     }
 
-    public void deleteUser(int id, String user_email) {
+    public int  deleteUser(int id, String user_email) {
         jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=0;");
         jdbcTemplate.update("DELETE FROM efaz_login WHERE login_id=?;", id);
         jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=1;");
-        jdbcTemplate.update("DELETE FROM efaz_registration WHERE  registeration_email=? AND registration_isActive=1", user_email);
+        return jdbcTemplate.update("DELETE FROM efaz_registration WHERE  registeration_email=? AND registration_isActive=1", user_email);
 
     }
 
@@ -187,13 +188,13 @@ public class LoginRepo {
                         resultSet.getString(3), resultSet.getInt(4), resultSet.getInt(5), resultSet.getString(6), resultSet.getString(6)));
     }
 
-    public void activeLogin(int id) {
+    public int activeLogin(int id) {
         RegistrationModel models = new RegistrationModel();
-        jdbcTemplate.update("update efaz_login set is_active=1, login_token=?  WHERE login_id=?", "Token="+ generator.generate(models), id);
+        return jdbcTemplate.update("update efaz_login set is_active=1, login_token=?  WHERE login_id=?", "Token="+ generator.generate(models), id);
     }
 
-    public void inActiveLogin(int id) {
-        jdbcTemplate.update("update efaz_login set is_active=0 WHERE login_id=?", id);
+    public int inActiveLogin(int id) {
+        return jdbcTemplate.update("update efaz_login set is_active=0 WHERE login_id=?", id);
     }
 
 }

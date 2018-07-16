@@ -49,8 +49,8 @@ public class TakatafThirdPriceController {
      */
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public void addCategory(@RequestBody TakatafThirdPriceModel model) {
-        repo.addTkatafThirdPrice(model.getT_from(), model.getT_to(), model.getT_price());
+    public int addCategory(@RequestBody TakatafThirdPriceModel model) {
+        return repo.addTkatafThirdPrice(model.getT_from(), model.getT_to(), model.getT_price());
 
     }
 
@@ -60,8 +60,8 @@ public class TakatafThirdPriceController {
 
     @PutMapping("/update")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public void updateCategory(@RequestBody TakatafThirdPriceModel model) {
-        repo.updateTkatafSThirdPrice(model.getT_id(), model.getT_from(), model.getT_to(), model.getT_price());
+    public int updateCategory(@RequestBody TakatafThirdPriceModel model) {
+        return repo.updateTkatafSThirdPrice(model.getT_id(), model.getT_from(), model.getT_to(), model.getT_price());
 
     }
 
@@ -71,8 +71,8 @@ public class TakatafThirdPriceController {
 
     @PutMapping("/delete")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public void deleteCategory(@RequestBody TakatafThirdPriceModel model) {
-        repo.deleteTkatafThirdPrice(model.getT_id());
+    public int deleteCategory(@RequestBody TakatafThirdPriceModel model) {
+        return repo.deleteTkatafThirdPrice(model.getT_id());
 
     }
 

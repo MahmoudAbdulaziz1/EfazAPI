@@ -45,17 +45,17 @@ public class CompanySeeRequestRepo {
                 ((resultSet, i) -> new CompanySeeRequestModel(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3))));
     }
 
-    public void updateCompanySeeRequest(int id, int companyId, int requestId) {
+    public int updateCompanySeeRequest(int id, int companyId, int requestId) {
         jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=0;");
         jdbcTemplate.update("UPDATE efaz_company_see_request SET request_company_id=?, request_id=? WHERE seen_id=?",
                 companyId, requestId, id);
-        jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=1;");
+        return jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=1;");
     }
 
-    public void deleteCompanySeeRequest(int id) {
+    public int deleteCompanySeeRequest(int id) {
         jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=0;");
         jdbcTemplate.update("DELETE FROM efaz_company_see_request WHERE seen_id=?", id);
-        jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=1;");
+       return jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=1;");
     }
 
 

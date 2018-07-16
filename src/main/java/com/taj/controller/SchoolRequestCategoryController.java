@@ -48,8 +48,8 @@ public class SchoolRequestCategoryController {
      */
     @PostMapping("/addCategory")
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
-    public void addCategory(@RequestBody SchoolRequestCategoryModel model) {
-        repo.addSchoolRequestCategories(model.getRequest_category_name());
+    public int addCategory(@RequestBody SchoolRequestCategoryModel model) {
+        return repo.addSchoolRequestCategories(model.getRequest_category_name());
 
     }
 
@@ -59,8 +59,8 @@ public class SchoolRequestCategoryController {
 
     @PutMapping("/updateCategory")
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
-    public void updateCategory(@RequestBody SchoolRequestCategoryModel model) {
-        repo.updateSchoolRequestCategory(model.getRequest_category_id(), model.getRequest_category_name());
+    public int updateCategory(@RequestBody SchoolRequestCategoryModel model) {
+        return repo.updateSchoolRequestCategory(model.getRequest_category_id(), model.getRequest_category_name());
 
     }
 
@@ -70,8 +70,9 @@ public class SchoolRequestCategoryController {
 
     @PutMapping("/deleteCategory")
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
-    public void deleteCategory(@RequestBody SchoolRequestCategoryModel model) {
-        repo.deleteSchoolRequestCategory(model.getRequest_category_id());
+    public int  deleteCategory(@RequestBody SchoolRequestCategoryModel model) {
+        return repo.deleteSchoolRequestCategory(model.getRequest_category_id());
+
 
     }
 }

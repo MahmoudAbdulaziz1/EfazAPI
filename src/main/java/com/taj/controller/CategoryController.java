@@ -24,7 +24,7 @@ public class CategoryController {
     /**
      * @return list of company categories
      */
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
+//    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     @GetMapping("/getAll")
     public List<CategoryModel> getCategories() {
         return repo.getCategories();
@@ -47,8 +47,8 @@ public class CategoryController {
      */
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public void addCategory(@RequestBody CategoryModel model) {
-        repo.addCategory(model.getCategory_name());
+    public int addCategory(@RequestBody CategoryModel model) {
+        return repo.addCategory(model.getCategory_name());
 
     }
 
@@ -59,8 +59,8 @@ public class CategoryController {
 
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     @PutMapping("/update")
-    public void updateCategory(@RequestBody CategoryModel model) {
-        repo.updateCategory(model.getCategory_id(), model.getCategory_name());
+    public int  updateCategory(@RequestBody CategoryModel model) {
+        return repo.updateCategory(model.getCategory_id(), model.getCategory_name());
 
     }
 
@@ -70,8 +70,8 @@ public class CategoryController {
 
     @PutMapping("/delete")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public void deleteCategory(@RequestBody CategoryModel model) {
-        repo.deleteCategory(model.getCategory_id());
+    public int  deleteCategory(@RequestBody CategoryModel model) {
+        return repo.deleteCategory(model.getCategory_id());
 
     }
 

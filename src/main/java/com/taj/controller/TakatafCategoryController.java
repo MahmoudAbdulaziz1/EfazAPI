@@ -48,8 +48,8 @@ public class TakatafCategoryController {
      */
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('admin')")
-    public void addCategory(@RequestBody TakatafCategoryModel model) {
-        repo.addTkatafCategories(model.getCat_name());
+    public int  addCategory(@RequestBody TakatafCategoryModel model) {
+        return repo.addTkatafCategories(model.getCat_name());
 
     }
 
@@ -59,8 +59,8 @@ public class TakatafCategoryController {
 
     @PutMapping("/update")
     @PreAuthorize("hasAuthority('admin')")
-    public void updateCategory(@RequestBody TakatafCategoryModel model) {
-        repo.updateTakatafCategory(model.getCat_id(), model.getCat_name());
+    public int updateCategory(@RequestBody TakatafCategoryModel model) {
+        return repo.updateTakatafCategory(model.getCat_id(), model.getCat_name());
 
     }
 
@@ -70,8 +70,8 @@ public class TakatafCategoryController {
 
     @PutMapping("/delete")
     @PreAuthorize("hasAuthority('admin')")
-    public void deleteCategory(@RequestBody TakatafCategoryModel model) {
-        repo.deleteTakatafCategory(model.getCat_id());
+    public int deleteCategory(@RequestBody TakatafCategoryModel model) {
+        return repo.deleteTakatafCategory(model.getCat_id());
 
     }
 
