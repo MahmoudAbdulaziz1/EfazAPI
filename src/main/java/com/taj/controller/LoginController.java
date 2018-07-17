@@ -1,11 +1,15 @@
 package com.taj.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.LoginModel;
 import com.taj.repository.LoginRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -22,6 +26,9 @@ public class LoginController {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Autowired
+    ObjectMapper mapper;
+
 
     /**
      * add email of company to login table if email is found
@@ -31,9 +38,28 @@ public class LoginController {
      * @return object of logged company
      */
     @PostMapping("/loginUser")
-    public LoginModel loginUsers(@RequestBody LoginModel model) {
-        return loginRepo.loginUser(model.getUser_email(), model.getUser_password(),
+    public ObjectNode loginUsers(@Valid @RequestBody LoginModel model, Errors errors) {
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+
+        loginRepo.loginUser(model.getUser_email(), model.getUser_password(),
                 model.getIs_active(), model.getLogin_type(), model.getLogin_role(), model.getLogin_token());
+        ObjectNode objectNode = mapper.createObjectNode();
+        //objectNode.put("user_email", model.getUser_email());
+        objectNode.put("user_email", model.getUser_email());
+        objectNode.put("user_password", model.getUser_password());
+        objectNode.put("is_active", model.getIs_active());
+        objectNode.put("login_type", model.getLogin_type());
+        objectNode.put("login_role", model.getLogin_role());
+        objectNode.put("login_token", model.getLogin_token());
+
+        return objectNode;
+
     }
 
     /**
@@ -68,9 +94,28 @@ public class LoginController {
      */
 
     @PostMapping("/isLogged")
-    public boolean isLogged(@RequestBody LoginModel model) {
+    public ObjectNode isLogged(@Valid @RequestBody LoginModel model, Errors errors) {
 
-        return loginRepo.isLogged(model.getUser_email(), model.getUser_password(), model.getLogin_type());
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+        boolean check = loginRepo.isLogged(model.getUser_email(), model.getUser_password(), model.getLogin_type());
+        if (check == true)
+        {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "success");
+
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "success");
+            return objectNode;
+        }
+
     }
 
     /**
@@ -93,9 +138,33 @@ public class LoginController {
      * @param model
      */
     @PutMapping("/updatePassword")
-    public int updatePassword(@RequestBody LoginModel model) {
-        return loginRepo.updatePassword(model.getLogin_id(), model.getUser_email(), model.getUser_password());
+    public ObjectNode updatePassword(@Valid @RequestBody LoginModel model, Errors errors) {
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+        int res =  loginRepo.updatePassword(model.getLogin_id(), model.getUser_email(), model.getUser_password());
 
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("login_id", model.getLogin_id());
+            objectNode.put("user_email", model.getUser_email());
+            objectNode.put("user_password", model.getUser_password());
+            objectNode.put("is_active", model.getIs_active());
+            objectNode.put("login_type", model.getLogin_type());
+            objectNode.put("login_role", model.getLogin_role());
+            objectNode.put("login_token", model.getLogin_token());
+
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
     }
 //
 //    /**
@@ -113,9 +182,35 @@ public class LoginController {
      * @param model
      */
     @PutMapping("/deleteUser")
-    public int deleteUser(@RequestBody LoginModel model) {
+    public ObjectNode deleteUser(@Valid @RequestBody LoginModel model, Errors errors) {
 
-        return loginRepo.deleteUser(model.getLogin_id(), model.getUser_email());
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+        int res = loginRepo.deleteUser(model.getLogin_id(), model.getUser_email());
+
+
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("login_id", model.getLogin_id());
+            objectNode.put("user_email", model.getUser_email());
+            objectNode.put("user_password", model.getUser_password());
+            objectNode.put("is_active", model.getIs_active());
+            objectNode.put("login_type", model.getLogin_type());
+            objectNode.put("login_role", model.getLogin_role());
+            objectNode.put("login_token", model.getLogin_token());
+
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
     }
 
 

@@ -5,11 +5,18 @@ import com.taj.model.RegistrationModel;
 import com.taj.security.JwtGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Repository;
 
 import javax.mail.internet.MimeMessage;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 /**
@@ -32,35 +39,44 @@ public class RegistrationRepo {
 //    RegistrationModel model;
 
 
-    public int addUser(String email, String password, String userName, String phoneNumber, String companyName
+    public RegistrationModel addUser(String email, String password, String userName, String phoneNumber, String companyName
             , String address, String website, int isSchool, int isActive, String registration_role) {
 
-        return jdbcTemplate.update("INSERT INTO efaz_registration VALUES (?,?,?,?,?,?,?,?,?,?,?)", null, email, password, userName, phoneNumber
-                , companyName, address, website, isSchool, isActive, registration_role);
+//        return jdbcTemplate.update("INSERT INTO efaz_registration VALUES (?,?,?,?,?,?,?,?,?,?,?)", null, email, password, userName, phoneNumber
+//                , companyName, address, website, isSchool, isActive, registration_role);
 
-//        KeyHolder holder = new GeneratedKeyHolder();
-//
-//        jdbcTemplate.update(new PreparedStatementCreator() {
-//
-//            @Override
-//            public PreparedStatement createPreparedStatement(Connection connection)
-//                    throws SQLException {
-//                PreparedStatement ps = connection.prepareStatement("INSERT INTO efaz_registration VALUES (?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-//                ps.setString(1, null);
-//                ps.setString(2, email);
-//                ps.setString(3, password);
-//                ps.setString(4, userName);
-//                ps.setString(5, phoneNumber);
-//                ps.setString(6, companyName);
-//                ps.setString(7, address);
-//                ps.setString(8, website);
-//                ps.setInt(9, 0);
-//                ps.setInt(10, 0);
-//                return ps;
-//            }
-//        }, holder);
-//
-//        return holder.getKey().intValue();
+        KeyHolder holder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(new PreparedStatementCreator() {
+
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection)
+                    throws SQLException {
+                PreparedStatement ps = connection.prepareStatement("INSERT INTO efaz_registration VALUES (?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, null);
+                ps.setString(2, email);
+                ps.setString(3, password);
+                ps.setString(4, userName);
+                ps.setString(5, phoneNumber);
+                ps.setString(6, companyName);
+                ps.setString(7, address);
+                ps.setString(8, website);
+                ps.setInt(9, isSchool);
+                ps.setInt(10, isActive);
+                ps.setString(11, registration_role);
+                return ps;
+            }
+        }, holder);
+
+        int id =  holder.getKey().intValue();
+
+        return jdbcTemplate.queryForObject("SELECT * From efaz_registration WHERE registration_id=?", new Object[]{id},
+                ((resultSet, i) -> new RegistrationModel(resultSet.getInt(1), resultSet.getString(2),
+                        resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
+                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getInt(10), resultSet.getString(11))));
+
+
+
 
 
     }

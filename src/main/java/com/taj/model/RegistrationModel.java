@@ -1,27 +1,70 @@
 package com.taj.model;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
+
+import javax.validation.constraints.*;
+
 /**
  * Created by MahmoudAhmed on 5/30/2018.
  */
 public class RegistrationModel {
 
 
+    @Min(1)
     private int registration_id;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 11, message="email should have at least 11 characters")
     private String registeration_email;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 8, message="password should have at least 8 characters")
     private String registeration_password;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="username should have at least 1 characters")
     private String registeration_username;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="phone_number should have at least 1 characters")
     private String registeration_phone_number;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="organization_name should have at least 1 characters")
     private String registration_organization_name;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="address_desc should have at least 1 characters")
     private String registration_address_desc;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 11, message="website_url should have at least 11characters")
     private String registration_website_url;
+    @NotNull
+    @PositiveOrZero(message = "must add value")
     private int registration_is_school;
+    @NotNull
     private int registration_isActive;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="role should have at least 1 characters")
     private String registration_role;//for confirmation
 
 
     public RegistrationModel(int registration_id, String registeration_email, String registeration_password, String registeration_username,
                              String registeration_phone_number, String registration_organization_name, String registration_address_desc, String registration_website_url,
                              int registration_is_school, int registration_isActive, String registration_role) {
+
         this.registration_id = registration_id;
         this.registeration_email = registeration_email;
         this.registeration_password = registeration_password;

@@ -1,16 +1,37 @@
 package com.taj.model;
 
+import javax.validation.constraints.*;
+
 /**
  * Created by MahmoudAhmed on 5/30/2018.
  */
 public class LoginModel {
 
+    @Min(1)
     private int login_id;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 11, message="email should have at least 2 characters")
     private String user_email;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 8, message="password should have at least 8 characters")
     private String user_password;
+    @NotNull
     private int is_active;
+    @NotNull
     private int login_type;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="role should have at least 1 characters")
     private String login_role;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 11, message="token should have at least 11 characters")
     private String login_token;
 
     public LoginModel(int login_id, String user_email, String user_password, int is_active, int login_type, String login_role, String login_token) {
