@@ -17,9 +17,9 @@ public class ProfileRepo {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public int addProfile(int company_id, String company_name, byte[] company_logo_image, String company_address,
+    public int addProfile( String company_name, byte[] company_logo_image, String company_address,
                           String company_service_desc, String company_link_youtube, String company_website_url, float school_lng, float school_lat) {
-        return jdbcTemplate.update("INSERT INTO efaz_company_profile VALUES (?,?,?,?,?,?,?,?,?)", company_id, company_name, company_logo_image,
+        return jdbcTemplate.update("INSERT INTO efaz_company_profile VALUES (?,?,?,?,?,?,?,?,?)", null, company_name, company_logo_image,
                 company_address, company_service_desc, company_link_youtube, company_website_url, school_lng, school_lat);
     }
 

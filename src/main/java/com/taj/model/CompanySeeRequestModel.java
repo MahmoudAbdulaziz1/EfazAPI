@@ -1,11 +1,18 @@
 package com.taj.model;
 
+import javax.validation.constraints.Min;
+
 /**
  * Created by User on 7/3/2018.
  */
 public class CompanySeeRequestModel {
 
-    private int seen_id, request_id, request_company_id;
+    @Min(1)
+    private int seen_id;
+    @Min(1)
+    private int request_id;
+    @Min(1)
+    private int request_company_id;
 
     public CompanySeeRequestModel() {
     }

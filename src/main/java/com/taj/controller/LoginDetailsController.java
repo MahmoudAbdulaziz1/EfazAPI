@@ -1,12 +1,16 @@
 package com.taj.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.LoginDetailsModel;
 import com.taj.repository.LoginDetailsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -20,6 +24,8 @@ public class LoginDetailsController {
 
     @Autowired
     LoginDetailsRepo repo;
+    @Autowired
+    ObjectMapper mapper;
 
 
     /**
@@ -29,9 +35,34 @@ public class LoginDetailsController {
      */
     @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
     @PostMapping("/add")
-    public int addLoginDetails(@RequestBody LoginDetailsModel detailsModel) {
-         return repo.addLoginDetails(detailsModel.getLogin_id(), detailsModel.getIs_school(), detailsModel.getLgoin_time(),
+    public ObjectNode addLoginDetails(@Valid @RequestBody LoginDetailsModel detailsModel, Errors errors) {
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+         int res =  repo.addLoginDetails(detailsModel.getLogin_id(), detailsModel.getIs_school(), detailsModel.getLgoin_time(),
                 detailsModel.getIp_address(), detailsModel.getIs_mobill());
+
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("login_id", detailsModel.getLogin_id());
+            objectNode.put("is_school", detailsModel.getIs_school());
+            objectNode.put("lgoin_time", detailsModel.getLgoin_time());
+            objectNode.put("ip_address", detailsModel.getIp_address());
+            objectNode.put("is_mobill", detailsModel.getIs_mobill());
+
+            //is_mobill
+
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
 
     }
 

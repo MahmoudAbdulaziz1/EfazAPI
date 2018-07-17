@@ -1,15 +1,32 @@
 package com.taj.model;
 
+import org.hibernate.annotations.ManyToAny;
+
+import javax.validation.constraints.*;
+
 /**
  * Created by Taj 51 on 6/11/2018.
  */
 public class LoginDetailsModel {
 
+    @Min(1)
     private int details_id;
+    @Min(1)
     private int login_id;
+    @NotNull
+    @Min(0)
     private int is_school;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="category_name should have at least 1 characters")
     private String lgoin_time;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="category_name should have at least 1 characters")
     private String ip_address;
+    @Min(0)
     private int is_mobill;
 
     public LoginDetailsModel(int details_id, int login_id, int is_school, String lgoin_time, String ip_address, int is_mobill) {

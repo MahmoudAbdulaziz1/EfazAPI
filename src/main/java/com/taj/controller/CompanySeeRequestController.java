@@ -1,12 +1,16 @@
 package com.taj.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.CompanySeeRequestModel;
 import com.taj.repository.CompanySeeRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -21,11 +25,34 @@ public class CompanySeeRequestController {
 
     @Autowired
     CompanySeeRequestRepo repo;
+    @Autowired
+    ObjectMapper mapper;
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PostMapping("/add")
-    public int addCompanySeeRequest(@RequestBody CompanySeeRequestModel model) {
-        return repo.addCompanySeeRequest(model.getRequest_id(), model.getRequest_company_id());
+    public ObjectNode addCompanySeeRequest(@Valid @RequestBody CompanySeeRequestModel model, Errors errors) {
+        if (errors.hasErrors()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+
+        int res = repo.addCompanySeeRequest(model.getRequest_id(), model.getRequest_company_id());
+
+        if (res == 1) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("request_id", model.getRequest_id());
+            objectNode.put("request_company_id", model.getRequest_company_id());
+
+            return objectNode;
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
     }
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
@@ -64,8 +91,32 @@ public class CompanySeeRequestController {
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PutMapping("/update")
-    public int  updateCategory(@RequestBody CompanySeeRequestModel model) {
-        return repo.updateCompanySeeRequest(model.getSeen_id(), model.getRequest_company_id(), model.getRequest_id());
+    public ObjectNode updateCategory(@Valid @RequestBody CompanySeeRequestModel model, Errors errors) {
+
+        if (errors.hasErrors()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+
+        int res = repo.updateCompanySeeRequest(model.getSeen_id(), model.getRequest_company_id(), model.getRequest_id());
+
+//        if (res == 0){
+//            ObjectNode objectNode = mapper.createObjectNode();
+//            objectNode.put("value", "not success"+res);
+//
+//            return objectNode;
+//
+//        }else {
+        ObjectNode objectNode = mapper.createObjectNode();
+        objectNode.put("seen_id", model.getSeen_id());
+        objectNode.put("request_id", model.getRequest_id());
+        objectNode.put("request_company_id", model.getRequest_company_id());
+
+        return objectNode;
+        //}
 
     }
 
@@ -75,7 +126,7 @@ public class CompanySeeRequestController {
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PutMapping("/delete")
-    public int  deleteCategory(@RequestBody CompanySeeRequestModel model) {
+    public int deleteCategory(@RequestBody CompanySeeRequestModel model) {
         return repo.deleteCompanySeeRequest(model.getSeen_id());
 
     }

@@ -3,6 +3,7 @@ package com.taj.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import javax.validation.constraints.*;
 import java.sql.Timestamp;
 
 /**
@@ -10,17 +11,32 @@ import java.sql.Timestamp;
  */
 public class CompanyOfferModel {
 
+    @Min(1)
     private int offer_id;
+    @NotNull
     private byte[] offer_logo;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="title should have at least 1 characters")
     private String offer_title;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="explian should have at least 1 characters")
     private String offer_explaination;
+    @Min(1)
     private double offer_cost;
+    @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     private Timestamp offer_display_date;
+    @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     private Timestamp offer_expired_date;
+    @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     private Timestamp offer_deliver_date;
+    @Min(1)
     private int company_id;
 
     public CompanyOfferModel() {

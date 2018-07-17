@@ -17,8 +17,8 @@ public class CompanyResponseSchoolRequestRepo {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    public int addResponseSchoolRequest(int response_id, int responsed_company_id, int responsed_request_id, int responsed_from, int responsed_to, double responsed_cost, int is_aproved) {
-        return jdbcTemplate.update("INSERT INTO efaz_company_response_school_request VALUES (?,?,?,?,?,?,?)", response_id, responsed_company_id, responsed_request_id,
+    public int addResponseSchoolRequest( int responsed_company_id, int responsed_request_id, int responsed_from, int responsed_to, double responsed_cost, int is_aproved) {
+        return jdbcTemplate.update("INSERT INTO efaz_company_response_school_request VALUES (?,?,?,?,?,?,?)", null, responsed_company_id, responsed_request_id,
                 responsed_from, responsed_to, responsed_cost, is_aproved);
     }
 

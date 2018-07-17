@@ -1,12 +1,16 @@
 package com.taj.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.SchoolProfileModel;
 import com.taj.repository.SchoolProfileRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -22,6 +26,9 @@ public class SchoolProfileController {
     @Autowired
     private SchoolProfileRepo repo;
 
+    @Autowired
+    ObjectMapper mapper;
+
     /**
      * add profile data to db
      *
@@ -30,11 +37,37 @@ public class SchoolProfileController {
      */
     @PostMapping("/addProfile")
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
-    public int AddUserProfile(@RequestBody SchoolProfileModel model) {
+    public ObjectNode AddUserProfile(@Valid @RequestBody SchoolProfileModel model, Errors errors) {
 
-        return repo.addSchoolProfile(model.getSchool_id(), model.getSchool_name(), model.getSchool_logo_image(),
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+
+        int res =  repo.addSchoolProfile(model.getSchool_id(), model.getSchool_name(), model.getSchool_logo_image(),
                 model.getSchool_address(), model.getSchool_service_desc(), model.getSchool_link_youtube(),
                 model.getSchool_website_url(),model.getSchool_lng(), model.getSchool_lat());
+
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("school_name", model.getSchool_name());
+            objectNode.put("school_logo_image", model.getSchool_logo_image());
+            objectNode.put("school_address", model.getSchool_address());
+            objectNode.put("school_service_desc", model.getSchool_service_desc());
+            objectNode.put("school_link_youtube", model.getSchool_link_youtube());
+            objectNode.put("school_website_url", model.getSchool_website_url());
+            objectNode.put("school_lng", model.getSchool_lng());
+            objectNode.put("school_lat", model.getSchool_lat());
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
 
 
     }
@@ -66,11 +99,39 @@ public class SchoolProfileController {
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PutMapping("/updateProfile")
-    public int updateProfile(@RequestBody SchoolProfileModel model) {
+    public ObjectNode updateProfile(@Valid @RequestBody SchoolProfileModel model, Errors errors) {
 
-        return repo.updateProfile(model.getSchool_id(), model.getSchool_name(), model.getSchool_logo_image(),
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+
+        int res = repo.updateProfile(model.getSchool_id(), model.getSchool_name(), model.getSchool_logo_image(),
                 model.getSchool_address(), model.getSchool_service_desc(), model.getSchool_link_youtube(),
                 model.getSchool_website_url(), model.getSchool_lng(), model.getSchool_lat());
+
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("school_name", model.getSchool_name());
+            objectNode.put("school_logo_image", model.getSchool_logo_image());
+            objectNode.put("school_address", model.getSchool_address());
+            objectNode.put("school_service_desc", model.getSchool_service_desc());
+            objectNode.put("school_link_youtube", model.getSchool_link_youtube());
+            objectNode.put("school_website_url", model.getSchool_website_url());
+            objectNode.put("school_lng", model.getSchool_lng());
+            objectNode.put("school_lat", model.getSchool_lat());
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
+
+
     }
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")

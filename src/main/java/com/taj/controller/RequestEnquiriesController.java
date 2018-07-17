@@ -1,12 +1,16 @@
 package com.taj.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.RequestEnquiriesModel;
 import com.taj.repository.RequestEnquiriesRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -20,11 +24,35 @@ public class RequestEnquiriesController {
 
     @Autowired
     RequestEnquiriesRepo repo;
+    @Autowired
+    ObjectMapper mapper;
 
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
-    public int addRequestEnquiry(@RequestBody RequestEnquiriesModel model) {
-        return repo.addNewEnquiry(model.getSchool_request_id(), model.getEnquiry_message());
+    public ObjectNode addRequestEnquiry(@Valid @RequestBody RequestEnquiriesModel model, Errors errors) {
+
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+        int res = repo.addNewEnquiry(model.getSchool_request_id(), model.getEnquiry_message());
+
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            //objectNode.put("enquiry_id", model.getEnquiry_id());
+            objectNode.put("school_request_id", model.getSchool_request_id());
+            objectNode.put("enquiry_message", model.getEnquiry_message());
+
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
     }
 
     @GetMapping("/getAll")
@@ -51,8 +79,24 @@ public class RequestEnquiriesController {
 
     @PutMapping("/updateEnquiry")
     @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
-    public int updateCategory(@RequestBody RequestEnquiriesModel model) {
-        return repo.updateNewEnquiry(model.getEnquiry_id(), model.getSchool_request_id(), model.getEnquiry_message());
+    public ObjectNode updateCategory(@Valid @RequestBody RequestEnquiriesModel model, Errors errors) {
+
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+        int res = repo.updateNewEnquiry(model.getEnquiry_id(), model.getSchool_request_id(), model.getEnquiry_message());
+
+
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("enquiry_id", model.getEnquiry_id());
+            objectNode.put("school_request_id", model.getSchool_request_id());
+            objectNode.put("enquiry_message", model.getEnquiry_message());
+
+            return objectNode;
 
     }
 
@@ -62,8 +106,24 @@ public class RequestEnquiriesController {
 
     @PutMapping("/deleteEnquiry")
     @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
-    public int deleteCategory(@RequestBody RequestEnquiriesModel model) {
-        return repo.deleteNewEnquiry(model.getEnquiry_id());
+    public ObjectNode deleteCategory(@Valid @RequestBody RequestEnquiriesModel model, Errors errors) {
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+        int res = repo.deleteNewEnquiry(model.getEnquiry_id());
+
+
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("enquiry_id", model.getEnquiry_id());
+            objectNode.put("school_request_id", model.getSchool_request_id());
+            objectNode.put("enquiry_message", model.getEnquiry_message());
+
+            return objectNode;
+
 
     }
 }

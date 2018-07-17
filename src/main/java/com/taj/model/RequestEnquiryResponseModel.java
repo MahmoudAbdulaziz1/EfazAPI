@@ -1,12 +1,21 @@
 package com.taj.model;
 
+import javax.validation.constraints.*;
+
 /**
  * Created by User on 7/3/2018.
  */
 public class RequestEnquiryResponseModel {
 
 
-    private int response_id, request_enquiry_id;
+    @Min(1)
+    private int response_id;
+    @Min(1)
+    private int request_enquiry_id;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="response_message should have at least 1 characters")
     private String response_message;
 
     public RequestEnquiryResponseModel() {

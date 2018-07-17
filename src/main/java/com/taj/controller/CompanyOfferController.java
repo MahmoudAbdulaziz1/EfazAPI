@@ -1,11 +1,16 @@
 package com.taj.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.CompanyOfferModel;
 import com.taj.repository.CompanyOfferRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -17,6 +22,8 @@ import java.util.List;
 public class CompanyOfferController {
     @Autowired
     CompanyOfferRepo repo;
+    @Autowired
+    ObjectMapper mapper;
 
     /**
      * add offer from company
@@ -27,10 +34,36 @@ public class CompanyOfferController {
 
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public int addCompanyOffer(@RequestBody CompanyOfferModel model) {
-        return repo.addCompanyOffer(model.getOffer_logo(), model.getOffer_title(), model.getOffer_explaination(),
+    public ObjectNode addCompanyOffer(@Valid @RequestBody CompanyOfferModel model, Errors errors) {
+
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+
+        int res = repo.addCompanyOffer(model.getOffer_logo(), model.getOffer_title(), model.getOffer_explaination(),
                 model.getOffer_cost(), model.getOffer_display_date(), model.getOffer_expired_date(), model.getOffer_deliver_date(),
                 model.getCompany_id());
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("offer_logo", model.getOffer_logo());
+            objectNode.put("offer_title", model.getOffer_title());
+            objectNode.put("offer_explaination", model.getOffer_explaination());
+            objectNode.put("offer_cost", model.getOffer_cost());
+            objectNode.put("offer_display_date", model.getOffer_display_date().toString());
+            objectNode.put("offer_expired_date", model.getOffer_expired_date().toString());
+            objectNode.put("offer_deliver_date", model.getOffer_deliver_date().toString());
+            objectNode.put("company_id", model.getCompany_id());
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
     }
 
     /**
@@ -64,10 +97,37 @@ public class CompanyOfferController {
      */
     @PutMapping("/update")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public int updateCompanyOffer(@RequestBody CompanyOfferModel model) {
-        return repo.updateCompanyOffer(model.getOffer_id(), model.getOffer_logo(), model.getOffer_title(), model.getOffer_explaination(),
+    public JsonNode updateCompanyOffer(@Valid @RequestBody CompanyOfferModel model, Errors errors) {
+
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+        int res = repo.updateCompanyOffer(model.getOffer_id(), model.getOffer_logo(), model.getOffer_title(), model.getOffer_explaination(),
                 model.getOffer_cost(), model.getOffer_display_date(), model.getOffer_expired_date(), model.getOffer_deliver_date(),
                 model.getCompany_id());
+
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("offer_id", model.getOffer_id());
+            objectNode.put("offer_logo", model.getOffer_logo());
+            objectNode.put("offer_title", model.getOffer_title());
+            objectNode.put("offer_explaination", model.getOffer_explaination());
+            objectNode.put("offer_cost", model.getOffer_cost());
+            objectNode.put("offer_display_date", model.getOffer_display_date().toString());
+            objectNode.put("offer_expired_date", model.getOffer_expired_date().toString());
+            objectNode.put("offer_deliver_date", model.getOffer_deliver_date().toString());
+            objectNode.put("company_id", model.getCompany_id());
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
     }
 
     /**

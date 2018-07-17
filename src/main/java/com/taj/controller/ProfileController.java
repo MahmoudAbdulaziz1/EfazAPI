@@ -1,12 +1,16 @@
 package com.taj.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.CompanyProfileModel;
 import com.taj.repository.ProfileRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -20,6 +24,8 @@ public class ProfileController {
 
     @Autowired
     ProfileRepo profileRepo;
+    @Autowired
+    ObjectMapper mapper;
 
     /**
      * add profile to db
@@ -30,12 +36,38 @@ public class ProfileController {
 
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public int AddUserProfile(@RequestBody CompanyProfileModel model) {
+    public ObjectNode AddUserProfile(@Valid @RequestBody CompanyProfileModel model, Errors errors) {
 
-        return profileRepo.addProfile(model.getCompany_id(), model.getCompany_name(), model.getCompany_logo_image(),
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+
+
+        int res =  profileRepo.addProfile(model.getCompany_name(), model.getCompany_logo_image(),
                 model.getCompany_address(), model.getCompany_service_desc(), model.getCompany_link_youtube(),
                 model.getCompany_website_url(), model.getCompany_lng(), model.getCompany_lat());
 
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("company_name", model.getCompany_name());
+            objectNode.put("company_logo_image", model.getCompany_logo_image());
+            objectNode.put("company_address", model.getCompany_address());
+            objectNode.put("company_service_desc", model.getCompany_service_desc());
+            objectNode.put("company_link_youtube", model.getCompany_link_youtube());
+            objectNode.put("company_website_url", model.getCompany_website_url());
+            objectNode.put("company_lng", model.getCompany_lng());
+            objectNode.put("company_lat", model.getCompany_lat());
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
 
     }
 
@@ -60,11 +92,39 @@ public class ProfileController {
 
     @PutMapping("/update")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public int updateProfile(@RequestBody CompanyProfileModel model) {
+    public ObjectNode updateProfile(@Valid @RequestBody CompanyProfileModel model, Errors errors) {
 
-        return profileRepo.updateProfile(model.getCompany_id(), model.getCompany_name(), model.getCompany_logo_image(),
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+
+        int res = profileRepo.updateProfile(model.getCompany_id(), model.getCompany_name(), model.getCompany_logo_image(),
                 model.getCompany_address(), model.getCompany_service_desc(), model.getCompany_link_youtube(),
                 model.getCompany_website_url(), model.getCompany_lng(), model.getCompany_lat());
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("company_id", model.getCompany_id());
+            objectNode.put("company_name", model.getCompany_name());
+            objectNode.put("company_logo_image", model.getCompany_logo_image());
+            objectNode.put("company_address", model.getCompany_address());
+            objectNode.put("company_service_desc", model.getCompany_service_desc());
+            objectNode.put("company_link_youtube", model.getCompany_link_youtube());
+            objectNode.put("company_website_url", model.getCompany_website_url());
+            objectNode.put("company_lng", model.getCompany_lng());
+            objectNode.put("company_lat", model.getCompany_lat());
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
+
+
     }
 
     /**

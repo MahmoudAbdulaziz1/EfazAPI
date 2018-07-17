@@ -1,17 +1,42 @@
 package com.taj.model;
 
+import javax.validation.constraints.*;
+
 /**
  * Created by MahmoudAhmed on 6/3/2018.
  */
 public class SchoolProfileModel {
 
 
+    @Min(1)
     private int school_id;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="name should have at least 1 characters")
     private String school_name;
+    @NotNull
+
     private byte[] school_logo_image;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="address should have at least 1 characters")
     private String school_address;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="service should have at least 1 characters")
     private String school_service_desc;
+//    @NotNull
+//    @NotBlank
+//    @NotEmpty
+//    @Size(max = 450, min = 1, message="company_name should have at least 1 characters")
     private String school_link_youtube;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="website should have at least 1 characters")
     private String school_website_url;
     private float school_lng, school_lat;
 

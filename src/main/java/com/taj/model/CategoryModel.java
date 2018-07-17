@@ -1,12 +1,19 @@
 package com.taj.model;
 
+import javax.validation.constraints.*;
+
 /**
  * Created by Taj 51 on 6/10/2018.
  */
 public class CategoryModel {
 
 
+    @Min(1)
     private int category_id;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="category_name should have at least 1 characters")
     private String category_name;
 
     public CategoryModel(int category_id, String category_name) {

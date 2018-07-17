@@ -1,12 +1,16 @@
 package com.taj.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.RequestEnquiryResponseModel;
 import com.taj.repository.RequestEnquiryResponseRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -21,11 +25,34 @@ public class RequestEnquiryResponseController {
 
     @Autowired
     RequestEnquiryResponseRepo repo;
+    @Autowired
+    ObjectMapper mapper;
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
     @PostMapping("/add")
-    public int addRequestEnquiry(@RequestBody RequestEnquiryResponseModel model) {
-        return repo.addNewResponse(model.getRequest_enquiry_id(), model.getResponse_message());
+    public ObjectNode addRequestEnquiry(@Valid @RequestBody RequestEnquiryResponseModel model, Errors errors) {
+        if (errors.hasErrors()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+        int res = repo.addNewResponse(model.getRequest_enquiry_id(), model.getResponse_message());
+
+        if (res == 1) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            //objectNode.put("enquiry_id", model.getEnquiry_id());
+            objectNode.put("request_enquiry_id", model.getRequest_enquiry_id());
+            objectNode.put("response_message", model.getResponse_message());
+
+            return objectNode;
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
     }
 
     @GetMapping("/getAll")
@@ -52,8 +79,26 @@ public class RequestEnquiryResponseController {
 
     @PutMapping("/updateEnquiry")
     @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
-    public int updateCategory(@RequestBody RequestEnquiryResponseModel model) {
-        return repo.updateNewResponse(model.getResponse_id(), model.getRequest_enquiry_id(), model.getResponse_message());
+    public ObjectNode updateCategory(@Valid @RequestBody RequestEnquiryResponseModel model, Errors errors) {
+
+
+        if (errors.hasErrors()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+        int res = repo.updateNewResponse(model.getResponse_id(), model.getRequest_enquiry_id(), model.getResponse_message());
+
+
+        ObjectNode objectNode = mapper.createObjectNode();
+        objectNode.put("response_id", model.getResponse_id());
+        objectNode.put("request_enquiry_id", model.getRequest_enquiry_id());
+        objectNode.put("response_message", model.getResponse_message());
+
+        return objectNode;
+
 
     }
 
@@ -63,8 +108,23 @@ public class RequestEnquiryResponseController {
 
     @PutMapping("/deleteEnquiry")
     @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
-    public int deleteCategory(@RequestBody RequestEnquiryResponseModel model) {
-        return repo.deleteNewResponse(model.getResponse_id());
+    public ObjectNode deleteCategory(@Valid @RequestBody RequestEnquiryResponseModel model, Errors errors) {
+
+        if (errors.hasErrors()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+        int res = repo.deleteNewResponse(model.getResponse_id());
+
+        ObjectNode objectNode = mapper.createObjectNode();
+        objectNode.put("response_id", model.getResponse_id());
+        objectNode.put("request_enquiry_id", model.getRequest_enquiry_id());
+        objectNode.put("response_message", model.getResponse_message());
+
+        return objectNode;
 
     }
 

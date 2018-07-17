@@ -1,11 +1,25 @@
 package com.taj.model;
 
+import javax.validation.constraints.Min;
+
 /**
  * Created by User on 7/8/2018.
  */
 public class CompanyResponseSchoolRequestModel {
 
-    private int response_id, responsed_company_id, responsed_request_id, responsed_from, responsed_to, is_aproved;
+    @Min(1)
+    private int response_id;
+    @Min(1)
+    private int  responsed_company_id;
+    @Min(1)
+    private int  responsed_request_id;
+    @Min(1)
+    private int  responsed_from;
+    @Min(1)
+    private int  responsed_to;
+    @Min(0)
+    private int  is_aproved;
+    @Min(1)
     private double responsed_cost;
 
     public CompanyResponseSchoolRequestModel() {

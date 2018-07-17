@@ -1,12 +1,16 @@
 package com.taj.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.CompanyResponseSchoolRequestModel;
 import com.taj.repository.CompanyResponseSchoolRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -20,12 +24,40 @@ public class CompanyResponseSchoolRequestController {
 
     @Autowired
     CompanyResponseSchoolRequestRepo repo;
+    @Autowired
+    ObjectMapper mapper;
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PostMapping("/add")
-    public int addCompanyResponseSchoolRequest(@RequestBody CompanyResponseSchoolRequestModel model) {
-        return repo.addResponseSchoolRequest(model.getResponse_id(), model.getResponsed_company_id(), model.getResponsed_request_id(), model.getResponsed_from(),
+    public ObjectNode addCompanyResponseSchoolRequest(@Valid @RequestBody CompanyResponseSchoolRequestModel model, Errors errors) {
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+        int res = repo.addResponseSchoolRequest( model.getResponsed_company_id(), model.getResponsed_request_id(), model.getResponsed_from(),
                 model.getResponsed_to(), model.getResponsed_cost(), model.getIs_aproved());
+
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            //objectNode.put("response_id", model.getResponse_id());
+            objectNode.put("responsed_company_id", model.getResponsed_company_id());
+            objectNode.put("responsed_request_id", model.getResponsed_request_id());
+            objectNode.put("responsed_from", model.getResponsed_from());
+            objectNode.put("responsed_from", model.getResponsed_to());
+            objectNode.put("responsed_cost", model.getResponsed_cost());
+            objectNode.put("is_aproved", model.getIs_aproved());
+
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
+
     }
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
@@ -72,9 +104,34 @@ public class CompanyResponseSchoolRequestController {
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PutMapping("/update")
-    public int updateCompanyResponseSchoolRequest(@RequestBody CompanyResponseSchoolRequestModel model) {
-        return repo.updateResponseSchoolRequest(model.getResponse_id(), model.getResponsed_company_id(), model.getResponsed_request_id(),
+    public ObjectNode updateCompanyResponseSchoolRequest(@Valid @RequestBody CompanyResponseSchoolRequestModel model, Errors errors) {
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+        int res = repo.updateResponseSchoolRequest(model.getResponse_id(), model.getResponsed_company_id(), model.getResponsed_request_id(),
                 model.getResponsed_from(), model.getResponsed_to(), model.getResponsed_cost(), model.getIs_aproved());
+
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("response_id", model.getResponse_id());
+            objectNode.put("responsed_company_id", model.getResponsed_company_id());
+            objectNode.put("responsed_request_id", model.getResponsed_request_id());
+            objectNode.put("responsed_from", model.getResponsed_from());
+            objectNode.put("responsed_from", model.getResponsed_to());
+            objectNode.put("responsed_cost", model.getResponsed_cost());
+            objectNode.put("is_aproved", model.getIs_aproved());
+
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
     }
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
