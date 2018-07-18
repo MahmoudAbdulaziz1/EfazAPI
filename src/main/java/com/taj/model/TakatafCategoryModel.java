@@ -1,10 +1,17 @@
 package com.taj.model;
 
+import javax.validation.constraints.*;
+
 /**
  * Created by User on 7/5/2018.
  */
 public class TakatafCategoryModel {
+    @Min(1)
     private int cat_id;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="category_name should have at least 1 characters")
     private String cat_name;
 
     public TakatafCategoryModel() {

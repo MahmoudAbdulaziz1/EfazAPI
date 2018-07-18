@@ -1,12 +1,19 @@
 package com.taj.model;
 
+import javax.validation.constraints.Min;
+
 /**
  * Created by User on 7/8/2018.
  */
 public class TakatafSchoolSeeTenderModel {
 
 
-    private int seen_id, seen_tender_id, seen_school_id;
+    @Min(1)
+    private int seen_id;
+    @Min(1)
+    private int  seen_tender_id;
+    @Min(1)
+    private int seen_school_id;
 
     public TakatafSchoolSeeTenderModel() {
     }

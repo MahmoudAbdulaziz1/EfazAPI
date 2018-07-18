@@ -138,8 +138,19 @@ public class CompanyOfferController {
      */
     @PutMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public int deleteCompanyOffer(@PathVariable int id) {
-        return repo.deleteCompanyOffer(id);
+    public ObjectNode deleteCompanyOffer(@PathVariable int id) {
+        int res = repo.deleteCompanyOffer(id);
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "success");
+
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
     }
 
     /**

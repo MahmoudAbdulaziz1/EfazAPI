@@ -17,8 +17,8 @@ public class TakatafSchoolSeeTenderRepo {
     JdbcTemplate jdbcTemplate;
 
 
-    public int addSeen(int seen_id, int seen_tender_id, int seen_school_id) {
-        return jdbcTemplate.update("INSERT INTO takatf_school_see_tender VALUES (?,?,?)", seen_id, seen_tender_id, seen_school_id);
+    public int addSeen(int seen_tender_id, int seen_school_id) {
+        return jdbcTemplate.update("INSERT INTO takatf_school_see_tender VALUES (?,?,?)", null, seen_tender_id, seen_school_id);
     }
 
     public List<TakatafSchoolSeeTenderModel> getTendersSeen() {

@@ -136,7 +136,19 @@ public class CompanyResponseSchoolRequestController {
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PutMapping("/delete/{id}")
-    public int deleteCompanyResponseSchoolRequest(@PathVariable int id) {
-        return repo.deleteResponseSchoolRequest(id);
+    public ObjectNode deleteCompanyResponseSchoolRequest(@PathVariable int id) {
+        int res =  repo.deleteResponseSchoolRequest(id);
+
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "success");
+
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
     }
 }

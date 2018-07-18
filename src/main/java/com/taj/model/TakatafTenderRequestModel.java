@@ -1,16 +1,26 @@
 package com.taj.model;
 
+import javax.validation.constraints.Min;
+
 /**
  * Created by User on 7/8/2018.
  */
 public class TakatafTenderRequestModel {
 
-    private int request_id, request_school_id, request_tender_id, is_aproved;
+    @Min(1)
+    private int request_id;
+    @Min(1)
+    private int request_school_id;
+    @Min(1)
+    private int request_tender_id;
+    @Min(0)
+    private int is_aproved;
 
     public TakatafTenderRequestModel() {
     }
 
     public TakatafTenderRequestModel(int request_id, int request_school_id, int request_tender_id, int is_aproved) {
+
         this.request_id = request_id;
         this.request_school_id = request_school_id;
         this.request_tender_id = request_tender_id;

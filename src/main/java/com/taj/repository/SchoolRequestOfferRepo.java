@@ -17,8 +17,8 @@ public class SchoolRequestOfferRepo {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    public int addSchoolRequestOffer(int request_id, int requsted_school_id, int requsted_offer_id, int is_accepted) {
-        return jdbcTemplate.update("INSERT INTO efaz_school_request_offer VALUES (?,?,?,?)", request_id, requsted_school_id, requsted_offer_id, is_accepted);
+    public int addSchoolRequestOffer(int requsted_school_id, int requsted_offer_id, int is_accepted) {
+        return jdbcTemplate.update("INSERT INTO efaz_school_request_offer VALUES (?,?,?,?)", null, requsted_school_id, requsted_offer_id, is_accepted);
     }
 
     public List<SchoolRequestOfferModel> getSchoolRequestOffer() {

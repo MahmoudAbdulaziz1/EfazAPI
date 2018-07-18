@@ -1,13 +1,18 @@
 package com.taj.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.CompanyResponseSchoolRequestModel;
 import com.taj.model.SchoolRequestOfferModel;
 import com.taj.repository.SchoolRequestOfferRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -23,10 +28,35 @@ public class SchoolRequestOfferController {
     @Autowired
     SchoolRequestOfferRepo repo;
 
+    @Autowired
+    ObjectMapper mapper;
+
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PostMapping("/add")
-    public int addSchoolRequestOffer(@RequestBody SchoolRequestOfferModel model) {
-        return repo.addSchoolRequestOffer(model.getRequest_id(), model.getRequsted_school_id() ,model.getRequsted_offer_id(), model.getIs_accepted());
+    public JsonNode addSchoolRequestOffer(@Valid @RequestBody SchoolRequestOfferModel model, Errors errors) {
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+        int res = repo.addSchoolRequestOffer(  model.getRequsted_school_id() ,model.getRequsted_offer_id(), model.getIs_accepted());
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            //objectNode.put("request_id", model.getRequest_id());
+            objectNode.put("requsted_school_id", model.getRequsted_school_id());
+            objectNode.put("requsted_offer_id", model.getRequsted_offer_id());
+            objectNode.put("is_accepted", model.getIs_accepted());
+
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
+
     }
 
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
@@ -72,14 +102,47 @@ public class SchoolRequestOfferController {
 
     @PutMapping("/update")
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
-    public int updateSchoolRequestOffer(@RequestBody SchoolRequestOfferModel model) {
-        return repo.updateResponseSchoolRequest(model.getRequest_id(), model.getRequsted_school_id(), model.getRequsted_offer_id(), model.getIs_accepted());
+    public ObjectNode updateSchoolRequestOffer(@Valid @RequestBody SchoolRequestOfferModel model, Errors errors) {
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+        int res = repo.updateResponseSchoolRequest(model.getRequest_id(), model.getRequsted_school_id(), model.getRequsted_offer_id(), model.getIs_accepted());
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("request_id", model.getRequest_id());
+            objectNode.put("requsted_school_id", model.getRequsted_school_id());
+            objectNode.put("requsted_offer_id", model.getRequsted_offer_id());
+            objectNode.put("is_accepted", model.getIs_accepted());
+
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
+
     }
 
     @PutMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
-    public int deleteSchoolRequestOffer(@PathVariable int id) {
-        return repo.deleteResponseSchoolRequest(id);
+    public ObjectNode deleteSchoolRequestOffer(@PathVariable int id) {
+        int res = repo.deleteResponseSchoolRequest(id);
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "success");
+
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
     }
 
 }

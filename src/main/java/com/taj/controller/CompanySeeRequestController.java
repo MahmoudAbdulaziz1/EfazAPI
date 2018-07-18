@@ -103,20 +103,20 @@ public class CompanySeeRequestController {
 
         int res = repo.updateCompanySeeRequest(model.getSeen_id(), model.getRequest_company_id(), model.getRequest_id());
 
-//        if (res == 0){
-//            ObjectNode objectNode = mapper.createObjectNode();
-//            objectNode.put("value", "not success"+res);
-//
-//            return objectNode;
-//
-//        }else {
+        if (res == 0){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success"+res);
+
+            return objectNode;
+
+        }else {
         ObjectNode objectNode = mapper.createObjectNode();
         objectNode.put("seen_id", model.getSeen_id());
         objectNode.put("request_id", model.getRequest_id());
         objectNode.put("request_company_id", model.getRequest_company_id());
 
         return objectNode;
-        //}
+        }
 
     }
 
@@ -126,8 +126,27 @@ public class CompanySeeRequestController {
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PutMapping("/delete")
-    public int deleteCategory(@RequestBody CompanySeeRequestModel model) {
-        return repo.deleteCompanySeeRequest(model.getSeen_id());
+    public ObjectNode deleteCategory(@Valid @RequestBody CompanySeeRequestModel model, Errors errors) {
+        if (errors.hasErrors()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+        int res = repo.deleteCompanySeeRequest(model.getSeen_id());
+
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "success");
+
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
 
     }
 }

@@ -1,11 +1,26 @@
 package com.taj.model;
 
+import org.springframework.lang.NonNull;
+
+import javax.validation.constraints.Min;
+
 /**
  * Created by User on 7/8/2018.
  */
 public class SchoolRequestOfferModel {
 
-    private int request_id, requsted_school_id, requsted_offer_id, is_accepted;
+    @NonNull
+    @Min(1)
+    private int request_id;
+    @NonNull
+    @Min(1)
+    private int requsted_school_id;
+    @NonNull
+    @Min(1)
+    private int requsted_offer_id;
+    @NonNull
+    @Min(0)
+    private int is_accepted;
 
     public SchoolRequestOfferModel() {
     }

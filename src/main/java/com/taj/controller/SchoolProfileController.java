@@ -47,7 +47,7 @@ public class SchoolProfileController {
             return objectNode;
         }
 
-        int res =  repo.addSchoolProfile(model.getSchool_id(), model.getSchool_name(), model.getSchool_logo_image(),
+        int res =  repo.addSchoolProfile(model.getSchool_name(), model.getSchool_logo_image(),
                 model.getSchool_address(), model.getSchool_service_desc(), model.getSchool_link_youtube(),
                 model.getSchool_website_url(),model.getSchool_lng(), model.getSchool_lat());
 
@@ -142,8 +142,19 @@ public class SchoolProfileController {
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PutMapping("/delete/{id}")
-    public int deleteSchoolProfile(@PathVariable int id) {
-        return repo.deleteSchoolProfile(id);
+    public ObjectNode deleteSchoolProfile(@PathVariable int id) {
+        int res = repo.deleteSchoolProfile(id);
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "success");
+
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
     }
 
 

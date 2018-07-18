@@ -1,12 +1,17 @@
 package com.taj.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.SchoolRequestsModel;
 import com.taj.repository.SchoolRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -20,14 +25,47 @@ public class SchoolRequestController {
 
     @Autowired
     SchoolRequestRepo repo;
+    @Autowired
+    ObjectMapper mapper;
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PostMapping("/addRequest")
-    public int addSchoolRequest(@RequestBody SchoolRequestsModel model) {
+    public JsonNode addSchoolRequest(@Valid @RequestBody SchoolRequestsModel model, Errors errors) {
 
-        return repo.addRequest(model.getRequest_id(), model.getRequest_details_file(), model.getRequest_title(), model.getRequest_explaination(),
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+
+        int res = repo.addRequest(model.getRequest_details_file(), model.getRequest_title(), model.getRequest_explaination(),
                 model.getRequest_display_date(), model.getRequest_expired_date(), model.getRequest_deliver_date(), model.getRequest_payment_date(),
                 model.getRequest_is_available(), model.getRequest_is_conformied(), model.getSchool_id(), model.getRequest_category_id(), model.getReceive_palce_id(), model.getExtended_payment());
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            //objectNode.put("request_id", model.getRequest_id());
+            objectNode.put("request_details_file", model.getRequest_details_file());
+            objectNode.put("request_title", model.getRequest_title());
+            objectNode.put("request_explaination", model.getRequest_explaination());
+            objectNode.put("request_display_date", model.getRequest_display_date().toString());
+            objectNode.put("request_expired_date", model.getRequest_expired_date().toString());
+            objectNode.put("request_deliver_date", model.getRequest_deliver_date().toString());
+            objectNode.put("request_payment_date", model.getRequest_payment_date().toString());
+            objectNode.put("request_is_available", model.getRequest_is_available());
+            objectNode.put("request_is_conformied", model.getRequest_is_conformied());
+            objectNode.put("school_id", model.getSchool_id());
+            objectNode.put("request_category_id", model.getRequest_category_id());
+            objectNode.put("receive_palce_id", model.getReceive_palce_id());
+            objectNode.put("extended_payment", model.getExtended_payment());
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
     }
 
     @GetMapping("/getRequests")
@@ -50,16 +88,58 @@ public class SchoolRequestController {
 
     @PutMapping("/updateRequest")
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
-    public int updateRequestModel(@RequestBody SchoolRequestsModel model) {
-        return repo.updateRequest(model.getRequest_id(), model.getRequest_details_file(), model.getRequest_title(), model.getRequest_explaination(),
+    public JsonNode updateRequestModel(@Valid @RequestBody SchoolRequestsModel model, Errors errors) {
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+        int res = repo.updateRequest(model.getRequest_id(), model.getRequest_details_file(), model.getRequest_title(), model.getRequest_explaination(),
                 model.getRequest_display_date(), model.getRequest_expired_date(), model.getRequest_deliver_date(), model.getRequest_payment_date(),
                 model.getRequest_is_available(), model.getRequest_is_conformied(), model.getSchool_id(), model.getRequest_category_id(), model.getReceive_palce_id(), model.getExtended_payment());
+
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("request_id", model.getRequest_id());
+            objectNode.put("request_details_file", model.getRequest_details_file());
+            objectNode.put("request_title", model.getRequest_title());
+            objectNode.put("request_explaination", model.getRequest_explaination());
+            objectNode.put("request_display_date", model.getRequest_display_date().toString());
+            objectNode.put("request_expired_date", model.getRequest_expired_date().toString());
+            objectNode.put("request_deliver_date", model.getRequest_deliver_date().toString());
+            objectNode.put("request_payment_date", model.getRequest_payment_date().toString());
+            objectNode.put("request_is_available", model.getRequest_is_available());
+            objectNode.put("request_is_conformied", model.getRequest_is_conformied());
+            objectNode.put("school_id", model.getSchool_id());
+            objectNode.put("request_category_id", model.getRequest_category_id());
+            objectNode.put("receive_palce_id", model.getReceive_palce_id());
+            objectNode.put("extended_payment", model.getExtended_payment());
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
     }
 
     @PutMapping("/deleteRequest/{id}")
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
-    public int deleteSchoolRequest(@PathVariable int id) {
-        return repo.deleteSchoolRequest(id);
+    public ObjectNode deleteSchoolRequest(@PathVariable int id) {
+        int res = repo.deleteSchoolRequest(id);
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "success");
+
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
     }
 
     @GetMapping("/filterConfirm/{isConfirmed}")

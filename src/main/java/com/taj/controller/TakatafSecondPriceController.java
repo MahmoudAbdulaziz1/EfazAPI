@@ -1,5 +1,7 @@
 package com.taj.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.TakatafFirstPriceModel;
 import com.taj.model.TakatafSecondPriceModel;
 import com.taj.repository.TakatafFirstPriceRepo;
@@ -7,8 +9,10 @@ import com.taj.repository.TakatafSecondPriceRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -22,6 +26,9 @@ public class TakatafSecondPriceController {
 
     @Autowired
     TakatafSecondPriceRepo repo;
+
+    @Autowired
+    ObjectMapper mapper;
 
     /**
      * @return list of company categories
@@ -50,8 +57,32 @@ public class TakatafSecondPriceController {
      */
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public int addPrice(@RequestBody TakatafSecondPriceModel model) {
-        return repo.addTkatafSecondPrice(model.getS_from(), model.getS_to(), model.getS_price());
+    public ObjectNode addPrice(@Valid @RequestBody TakatafSecondPriceModel model, Errors errors) {
+
+        if (errors.hasErrors()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+        int res = repo.addTkatafSecondPrice(model.getS_from(), model.getS_to(), model.getS_price());
+
+        if (res == 1) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            //objectNode.put("f_id", model.getS_id());
+            objectNode.put("f_from", model.getS_from());
+            objectNode.put("f_to", model.getS_to());
+            objectNode.put("f_price", model.getS_price());
+
+            return objectNode;
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
+
 
     }
 
@@ -61,8 +92,32 @@ public class TakatafSecondPriceController {
 
     @PutMapping("/update")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public int updatePrice(@RequestBody TakatafSecondPriceModel model) {
-        return repo.updateTkatafSecondPrice(model.getS_id(), model.getS_from(), model.getS_to(), model.getS_price());
+    public ObjectNode updatePrice(@Valid @RequestBody TakatafSecondPriceModel model, Errors errors) {
+
+        if (errors.hasErrors()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+        int res = repo.updateTkatafSecondPrice(model.getS_id(), model.getS_from(), model.getS_to(), model.getS_price());
+
+        if (res == 1) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("f_id", model.getS_id());
+            objectNode.put("f_from", model.getS_from());
+            objectNode.put("f_to", model.getS_to());
+            objectNode.put("f_price", model.getS_price());
+
+            return objectNode;
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
+
 
     }
 
@@ -72,8 +127,30 @@ public class TakatafSecondPriceController {
 
     @PutMapping("/delete")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public int deletePrice(@RequestBody TakatafSecondPriceModel model) {
-        return repo.deleteTkatafSecondPrice(model.getS_id());
+    public ObjectNode deletePrice(@Valid @RequestBody TakatafSecondPriceModel model, Errors errors) {
+
+        if (errors.hasErrors()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+        int res = repo.deleteTkatafSecondPrice(model.getS_id());
+
+        if (res ==1) {
+            ObjectNode objectNode = mapper.createObjectNode();
+
+            objectNode.put("value", "success");
+            return objectNode;
+        }else {
+
+            ObjectNode objectNode = mapper.createObjectNode();
+
+            objectNode.put("value", "not success");
+            return objectNode;
+
+        }
 
     }
 

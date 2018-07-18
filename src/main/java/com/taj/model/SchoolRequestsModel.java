@@ -1,5 +1,8 @@
 package com.taj.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import javax.validation.constraints.*;
 import java.sql.Timestamp;
 
 /**
@@ -8,13 +11,49 @@ import java.sql.Timestamp;
 public class SchoolRequestsModel {
 
 
+    @Min(1)
     private int request_id;
+    @NotNull
     private byte[] request_details_file;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="title should have at least 1 characters")
     private String request_title;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="explain should have at least 1 characters")
     private String request_explaination;
-    private Timestamp request_display_date, request_expired_date, request_deliver_date, request_payment_date;
-    private int request_is_available, request_is_conformied, school_id, request_category_id;
+    @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+    private Timestamp request_display_date;
+    @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+    private Timestamp request_expired_date;
+    @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+    private Timestamp request_deliver_date;
+    @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+    private Timestamp request_payment_date;
+    @NotNull
+    @Min(0)
+    private int request_is_available;
+    @NotNull
+    @Min(0)
+    private int request_is_conformied;
+    @NotNull
+    @Min(1)
+    private int school_id;
+    @NotNull
+    @Min(1)
+    private int request_category_id;
+    @NotNull
+    @Min(1)
     private int receive_palce_id;
+    @NotNull
+    @Min(0)
     private int extended_payment;
 
 

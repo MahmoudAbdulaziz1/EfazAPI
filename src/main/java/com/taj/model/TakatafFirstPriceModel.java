@@ -1,12 +1,19 @@
 package com.taj.model;
 
+import javax.validation.constraints.Min;
+
 /**
  * Created by User on 7/5/2018.
  */
 public class TakatafFirstPriceModel {
 
-
-    private int f_id, f_from, f_to;
+    @Min(1)
+    private int f_id;
+    @Min(1)
+    private int f_from;
+    @Min(1)
+    private int f_to;
+    @Min(1)
     private double f_price;
 
     public TakatafFirstPriceModel() {

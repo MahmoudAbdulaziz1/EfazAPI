@@ -1,11 +1,18 @@
 package com.taj.model;
 
+import javax.validation.constraints.Min;
+
 /**
  * Created by User on 7/9/2018.
  */
 public class SchoolSeeRequest {
 
-    private int seen_id, seen_offer_id, seen_offer_school_id;
+    @Min(1)
+    private int seen_id;
+    @Min(1)
+    private int seen_offer_id;
+    @Min(1)
+    private int seen_offer_school_id;
 
     public SchoolSeeRequest() {
     }

@@ -17,8 +17,8 @@ public class TakatafTenderRequestRepo {
     JdbcTemplate jdbcTemplate;
 
 
-    public int add$Request(int request_id, int request_school_id, int request_tender_id, int is_aproved) {
-        return jdbcTemplate.update("INSERT INTO takatf_request_tender VALUES (?,?,?,?)", request_id, request_school_id, request_tender_id, is_aproved);
+    public int add$Request(int request_school_id, int request_tender_id, int is_aproved) {
+        return jdbcTemplate.update("INSERT INTO takatf_request_tender VALUES (?,?,?,?)", null, request_school_id, request_tender_id, is_aproved);
     }
 
     public List<TakatafTenderRequestModel> getTenderRequests(){

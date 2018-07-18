@@ -17,10 +17,10 @@ public class TakatafTenderRepo {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    public int addTender(int tender_id, byte[] tender_logo, String tender_title, String tender_explain, Timestamp tender_display_date, Timestamp tender_expire_date,
+    public int addTender(byte[] tender_logo, String tender_title, String tender_explain, Timestamp tender_display_date, Timestamp tender_expire_date,
                          Timestamp tender_deliver_date, int tender_company_id, int tender_is_confirmed, int tender_is_available, int tender_f_id, int tender_s_id,
                          int tender_t_id, int tender_cat_id) {
-        return jdbcTemplate.update("INSERT INTO takatf_tender VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", tender_id, tender_logo, tender_title, tender_explain,
+        return jdbcTemplate.update("INSERT INTO takatf_tender VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", null, tender_logo, tender_title, tender_explain,
                 tender_display_date, tender_expire_date, tender_deliver_date, tender_company_id, tender_is_confirmed, tender_is_available, tender_f_id, tender_s_id,
                 tender_t_id, tender_cat_id);
     }

@@ -54,8 +54,9 @@ public class CompanySeeRequestRepo {
 
     public int deleteCompanySeeRequest(int id) {
         jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=0;");
-        jdbcTemplate.update("DELETE FROM efaz_company_see_request WHERE seen_id=?", id);
-       return jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=1;");
+        int res = jdbcTemplate.update("DELETE FROM efaz_company_see_request WHERE seen_id=?", id);
+        jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=1;");
+        return res;
     }
 
 

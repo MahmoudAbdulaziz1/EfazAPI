@@ -1,11 +1,18 @@
 package com.taj.model;
 
+import javax.validation.constraints.*;
+
 /**
  * Created by User on 7/3/2018.
  */
 public class SchoolRequestCategoryModel {
 
+    @Min(1)
     private int request_category_id;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="category_name should have at least 1 characters")
     private String request_category_name;
 
     public SchoolRequestCategoryModel() {

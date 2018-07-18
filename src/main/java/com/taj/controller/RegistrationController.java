@@ -148,8 +148,20 @@ public class RegistrationController {
      */
     //@PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     @PutMapping("/delete/{id}")
-    public int deleteUser(@PathVariable int id) {
-        return registrationRepo.deleteUser(id);
+    public ObjectNode deleteUser(@PathVariable int id) {
+        int res = registrationRepo.deleteUser(id);
+
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "success");
+
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
     }
 
 
@@ -203,8 +215,20 @@ public class RegistrationController {
      */
     //@PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     @GetMapping("/confirm/{id}")
-    public int confirmEmail(@PathVariable int id) {
-        return registrationRepo.confirmEmail(id);
+    public ObjectNode confirmEmail(@PathVariable int id) {
+        int res = registrationRepo.confirmEmail(id);
+
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "success");
+
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
     }
 
 

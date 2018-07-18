@@ -17,11 +17,11 @@ public class SchoolRequestRepo {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    public int addRequest(int request_id, byte[] request_details_file, String request_title, String request_explaination,
+    public int addRequest(byte[] request_details_file, String request_title, String request_explaination,
                           Timestamp request_display_date, Timestamp request_expired_date, Timestamp request_deliver_date,
                           Timestamp request_payment_date, int request_is_available, int request_is_conformied, int school_id,
                           int request_category_id, int receive_palce_id, int extended_payment) {
-        return jdbcTemplate.update("INSERT INTO efaz_school_tender VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", request_id, request_details_file, request_title,
+        return jdbcTemplate.update("INSERT INTO efaz_school_tender VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", null, request_details_file, request_title,
                 request_explaination, request_display_date, request_expired_date, request_deliver_date, request_is_available, request_is_conformied,
                 request_payment_date, school_id, request_category_id, receive_palce_id, extended_payment);
     }

@@ -1,5 +1,6 @@
 package com.taj.model;
 
+import javax.validation.constraints.*;
 import java.sql.Timestamp;
 
 /**
@@ -8,11 +9,40 @@ import java.sql.Timestamp;
 public class TakatafTenderModel {
 
 
+    @Min(1)
     private int tender_id;
+    @NotNull
     private byte[] tender_logo;
-    private String tender_title, tender_explain;
-    private Timestamp tender_display_date, tender_expire_date, tender_deliver_date;
-    private int tender_company_id, tender_is_confirmed, tender_is_available, tender_f_id, tender_s_id, tender_t_id, tender_cat_id;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="title should have at least 1 characters")
+    private String tender_title;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="explain should have at least 1 characters")
+    private String tender_explain;
+    @NotNull
+    private Timestamp tender_display_date;
+    @NotNull
+    private Timestamp tender_expire_date;
+    @NotNull
+    private Timestamp tender_deliver_date;
+    @Min(1)
+    private int tender_company_id;
+    @Min(0)
+    private int tender_is_confirmed;
+    @Min(0)
+    private int tender_is_available;
+    @Min(1)
+    private int tender_f_id;
+    @Min(1)
+    private int tender_s_id;
+    @Min(1)
+    private int tender_t_id;
+    @Min(1)
+    private int tender_cat_id;
 
     public TakatafTenderModel() {
     }

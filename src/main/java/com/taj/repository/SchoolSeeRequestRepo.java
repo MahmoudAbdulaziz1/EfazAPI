@@ -18,8 +18,8 @@ public class SchoolSeeRequestRepo {
     JdbcTemplate jdbcTemplate;
 
 
-    public int addSeen(int seen_id, int seen_offer_id, int seen_offer_school_id) {
-        return jdbcTemplate.update("INSERT INTO efaz_school_see_offer VALUES (?,?,?)", seen_id, seen_offer_id, seen_offer_school_id);
+    public int addSeen(int seen_offer_id, int seen_offer_school_id) {
+        return jdbcTemplate.update("INSERT INTO efaz_school_see_offer VALUES (?,?,?)", null, seen_offer_id, seen_offer_school_id);
     }
 
     public List<SchoolSeeRequest> getOffersSeen() {

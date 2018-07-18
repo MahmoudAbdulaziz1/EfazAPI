@@ -1,11 +1,18 @@
 package com.taj.model;
 
+import javax.validation.constraints.*;
+
 /**
  * Created by User on 7/4/2018.
  */
 public class SchoolReceivePlaceModel {
 
+    @Min(1)
     private int place_id;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="name should have at least 1 characters")
     private String place_name;
 
     public SchoolReceivePlaceModel() {

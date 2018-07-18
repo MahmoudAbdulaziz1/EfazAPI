@@ -1,12 +1,16 @@
 package com.taj.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.TakatafSchoolSeeTenderModel;
 import com.taj.repository.TakatafSchoolSeeTenderRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -21,10 +25,34 @@ public class TakatafSchoolSeeTenderController {
     @Autowired
     TakatafSchoolSeeTenderRepo repo;
 
+    @Autowired
+    ObjectMapper mapper;
+
     @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
     @PostMapping("/add")
-    public int addTenderSeen(@RequestBody TakatafSchoolSeeTenderModel model){
-        return repo.addSeen(model.getSeen_id(), model.getSeen_tender_id(), model.getSeen_school_id());
+    public ObjectNode addTenderSeen(@Valid @RequestBody TakatafSchoolSeeTenderModel model, Errors errors){
+        if (errors.hasErrors()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+        int res = repo.addSeen(model.getSeen_tender_id(), model.getSeen_school_id());
+
+        if (res == 1) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            //objectNode.put("seen_id", model.getSeen_id());
+            objectNode.put("seen_school_id", model.getSeen_school_id());
+            objectNode.put("seen_tender_id", model.getSeen_tender_id());
+
+            return objectNode;
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
     }
 
     @GetMapping("/getAll")
@@ -53,13 +81,44 @@ public class TakatafSchoolSeeTenderController {
 
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     @PutMapping("/update")
-    public int updateTendersSeen(@RequestBody TakatafSchoolSeeTenderModel model){
-        return repo.updateTendersSeen(model.getSeen_id(), model.getSeen_tender_id(), model.getSeen_school_id());
+    public ObjectNode updateTendersSeen(@Valid @RequestBody TakatafSchoolSeeTenderModel model, Errors errors){
+        if (errors.hasErrors()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return objectNode;
+        }
+        int res =  repo.updateTendersSeen(model.getSeen_id(), model.getSeen_tender_id(), model.getSeen_school_id());
+
+        if (res == 1) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("seen_id", model.getSeen_id());
+            objectNode.put("seen_school_id", model.getSeen_school_id());
+            objectNode.put("seen_tender_id", model.getSeen_tender_id());
+            return objectNode;
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
     }
 
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     @PutMapping("/delete/{id}")
-    public int deleteTendersSeen(@PathVariable int id){
-        return repo.deleteTendersSeen(id);
+    public ObjectNode deleteTendersSeen(@PathVariable int id){
+        int res = repo.deleteTendersSeen(id);
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "success");
+
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
     }
 }
