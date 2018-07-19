@@ -28,10 +28,7 @@ public class LoginModel {
     @NotEmpty
     @Size(max = 450, min = 1, message="role should have at least 1 characters")
     private String login_role;
-    @NotNull
-    @NotBlank
-    @NotEmpty
-    @Size(max = 450, min = 11, message="token should have at least 11 characters")
+
     private String login_token;
 
     public LoginModel(int login_id, String user_email, String user_password, int is_active, int login_type, String login_role, String login_token) {
