@@ -3,6 +3,8 @@ package com.taj.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.CompanyProfileModel;
+import com.taj.model.GetAllCompanies;
+import com.taj.model.GetCompanyById;
 import com.taj.repository.ProfileRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,6 +13,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -79,8 +82,13 @@ public class ProfileController {
 
     @GetMapping("/getAll")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public List<CompanyProfileModel> getProfiles() {
-        return profileRepo.getProfiles();
+    public GetAllCompanies getProfiles() {
+
+        List<CompanyProfileModel> list = profileRepo.getProfiles();
+        ObjectNode objectNode = mapper.createObjectNode();
+        GetAllCompanies getAllCompanies = new GetAllCompanies("200", list);
+        return getAllCompanies;
+
     }
 
     /**
@@ -136,8 +144,13 @@ public class ProfileController {
 
     @GetMapping("/get/{id}")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public CompanyProfileModel getProfile(@PathVariable int id) {
-        return profileRepo.getProfile(id);
+    public GetCompanyById getProfile(@PathVariable int id) {
+        List<CompanyProfileModel> model =  profileRepo.getProfile(id);
+        if (model.size()>0) {
+            return new GetCompanyById("200", model);
+        }else {
+            return new GetCompanyById("400", null);
+        }
     }
 
 

@@ -11,8 +11,7 @@ import java.sql.Timestamp;
  */
 public class CompanyOfferModel {
 
-    @NotNull
-    @Min(1)
+
     private int offer_id;
     @NotNull
     private byte[] offer_logo;

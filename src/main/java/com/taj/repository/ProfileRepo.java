@@ -32,8 +32,8 @@ public class ProfileRepo {
     }
 
 
-    public CompanyProfileModel getProfile(int id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM efaz_company_profile WHERE  company_id=?;",
+    public List<CompanyProfileModel> getProfile(int id) {
+        return jdbcTemplate.query("SELECT * FROM efaz_company_profile WHERE  company_id=?;",
                 new Object[]{id}, (resultSet, i) -> new CompanyProfileModel(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
                         resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9)));
