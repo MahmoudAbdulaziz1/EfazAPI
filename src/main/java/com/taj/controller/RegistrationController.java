@@ -37,6 +37,11 @@ public class RegistrationController {
 
     @Autowired
     ObjectMapper mapper;
+//    @GetMapping("/gets/{email}")
+//    public boolean checkIfEmailExist(@PathVariable String email){
+//        return  registrationRepo.checkIfEmailExist(email);
+//    }
+
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ObjectNode addUserRegistration(@Valid @RequestBody RegistrationModel registrationModel, Errors errors) {
@@ -47,7 +52,13 @@ public class RegistrationController {
             objectNode.put("message", "Validation Failed");
             objectNode.put("details", errors.getAllErrors().toString());
             return objectNode;
+        }else if (registrationRepo.checkIfEmailExist(registrationModel.getRegisteration_email())){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 405);
+            objectNode.put("message", "Email is exist");
+            return objectNode;
         }
+
         String encodedPassword = bCryptPasswordEncoder.encode(registrationModel.getRegisteration_password());
         registrationRepo.addUser(registrationModel.getRegisteration_email(), encodedPassword,
                 registrationModel.getRegisteration_username(), registrationModel.getRegisteration_phone_number(),

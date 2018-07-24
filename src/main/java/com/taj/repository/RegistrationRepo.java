@@ -39,6 +39,14 @@ public class RegistrationRepo {
 //    RegistrationModel model;
 
 
+    public boolean checkIfEmailExist(String email){
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_registration WHERE registeration_email=?;",
+                Integer.class, email);
+        return cnt != null && cnt > 0;
+    }
+
+
     public RegistrationModel addUser(String email, String password, String userName, String phoneNumber, String companyName
             , String address, String website, int isSchool, int isActive, String registration_role) {
 
@@ -80,6 +88,8 @@ public class RegistrationRepo {
 
 
     }
+
+
 
 
     public List<RegistrationModel> getUsers() {
