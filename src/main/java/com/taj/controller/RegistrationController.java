@@ -3,6 +3,7 @@ package com.taj.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.RegistrationModel;
+import com.taj.model.UserType;
 import com.taj.repository.RegistrationRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -50,34 +51,52 @@ public class RegistrationController {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
-            objectNode.put("details", errors.getAllErrors().toString());
             return objectNode;
-        }else if (registrationRepo.checkIfEmailExist(registrationModel.getRegisteration_email())){
+        }else if (registrationRepo.checkIfEmailExist(registrationModel.getRegisteration_email(), registrationModel.getRegistration_role())){
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("state", 405);
+            objectNode.put("state", 400);
             objectNode.put("message", "Email is exist");
             return objectNode;
         }
 
-        String encodedPassword = bCryptPasswordEncoder.encode(registrationModel.getRegisteration_password());
-        registrationRepo.addUser(registrationModel.getRegisteration_email(), encodedPassword,
-                registrationModel.getRegisteration_username(), registrationModel.getRegisteration_phone_number(),
-                registrationModel.getRegistration_organization_name(), registrationModel.getRegistration_address_desc(),
-                registrationModel.getRegistration_website_url(), registrationModel.getRegistration_is_school(),
-                registrationModel.getRegistration_isActive(), registrationModel.getRegistration_role());
-        ObjectNode objectNode = mapper.createObjectNode();
-        //objectNode.put("registration_id", registrationModel.getRegistration_id());
-        objectNode.put("registeration_email", registrationModel.getRegisteration_email());
-        objectNode.put("registeration_password", registrationModel.getRegisteration_password());
-        objectNode.put("registeration_username", registrationModel.getRegisteration_username());
-        objectNode.put("registeration_phone_number", registrationModel.getRegisteration_phone_number());
-        objectNode.put("registration_organization_name", registrationModel.getRegistration_organization_name());
-        objectNode.put("registration_address_desc", registrationModel.getRegistration_address_desc());
-        objectNode.put("registration_website_url", registrationModel.getRegistration_website_url());
-        objectNode.put("registration_is_school", registrationModel.getRegistration_is_school());
-        objectNode.put("registration_isActive", registrationModel.getRegistration_isActive());
-        objectNode.put("registration_role", registrationModel.getRegistration_role());
-        return objectNode;
+        if (registrationModel.getRegistration_role().trim().compareTo(UserType.admin.toString())==0 ||
+                registrationModel.getRegistration_role().trim().compareTo(UserType.school.toString())==0 ||
+                registrationModel.getRegistration_role().trim().compareTo(UserType.company.toString())==0) {
+
+            String encodedPassword = bCryptPasswordEncoder.encode(registrationModel.getRegisteration_password());
+            RegistrationModel model = registrationRepo.addUser(registrationModel.getRegisteration_email(), encodedPassword,
+                    registrationModel.getRegisteration_username(), registrationModel.getRegisteration_phone_number(),
+                    registrationModel.getRegistration_organization_name(), registrationModel.getRegistration_address_desc(),
+                    registrationModel.getRegistration_website_url(),
+                    registrationModel.getRegistration_isActive(), registrationModel.getRegistration_role());
+            if (model != null) {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("states", 201);
+                objectNode.put("registeration_email", registrationModel.getRegisteration_email());
+                objectNode.put("registeration_password", registrationModel.getRegisteration_password());
+                objectNode.put("registeration_username", registrationModel.getRegisteration_username());
+                objectNode.put("registeration_phone_number", registrationModel.getRegisteration_phone_number());
+                objectNode.put("registration_organization_name", registrationModel.getRegistration_organization_name());
+                objectNode.put("registration_address_desc", registrationModel.getRegistration_address_desc());
+                objectNode.put("registration_website_url", registrationModel.getRegistration_website_url());
+                objectNode.put("registration_isActive", registrationModel.getRegistration_isActive());
+                objectNode.put("registration_role", registrationModel.getRegistration_role());
+                return objectNode;
+            } else {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("states", 400);
+                objectNode.put("message", "sign up error");
+                return objectNode;
+            }
+        }else {
+
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("states", 400);
+            objectNode.put("message", "not valid role");
+            return objectNode;
+
+        }
+
 
     }
 
@@ -125,7 +144,7 @@ public class RegistrationController {
         }
         int res = registrationRepo.updateUser(registrationModel.getRegistration_id(), registrationModel.getRegisteration_email(), registrationModel.getRegisteration_password(),
                 registrationModel.getRegisteration_username(), registrationModel.getRegisteration_phone_number(), registrationModel.getRegistration_organization_name(), registrationModel.getRegistration_address_desc(),
-                registrationModel.getRegistration_website_url(), registrationModel.getRegistration_is_school(), registrationModel.getRegistration_isActive(), registrationModel.getRegistration_role());
+                registrationModel.getRegistration_website_url(), registrationModel.getRegistration_isActive(), registrationModel.getRegistration_role());
 
         if (res == 1){
             ObjectNode objectNode = mapper.createObjectNode();
@@ -137,7 +156,6 @@ public class RegistrationController {
             objectNode.put("registration_organization_name", registrationModel.getRegistration_organization_name());
             objectNode.put("registration_address_desc", registrationModel.getRegistration_address_desc());
             objectNode.put("registration_website_url", registrationModel.getRegistration_website_url());
-            objectNode.put("registration_is_school", registrationModel.getRegistration_is_school());
             objectNode.put("registration_isActive", registrationModel.getRegistration_isActive());
             objectNode.put("registration_role", registrationModel.getRegistration_role());
             return objectNode;

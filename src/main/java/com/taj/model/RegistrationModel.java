@@ -12,7 +12,7 @@ import javax.validation.constraints.*;
 public class RegistrationModel {
 
 
-    @Min(1)
+
     private int registration_id;
     @NotNull
     @NotBlank
@@ -50,9 +50,6 @@ public class RegistrationModel {
     @Size(max = 450, min = 11, message="website_url should have at least 11characters")
     private String registration_website_url;
     @NotNull
-    @PositiveOrZero(message = "must add value")
-    private int registration_is_school;
-    @NotNull
     private int registration_isActive;
     @NotNull
     @NotBlank
@@ -63,7 +60,7 @@ public class RegistrationModel {
 
     public RegistrationModel(int registration_id, String registeration_email, String registeration_password, String registeration_username,
                              String registeration_phone_number, String registration_organization_name, String registration_address_desc, String registration_website_url,
-                             int registration_is_school, int registration_isActive, String registration_role) {
+                             int registration_isActive, String registration_role) {
 
         this.registration_id = registration_id;
         this.registeration_email = registeration_email;
@@ -73,14 +70,13 @@ public class RegistrationModel {
         this.registration_organization_name = registration_organization_name;
         this.registration_address_desc = registration_address_desc;
         this.registration_website_url = registration_website_url;
-        this.registration_is_school = registration_is_school;
         this.registration_isActive = registration_isActive;
         this.registration_role = registration_role;
     }
 
     public RegistrationModel(String registeration_email, String registeration_password, String registeration_username,
                              String registeration_phone_number, String registration_organization_name,
-                             String registration_address_desc, String registration_website_url, int registration_is_school,
+                             String registration_address_desc, String registration_website_url,
                              int registration_isActive, String registration_role) {
         this.registeration_email = registeration_email;
         this.registeration_password = registeration_password;
@@ -89,7 +85,6 @@ public class RegistrationModel {
         this.registration_organization_name = registration_organization_name;
         this.registration_address_desc = registration_address_desc;
         this.registration_website_url = registration_website_url;
-        this.registration_is_school = registration_is_school;
         this.registration_isActive = registration_isActive;
         this.registration_role = registration_role;
     }
@@ -159,14 +154,6 @@ public class RegistrationModel {
 
     public void setRegistration_website_url(String registration_website_url) {
         this.registration_website_url = registration_website_url;
-    }
-
-    public int getRegistration_is_school() {
-        return registration_is_school;
-    }
-
-    public void setRegistration_is_school(int registration_is_school) {
-        this.registration_is_school = registration_is_school;
     }
 
     public int getRegistration_isActive() {

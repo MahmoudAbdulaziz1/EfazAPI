@@ -48,13 +48,12 @@ public class LoginController {
         }
 
         loginRepo.loginUser(model.getUser_email(), model.getUser_password(),
-                model.getIs_active(), model.getLogin_type(), model.getLogin_role(), model.getLogin_token());
+                model.getIs_active(), model.getLogin_role(), model.getLogin_token());
         ObjectNode objectNode = mapper.createObjectNode();
         //objectNode.put("user_email", model.getUser_email());
         objectNode.put("user_email", model.getUser_email());
         objectNode.put("user_password", model.getUser_password());
         objectNode.put("is_active", model.getIs_active());
-        objectNode.put("login_type", model.getLogin_type());
         objectNode.put("login_role", model.getLogin_role());
         objectNode.put("login_token", model.getLogin_token());
 
@@ -103,18 +102,8 @@ public class LoginController {
             objectNode.put("details", errors.getAllErrors().toString());
             return objectNode;
         }
-        boolean check = loginRepo.isLogged(model.getUser_email(), model.getUser_password(), model.getLogin_type());
-        if (check == true)
-        {
-            ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "success");
-
-            return objectNode;
-        }else {
-            ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "success");
-            return objectNode;
-        }
+        ObjectNode objectNode = loginRepo.isLogged(model.getUser_email(), model.getUser_password(), model.getLogin_role());
+        return objectNode;
 
     }
 
@@ -128,7 +117,7 @@ public class LoginController {
     @PostMapping("/getLoginId")
     public LoginModel getLoggedId(@RequestBody LoginModel model) {
 
-        return loginRepo.getLoggedId(model.getUser_email(), model.getUser_password(), model.getLogin_type());
+        return loginRepo.getLoggedId(model.getUser_email(), model.getUser_password(), model.getLogin_role());
     }
 
 
@@ -154,7 +143,6 @@ public class LoginController {
             objectNode.put("user_email", model.getUser_email());
             objectNode.put("user_password", model.getUser_password());
             objectNode.put("is_active", model.getIs_active());
-            objectNode.put("login_type", model.getLogin_type());
             objectNode.put("login_role", model.getLogin_role());
             objectNode.put("login_token", model.getLogin_token());
 
@@ -200,7 +188,6 @@ public class LoginController {
             objectNode.put("user_email", model.getUser_email());
             objectNode.put("user_password", model.getUser_password());
             objectNode.put("is_active", model.getIs_active());
-            objectNode.put("login_type", model.getLogin_type());
             objectNode.put("login_role", model.getLogin_role());
             objectNode.put("login_token", model.getLogin_token());
 

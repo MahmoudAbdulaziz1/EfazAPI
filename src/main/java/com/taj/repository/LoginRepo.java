@@ -1,5 +1,7 @@
 package com.taj.repository;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.LoginModel;
 import com.taj.model.RegistrationModel;
 import com.taj.security.JwtGenerator;
@@ -10,6 +12,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,22 +30,25 @@ public class LoginRepo {
     JdbcTemplate jdbcTemplate;
 
     @Autowired
+    ObjectMapper mapper;
+
+    @Autowired
     JwtGenerator generator;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public LoginModel loginUser(String user_email, String user_password, int is_active, int login_type, String login_role, String login_token) {
+    public LoginModel loginUser(String user_email, String user_password, int is_active, String login_role, String login_token) {
 
 
         RegistrationModel model = null;
-        if (isExist(user_email)) {
+        if (isExist(user_email, login_role)) {
 
             model = jdbcTemplate.queryForObject("select * from efaz_registration WHERE registeration_email=?"
                     , new Object[]{user_email},
                     (resultSet, i) -> new RegistrationModel(resultSet.getInt(1), resultSet.getString(2),
                             resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
-                            resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getInt(10), resultSet.getString(11)));
+                            resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10)));
             if (bCryptPasswordEncoder.matches(user_password, model.getRegisteration_password())) {
                 //if (user_password.equals(model.getRegisteration_password())){
                 if (is_active == 1) {
@@ -51,15 +57,14 @@ public class LoginRepo {
                     jdbcTemplate.update(new PreparedStatementCreator() {
                         @Override
                         public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                            final PreparedStatement ps = connection.prepareStatement("INSERT INTO efaz_login VALUES (?,?,?,?,?,?,?)",
+                            final PreparedStatement ps = connection.prepareStatement("INSERT INTO efaz_login VALUES (?,?,?,?,?,?)",
                                     Statement.RETURN_GENERATED_KEYS);
                             ps.setString(1, null);
                             ps.setString(2, user_email);
                             ps.setString(3, encodedPassword);/////////
                             ps.setInt(4, is_active);
-                            ps.setInt(5, login_type);
-                            ps.setString(6, login_role);
-                            ps.setString(7, login_token);
+                            ps.setString(5, login_role);
+                            ps.setString(6, login_token);
                             return ps;
                         }
 
@@ -79,55 +84,90 @@ public class LoginRepo {
 
     }
 
-    public boolean isExist(String email) {
+    public boolean isExist(String email, String login_role) {
         Integer cnt = jdbcTemplate.queryForObject(
-                "SELECT count(*) FROM efaz_registration WHERE registeration_email=?;",
-                Integer.class, email);
+                "SELECT count(*) FROM efaz_registration WHERE registeration_email=? AND registration_role=?;",
+                Integer.class, email, login_role);
         return cnt != null && cnt > 0;
     }
 
-    public boolean isLogged(String user_email, String user_passwords, int login_type) {
+    public ObjectNode isLogged(String user_email, String user_passwords, String login_role) {
         //String encodedPassword = bCryptPasswordEncoder.encode(user_password);
 
         LoginModel model = null;
-        if (isExist(user_email)) {
 
-            model = jdbcTemplate.queryForObject("select * from efaz_login WHERE user_email=?"
-                    , new Object[]{user_email},
-                    (resultSet, i) -> new LoginModel(resultSet.getInt(1), resultSet.getString(2),
-                            resultSet.getString(3), resultSet.getInt(4), resultSet.getInt(5), resultSet.getString(6),resultSet.getString(7)));
-            if (bCryptPasswordEncoder.matches(user_passwords, model.getUser_password())) {
+        if (isExist(user_email, login_role)) {
 
-                Integer cnt = jdbcTemplate.queryForObject(
-                        "SELECT count(*) FROM efaz_login WHERE user_email=? AND login_type=?;",//"//AND user_password = ?  ;
-                        Integer.class, user_email, login_type);//, bCryptPasswordEncoder.encode(user_passwords.trim()));
+            try {
+                model = jdbcTemplate.queryForObject("select * from efaz_login WHERE user_email=? AND login_role=?"
+                        , new Object[]{user_email, login_role},
+                        (resultSet, i) -> new LoginModel(resultSet.getInt(1), resultSet.getString(2),
+                                resultSet.getString(3), resultSet.getInt(4), resultSet.getString(5), resultSet.getString(6)));
+            }catch (Exception e){
+                model = null;
+            }
+            if (model == null){
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("state", 401);
+                objectNode.put("message", "in correct password");
+                return objectNode;
+            }else {
+                if (bCryptPasswordEncoder.matches(user_passwords, model.getUser_password())) {
 
-                return cnt != null && cnt > 0;
+                    Integer cnt = jdbcTemplate.queryForObject(
+                            "SELECT count(*) FROM efaz_login WHERE user_email=? AND login_role=?;",//"//AND user_password = ?  ;
+                            Integer.class, user_email, login_role);//, bCryptPasswordEncoder.encode(user_passwords.trim()));
 
-            } else {
-                return false;
+                    boolean check = cnt != null && cnt > 0;
+
+                    if (check) {
+                        ObjectNode objectNode = mapper.createObjectNode();
+                        objectNode.put("state", 201);
+                        objectNode.put("login_id", model.getLogin_id());
+                        objectNode.put("user_email", model.getUser_email());
+                        objectNode.put("user_password", model.getUser_password());
+                        objectNode.put("is_active", model.getIs_active());
+                        objectNode.put("login_role", model.getLogin_role());
+                        objectNode.put("login_token", model.getLogin_token());
+                        return objectNode;
+                    } else {
+                        ObjectNode objectNode = mapper.createObjectNode();
+                        objectNode.put("state", 401);
+                        objectNode.put("message", "unauthorized");
+                        return objectNode;
+                    }
+
+                } else {
+                    ObjectNode objectNode = mapper.createObjectNode();
+                    objectNode.put("state", 400);
+                    objectNode.put("message", "in correct password");
+                    return objectNode;
+                }
             }
         } else {
-            return false;
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "email with this role not exist");
+            return objectNode;
         }
 
     }
 
 
-    public LoginModel getLoggedId(String user_email, String user_passwords, int login_type) {
+    public LoginModel getLoggedId(String user_email, String user_passwords, String login_role) {
         LoginModel model = null;
-        if (isExist(user_email)) {
+        if (isExist(user_email, login_role)) {
 
             model = jdbcTemplate.queryForObject("select * from efaz_login WHERE user_email=?"
                     , new Object[]{user_email},
                     (resultSet, i) -> new LoginModel(resultSet.getInt(1), resultSet.getString(2),
-                            resultSet.getString(3), resultSet.getInt(4), resultSet.getInt(5), resultSet.getString(6),resultSet.getString(7)));
+                            resultSet.getString(3), resultSet.getInt(4), resultSet.getString(5),resultSet.getString(6)));
             if (bCryptPasswordEncoder.matches(user_passwords, model.getUser_password())) {
 
 
-                return jdbcTemplate.queryForObject("select * from efaz_login WHERE user_email=? AND login_type=?;", new Object[]{user_email, login_type},
+                return jdbcTemplate.queryForObject("select * from efaz_login WHERE user_email=? AND login_role=?;", new Object[]{user_email, login_role},
                         (resultSet, i) -> new LoginModel(resultSet.getInt(1), resultSet.getString(2),
-                                resultSet.getString(3), resultSet.getInt(4), resultSet.getInt(5), resultSet.getString(6),resultSet.getString(7)));
+                                resultSet.getString(3), resultSet.getInt(4),  resultSet.getString(5),resultSet.getString(6)));
 
 
             } else {
@@ -141,7 +181,7 @@ public class LoginRepo {
     public List<LoginModel> getLoggedUsers() {
         return jdbcTemplate.query("select * from efaz_login;",
                 (resultSet, i) -> new LoginModel(resultSet.getInt(1), resultSet.getString(2),
-                        resultSet.getString(3), resultSet.getInt(4), resultSet.getInt(5), resultSet.getString(6),resultSet.getString(7)));
+                        resultSet.getString(3), resultSet.getInt(4), resultSet.getString(5),resultSet.getString(6)));
     }
 
 //    public int deleteLoggedUser(int id){
@@ -152,7 +192,7 @@ public class LoginRepo {
 
         return jdbcTemplate.queryForObject("select * from efaz_login WHERE login_id=?;", new Object[]{id},
                 (resultSet, i) -> new LoginModel(resultSet.getInt(1), resultSet.getString(2),
-                        resultSet.getString(3), resultSet.getInt(4), resultSet.getInt(5), resultSet.getString(6),resultSet.getString(7)));
+                        resultSet.getString(3), resultSet.getInt(4), resultSet.getString(5),resultSet.getString(6)));
     }
 
 
@@ -179,13 +219,13 @@ public class LoginRepo {
     public List<LoginModel> getInActiveCompanies() {
         return jdbcTemplate.query("SELECT * FROM efaz_login WHERE is_active=0;",
                 (resultSet, i) -> new LoginModel(resultSet.getInt(1), resultSet.getString(2),
-                        resultSet.getString(3), resultSet.getInt(4), resultSet.getInt(5), resultSet.getString(6), resultSet.getString(6)));
+                        resultSet.getString(3), resultSet.getInt(4), resultSet.getString(5), resultSet.getString(6)));
     }
 
     public List<LoginModel> getActiveCompanies() {
         return jdbcTemplate.query("SELECT * FROM efaz_login WHERE is_active=1;",
                 (resultSet, i) -> new LoginModel(resultSet.getInt(1), resultSet.getString(2),
-                        resultSet.getString(3), resultSet.getInt(4), resultSet.getInt(5), resultSet.getString(6), resultSet.getString(6)));
+                        resultSet.getString(3), resultSet.getInt(4), resultSet.getString(5), resultSet.getString(6)));
     }
 
     public int activeLogin(int id) {
