@@ -4,8 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.CompanyOfferModel;
+import com.taj.model.getCompanyOffer;
+import com.taj.model.getOffer;
 import com.taj.repository.CompanyOfferRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -34,14 +38,13 @@ public class CompanyOfferController {
 
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public ObjectNode addCompanyOffer(@Valid @RequestBody CompanyOfferModel model, Errors errors) {
+    public ResponseEntity<ObjectNode> addCompanyOffer(@Valid @RequestBody CompanyOfferModel model, Errors errors) {
 
         if (errors.hasErrors()){
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
-            objectNode.put("details", errors.getAllErrors().toString());
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
 
         int res = repo.addCompanyOffer(model.getOffer_logo(), model.getOffer_title(), model.getOffer_explaination(),
@@ -49,6 +52,7 @@ public class CompanyOfferController {
                 model.getCompany_id());
         if (res == 1){
             ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("status",200);
             objectNode.put("offer_logo", model.getOffer_logo());
             objectNode.put("offer_title", model.getOffer_title());
             objectNode.put("offer_explaination", model.getOffer_explaination());
@@ -57,12 +61,13 @@ public class CompanyOfferController {
             objectNode.put("offer_expired_date", model.getOffer_expired_date().toString());
             objectNode.put("offer_deliver_date", model.getOffer_deliver_date().toString());
             objectNode.put("company_id", model.getCompany_id());
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.OK).body(objectNode);
         }else {
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "not success");
+            objectNode.put("status",400);
+            objectNode.put("message", "not success");
 
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
     }
 
@@ -85,8 +90,16 @@ public class CompanyOfferController {
 
     @GetMapping("/get/{id}")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public CompanyOfferModel getCompanyOffer(@PathVariable int id) {
-        return repo.getCompanyOffer(id);
+    public ResponseEntity<getOffer> getCompanyOffer(@PathVariable int id) {
+        if (repo.checkIfExist(id)){
+            CompanyOfferModel model = repo.getCompanyOffer(id);
+
+            return ResponseEntity.status(HttpStatus.OK).body(new getOffer("200", model));
+
+        }else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new getOffer("400", null));
+        }
+
     }
 
     /**
@@ -97,37 +110,48 @@ public class CompanyOfferController {
      */
     @PutMapping("/update")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public JsonNode updateCompanyOffer(@Valid @RequestBody CompanyOfferModel model, Errors errors) {
+    public ResponseEntity<JsonNode> updateCompanyOffer(@Valid @RequestBody CompanyOfferModel model, Errors errors) {
 
         if (errors.hasErrors()){
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
-            objectNode.put("details", errors.getAllErrors().toString());
-            return objectNode;
+            //objectNode.put("details", errors.getAllErrors().toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
-        int res = repo.updateCompanyOffer(model.getOffer_id(), model.getOffer_logo(), model.getOffer_title(), model.getOffer_explaination(),
-                model.getOffer_cost(), model.getOffer_display_date(), model.getOffer_expired_date(), model.getOffer_deliver_date(),
-                model.getCompany_id());
+        if (repo.checkIfExist(model.getOffer_id())){
+            int res = repo.updateCompanyOffer(model.getOffer_id(), model.getOffer_logo(), model.getOffer_title(), model.getOffer_explaination(),
+                    model.getOffer_cost(), model.getOffer_display_date(), model.getOffer_expired_date(), model.getOffer_deliver_date(),
+                    model.getCompany_id());
 
-        if (res == 1){
-            ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("offer_id", model.getOffer_id());
-            objectNode.put("offer_logo", model.getOffer_logo());
-            objectNode.put("offer_title", model.getOffer_title());
-            objectNode.put("offer_explaination", model.getOffer_explaination());
-            objectNode.put("offer_cost", model.getOffer_cost());
-            objectNode.put("offer_display_date", model.getOffer_display_date().toString());
-            objectNode.put("offer_expired_date", model.getOffer_expired_date().toString());
-            objectNode.put("offer_deliver_date", model.getOffer_deliver_date().toString());
-            objectNode.put("company_id", model.getCompany_id());
-            return objectNode;
+            if (res == 1){
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status",200);
+                objectNode.put("offer_id", model.getOffer_id());
+                objectNode.put("offer_logo", model.getOffer_logo());
+                objectNode.put("offer_title", model.getOffer_title());
+                objectNode.put("offer_explaination", model.getOffer_explaination());
+                objectNode.put("offer_cost", model.getOffer_cost());
+                objectNode.put("offer_display_date", model.getOffer_display_date().toString());
+                objectNode.put("offer_expired_date", model.getOffer_expired_date().toString());
+                objectNode.put("offer_deliver_date", model.getOffer_deliver_date().toString());
+                objectNode.put("company_id", model.getCompany_id());
+                return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+            }else {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status", 400);
+                objectNode.put("message", "not success");
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            }
         }else {
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "not success");
+            objectNode.put("status", 400);
+            objectNode.put("message", "not exist");
 
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
+
     }
 
     /**
@@ -138,19 +162,26 @@ public class CompanyOfferController {
      */
     @PutMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public ObjectNode deleteCompanyOffer(@PathVariable int id) {
+    public ResponseEntity<ObjectNode> deleteCompanyOffer(@PathVariable int id) {
         int res = repo.deleteCompanyOffer(id);
-        if (res == 1){
-            ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "success");
+        if (repo.checkIfExist(id)){
+            if (res == 1){
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("value", "success");
 
-            return objectNode;
+                return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+            }else {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("value", "not success");
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            }
         }else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "not success");
-
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
+
     }
 
     /**
@@ -162,8 +193,9 @@ public class CompanyOfferController {
 
     @GetMapping("/get/company/{id}")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public List<CompanyOfferModel> getSingleCompanyOffer(@PathVariable int id) {
-        return repo.getCompanyOffers(id);
+    public ResponseEntity<getCompanyOffer> getSingleCompanyOffer(@PathVariable int id) {
+        List<CompanyOfferModel> offers = repo.getCompanyOffers(id);
+        return ResponseEntity.status(HttpStatus.OK).body(new getCompanyOffer("200", offers));
     }
 
     /**

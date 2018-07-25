@@ -72,7 +72,7 @@ public class RegistrationRepo {
                 ps.setString(6, companyName);
                 ps.setString(7, address);
                 ps.setString(8, website);
-                ps.setInt(9, isActive);
+                ps.setInt(9, 0);
                 ps.setString(10, registration_role);
                 return ps;
             }

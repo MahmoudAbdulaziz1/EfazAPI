@@ -7,7 +7,7 @@ import javax.validation.constraints.Min;
  */
 public class SchoolFollowCompany {
 
-    @Min(1)
+
     private int follow_id;
     @Min(1)
     private int organization_id;

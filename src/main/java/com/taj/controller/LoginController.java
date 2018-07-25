@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.LoginModel;
 import com.taj.repository.LoginRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -38,13 +40,13 @@ public class LoginController {
      * @return object of logged company
      */
     @PostMapping("/loginUser")
-    public ObjectNode loginUsers(@Valid @RequestBody LoginModel model, Errors errors) {
+    public ResponseEntity<ObjectNode> loginUsers(@Valid @RequestBody LoginModel model, Errors errors) {
         if (errors.hasErrors()){
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
             objectNode.put("details", errors.getAllErrors().toString());
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
 
         loginRepo.loginUser(model.getUser_email(), model.getUser_password(),
@@ -57,7 +59,7 @@ public class LoginController {
         objectNode.put("login_role", model.getLogin_role());
         objectNode.put("login_token", model.getLogin_token());
 
-        return objectNode;
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(objectNode);
 
     }
 
@@ -93,18 +95,16 @@ public class LoginController {
      */
 
     @PostMapping("/isLogged")
-    public ObjectNode isLogged(@Valid @RequestBody LoginModel model, Errors errors) {
+    public ResponseEntity<ObjectNode> isLogged(@Valid @RequestBody LoginModel model, Errors errors) {
 
         if (errors.hasErrors()){
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
-            objectNode.put("details", errors.getAllErrors().toString());
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
         ObjectNode objectNode = loginRepo.isLogged(model.getUser_email(), model.getUser_password(), model.getLogin_role());
-        return objectNode;
-
+        return ResponseEntity.status(HttpStatus.OK).body(objectNode);
     }
 
     /**
@@ -127,13 +127,13 @@ public class LoginController {
      * @param model
      */
     @PutMapping("/updatePassword")
-    public ObjectNode updatePassword(@Valid @RequestBody LoginModel model, Errors errors) {
+    public ResponseEntity<ObjectNode> updatePassword(@Valid @RequestBody LoginModel model, Errors errors) {
         if (errors.hasErrors()){
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
             objectNode.put("details", errors.getAllErrors().toString());
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
         int res =  loginRepo.updatePassword(model.getLogin_id(), model.getUser_email(), model.getUser_password());
 
@@ -146,12 +146,12 @@ public class LoginController {
             objectNode.put("login_role", model.getLogin_role());
             objectNode.put("login_token", model.getLogin_token());
 
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.OK).body(objectNode);
         }else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "not success");
 
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
     }
 //
@@ -170,14 +170,13 @@ public class LoginController {
      * @param model
      */
     @PutMapping("/deleteUser")
-    public ObjectNode deleteUser(@Valid @RequestBody LoginModel model, Errors errors) {
+    public ResponseEntity<ObjectNode> deleteUser(@Valid @RequestBody LoginModel model, Errors errors) {
 
         if (errors.hasErrors()){
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
-            objectNode.put("details", errors.getAllErrors().toString());
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
         int res = loginRepo.deleteUser(model.getLogin_id(), model.getUser_email());
 
@@ -191,12 +190,12 @@ public class LoginController {
             objectNode.put("login_role", model.getLogin_role());
             objectNode.put("login_token", model.getLogin_token());
 
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.OK).body(objectNode);
         }else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "not success");
 
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
     }
 

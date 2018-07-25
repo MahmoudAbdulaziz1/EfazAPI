@@ -17,6 +17,27 @@ public class SchoolFollowCompanyRepo {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    public boolean isExist(int id) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_organization_following WHERE follow_id=?;",
+                Integer.class, id);
+        return cnt != null && cnt > 0;
+    }
+
+    public boolean isExistFollwing(int id) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_login WHERE login_id=?;",
+                Integer.class, id);
+        return cnt != null && cnt > 0;
+    }
+
+    public boolean isExistFollwer(int id) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_login WHERE login_id=?;",
+                Integer.class, id);
+        return cnt != null && cnt > 0;
+    }
+
     public int addFollower(int organization_id, int follower_id) {
         return jdbcTemplate.update("INSERT INTO efaz_organization_following VALUES (?,?,?)", null, organization_id, follower_id);
     }

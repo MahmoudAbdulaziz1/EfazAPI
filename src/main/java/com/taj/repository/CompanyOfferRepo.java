@@ -19,6 +19,13 @@ public class CompanyOfferRepo {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    public boolean checkIfExist(int offer_id){
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM  efaz_company_offer WHERE offer_id=?;;",
+                Integer.class, offer_id);
+        return cnt != null && cnt > 0;
+    }
+
     public int addCompanyOffer(byte[] offer_logo, String offer_title, String offer_explaination, double offer_cost,
                                Timestamp offer_display_date, Timestamp offer_expired_date, Timestamp offer_deliver_date, int company_id) {
         return jdbcTemplate.update("INSERT INTO efaz_company_offer VALUES (?,?,?,?,?,?,?,?,?)", null, offer_logo, offer_title, offer_explaination,

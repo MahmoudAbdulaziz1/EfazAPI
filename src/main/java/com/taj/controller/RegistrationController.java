@@ -6,6 +6,7 @@ import com.taj.model.RegistrationModel;
 import com.taj.model.UserType;
 import com.taj.repository.RegistrationRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.Errors;
@@ -44,19 +45,25 @@ public class RegistrationController {
 //    }
 
 
+    @GetMapping("ss")
+    public ResponseEntity get(){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    }
+
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ObjectNode addUserRegistration(@Valid @RequestBody RegistrationModel registrationModel, Errors errors) {
+    public ResponseEntity<ObjectNode> addUserRegistration(@Valid @RequestBody RegistrationModel registrationModel, Errors errors) {
 
         if (errors.hasErrors()){
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }else if (registrationRepo.checkIfEmailExist(registrationModel.getRegisteration_email(), registrationModel.getRegistration_role())){
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Email is exist");
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
 
         if (registrationModel.getRegistration_role().trim().compareTo(UserType.admin.toString())==0 ||
@@ -81,19 +88,19 @@ public class RegistrationController {
                 objectNode.put("registration_website_url", registrationModel.getRegistration_website_url());
                 objectNode.put("registration_isActive", registrationModel.getRegistration_isActive());
                 objectNode.put("registration_role", registrationModel.getRegistration_role());
-                return objectNode;
+                return ResponseEntity.status(HttpStatus.OK).body(objectNode);
             } else {
                 ObjectNode objectNode = mapper.createObjectNode();
                 objectNode.put("states", 400);
                 objectNode.put("message", "sign up error");
-                return objectNode;
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
             }
         }else {
 
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("states", 400);
             objectNode.put("message", "not valid role");
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
 
         }
 
@@ -133,14 +140,14 @@ public class RegistrationController {
      */
 
     @PutMapping("/update")
-    public ObjectNode updateUser(@Valid @RequestBody RegistrationModel registrationModel, Errors errors2) {
+    public ResponseEntity<ObjectNode> updateUser(@Valid @RequestBody RegistrationModel registrationModel, Errors errors2) {
 
         if (errors2.hasErrors()){
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
             objectNode.put("details", errors2.getAllErrors().toString());
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
         int res = registrationRepo.updateUser(registrationModel.getRegistration_id(), registrationModel.getRegisteration_email(), registrationModel.getRegisteration_password(),
                 registrationModel.getRegisteration_username(), registrationModel.getRegisteration_phone_number(), registrationModel.getRegistration_organization_name(), registrationModel.getRegistration_address_desc(),
@@ -158,12 +165,12 @@ public class RegistrationController {
             objectNode.put("registration_website_url", registrationModel.getRegistration_website_url());
             objectNode.put("registration_isActive", registrationModel.getRegistration_isActive());
             objectNode.put("registration_role", registrationModel.getRegistration_role());
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.OK).body(objectNode);
         }else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "not success");
 
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
 
 
@@ -177,19 +184,19 @@ public class RegistrationController {
      */
     //@PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     @PutMapping("/delete/{id}")
-    public ObjectNode deleteUser(@PathVariable int id) {
+    public ResponseEntity<ObjectNode> deleteUser(@PathVariable int id) {
         int res = registrationRepo.deleteUser(id);
 
         if (res == 1){
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "success");
 
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.OK).body(objectNode);
         }else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "not success");
 
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
     }
 

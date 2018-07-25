@@ -3,10 +3,12 @@ package com.taj.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.SchoolFollowCompany;
-import com.taj.model.SchoolSeeRequest;
+import com.taj.model.getFollowedList;
+import com.taj.model.getFollowersList;
 import com.taj.repository.SchoolFollowCompanyRepo;
-import com.taj.repository.SchoolSeeRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.validation.Errors;
@@ -26,7 +28,6 @@ import java.util.List;
 public class SchoolFollowCompanyController {
 
 
-
     @Autowired
     SchoolFollowCompanyRepo repo;
     @Autowired
@@ -35,98 +36,163 @@ public class SchoolFollowCompanyController {
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
     @PostMapping("/add")
-    public ObjectNode addFollower(@RequestBody @Valid SchoolFollowCompany model, Errors errors){
+    public ResponseEntity<ObjectNode> addFollower(@RequestBody @Valid SchoolFollowCompany model, Errors errors) {
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
-            objectNode.put("details", errors.getAllErrors().toString());
-            return objectNode;
+            //objectNode.put("details", errors.getAllErrors().toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
-        int res =  repo.addFollower(model.getOrganization_id(), model.getFollower_id());
 
-        if (res == 1) {
+        if (repo.isExist(model.getFollow_id())) {
+
             ObjectNode objectNode = mapper.createObjectNode();
-            //objectNode.put("Follow_id", model.getFollow_id());
-            objectNode.put("Organization_id", model.getOrganization_id());
-            objectNode.put("Follower_id", model.getFollower_id());
+            objectNode.put("status", 400);
+            objectNode.put("message", "id exist");
 
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         } else {
-            ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "not success");
+            if (repo.isExistFollwing(model.getOrganization_id()) && repo.isExistFollwer(model.getFollower_id())) {
+                int res = repo.addFollower(model.getOrganization_id(), model.getFollower_id());
+                if (res == 1) {
 
-            return objectNode;
+                    ObjectNode objectNode = mapper.createObjectNode();
+                    objectNode.put("status", 200);
+                    objectNode.put("Organization_id", model.getOrganization_id());
+                    objectNode.put("Follower_id", model.getFollower_id());
+
+                    return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+                } else {
+                    ObjectNode objectNode = mapper.createObjectNode();
+                    objectNode.put("status", 400);
+                    objectNode.put("message", "not success");
+
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+                }
+
+            } else {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status", 400);
+                objectNode.put("message", "organization not exist");
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            }
+
         }
+
+
     }
 
     @GetMapping("/getAll")
     @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
-    public List<SchoolFollowCompany> getAllFollowers(){
+    public List<SchoolFollowCompany> getAllFollowers() {
         return repo.getAllFollowers();
     }
 
     @GetMapping("/get/{id}")
     @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
-    public SchoolFollowCompany getById(@PathVariable int id){
+    public SchoolFollowCompany getById(@PathVariable int id) {
         return repo.getById(id);
     }
 
-    @GetMapping("/get/school/following/{schoolId}")
+    //followers
+    @GetMapping("/get/following/{schoolId}")
     @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
-    public List<SchoolFollowCompany> getAllSchoolFollowing(@PathVariable int schoolId){
-        return repo.getAllSchoolFollowing(schoolId);
+    public ResponseEntity<getFollowersList> getAllSchoolFollowing(@PathVariable int schoolId) {
+
+
+        if (repo.isExistFollwer(schoolId)) {
+            List<SchoolFollowCompany> followers = repo.getAllSchoolFollowing(schoolId);
+
+            return ResponseEntity.status(HttpStatus.OK).body(new getFollowersList("200", followers));
+        } else {
+            List<SchoolFollowCompany> followers = repo.getAllSchoolFollowing(schoolId);
+
+            return ResponseEntity.status(HttpStatus.OK).body(new getFollowersList("400", followers));
+        }
+
     }
 
+    //who's followed
     @GetMapping("/get/followers/{companyId}")
     @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
-    public List<SchoolFollowCompany> getCompanyAllFollowers(@PathVariable int companyId){
-        return repo.getCompanyAllFollowers(companyId);
+    public ResponseEntity<getFollowedList> getCompanyAllFollowers(@PathVariable int companyId) {
+
+        if (repo.isExistFollwer(companyId)) {
+            List<SchoolFollowCompany> followed = repo.getCompanyAllFollowers(companyId);
+            return ResponseEntity.status(HttpStatus.OK).body(new getFollowedList("200", followed));
+        } else {
+            List<SchoolFollowCompany> followed = repo.getCompanyAllFollowers(companyId);
+            return ResponseEntity.status(HttpStatus.OK).body(new getFollowedList("400", followed));
+        }
     }
 
     @PutMapping("/update")
     @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
-    public ObjectNode updateSchoolFollowCompany(@Valid @RequestBody SchoolFollowCompany model, Errors errors){
+    public ResponseEntity<ObjectNode> updateSchoolFollowCompany(@Valid @RequestBody SchoolFollowCompany model, Errors errors) {
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
-            objectNode.put("details", errors.getAllErrors().toString());
-            return objectNode;
+            //objectNode.put("details", errors.getAllErrors().toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
-        int res = repo.updateSchoolFollowCompany(model.getFollow_id(), model.getOrganization_id(), model.getFollower_id());
+        if (repo.isExist(model.getFollow_id()) && repo.isExistFollwer(model.getFollower_id()) && repo.isExistFollwing(model.getOrganization_id())) {
+            int res = repo.updateSchoolFollowCompany(model.getFollow_id(), model.getOrganization_id(), model.getFollower_id());
 
-        if (res == 1) {
-            ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("Follow_id", model.getFollow_id());
-            objectNode.put("Organization_id", model.getOrganization_id());
-            objectNode.put("Follower_id", model.getFollower_id());
+            if (res == 1) {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status", 200);
+                objectNode.put("Follow_id", model.getFollow_id());
+                objectNode.put("Organization_id", model.getOrganization_id());
+                objectNode.put("Follower_id", model.getFollower_id());
 
-            return objectNode;
+                return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+            } else {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status", 400);
+                objectNode.put("message", "not success");
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            }
         } else {
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "not success");
+            objectNode.put("status", 400);
+            objectNode.put("message", "id not exist");
 
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
+
     }
+
     @PutMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
-    public ObjectNode deleteSchoolFollowCompany(@PathVariable int id){
-        int res = repo.deleteSchoolFollowCompany(id);
-        if (res == 1){
-            ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "success");
+    public ObjectNode deleteSchoolFollowCompany(@PathVariable int id) {
+        if (repo.isExist(id)) {
+            int res = repo.deleteSchoolFollowCompany(id);
+            if (res == 1) {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status", 200);
+                objectNode.put("message", "success");
 
-            return objectNode;
-        }else {
+                return objectNode;
+            } else {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status", 400);
+                objectNode.put("message", "not success");
+
+                return objectNode;
+            }
+        } else {
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "not success");
+            objectNode.put("status", 400);
+            objectNode.put("message", "not exist");
 
             return objectNode;
         }
-    }
 
+    }
 
 
 }

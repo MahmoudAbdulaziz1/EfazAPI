@@ -7,7 +7,7 @@ import javax.validation.constraints.*;
  */
 public class CompanyProfileModel {
 
-    @Min(1)
+
     private int company_id;
     @NotNull
     @NotBlank
@@ -52,7 +52,21 @@ public class CompanyProfileModel {
         this.company_website_url = company_website_url;
         this.company_lng = company_lng;
         this.company_lat = company_lat;
-        //this.login_id_company = login_id_company;
+
+    }
+
+    public CompanyProfileModel(String company_name, byte[] company_logo_image, String company_address,
+                               String company_service_desc, String company_link_youtube, String company_website_url, float company_lng, float company_lat) {
+        this.company_id = company_id;
+        this.company_name = company_name;
+        this.company_logo_image = company_logo_image;
+        this.company_address = company_address;
+        this.company_service_desc = company_service_desc;
+        this.company_link_youtube = company_link_youtube;
+        this.company_website_url = company_website_url;
+        this.company_lng = company_lng;
+        this.company_lat = company_lat;
+
     }
 
     public CompanyProfileModel() {

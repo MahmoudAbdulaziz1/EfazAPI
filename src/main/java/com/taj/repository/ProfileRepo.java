@@ -17,10 +17,24 @@ public class ProfileRepo {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public int addProfile( String company_name, byte[] company_logo_image, String company_address,
+    public boolean isExist(int company_id) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_company_profile WHERE company_id=?;",
+                Integer.class, company_id);
+        return cnt != null && cnt > 0;
+    }
+
+    public int addProfile(int company_id, String company_name, byte[] company_logo_image, String company_address,
                           String company_service_desc, String company_link_youtube, String company_website_url, float school_lng, float school_lat) {
-        return jdbcTemplate.update("INSERT INTO efaz_company_profile VALUES (?,?,?,?,?,?,?,?,?)", null, company_name, company_logo_image,
+        jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=0;");
+
+
+        int id = jdbcTemplate.update("INSERT INTO efaz_company_profile VALUES (?,?,?,?,?,?,?,?,?)", company_id, company_name, company_logo_image,
                 company_address, company_service_desc, company_link_youtube, company_website_url, school_lng, school_lat);
+
+        jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=1;");
+
+        return id;
     }
 
 
