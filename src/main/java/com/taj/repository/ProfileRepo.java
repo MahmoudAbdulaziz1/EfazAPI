@@ -25,7 +25,7 @@ public class ProfileRepo {
     }
 
     public int addProfile(int company_id, String company_name, byte[] company_logo_image, String company_address,
-                          String company_service_desc, String company_link_youtube, String company_website_url, float school_lng, float school_lat) {
+                          int company_service_desc, String company_link_youtube, String company_website_url, float school_lng, float school_lat) {
         jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=0;");
 
 
@@ -41,7 +41,7 @@ public class ProfileRepo {
     public List<CompanyProfileModel> getProfiles() {
         return jdbcTemplate.query("SELECT * FROM efaz_company_profile;",
                 (resultSet, i) -> new CompanyProfileModel(resultSet.getInt(1), resultSet.getString(2),
-                        resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
+                        resultSet.getBytes(3), resultSet.getString(4), resultSet.getInt(5),
                         resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9)));
     }
 
@@ -49,7 +49,14 @@ public class ProfileRepo {
     public List<CompanyProfileModel> getProfile(int id) {
         return jdbcTemplate.query("SELECT * FROM efaz_company_profile WHERE  company_id=?;",
                 new Object[]{id}, (resultSet, i) -> new CompanyProfileModel(resultSet.getInt(1), resultSet.getString(2),
-                        resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
+                        resultSet.getBytes(3), resultSet.getString(4), resultSet.getInt(5),
+                        resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9)));
+    }
+
+    public List<CompanyProfileModel> getProfileByCategory(int id) {
+        return jdbcTemplate.query("SELECT * FROM efaz_company_profile WHERE  company_category_id=?;",
+                new Object[]{id}, (resultSet, i) -> new CompanyProfileModel(resultSet.getInt(1), resultSet.getString(2),
+                        resultSet.getBytes(3), resultSet.getString(4), resultSet.getInt(5),
                         resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9)));
     }
 
@@ -61,7 +68,7 @@ public class ProfileRepo {
 
 
     public int updateProfile(int id, String company_name, byte[] company_logo_image, String company_address,
-                             String company_service_desc, String company_link_youtube, String company_website_url, float school_lng, float school_lat) {
+                             int company_service_desc, String company_link_youtube, String company_website_url, float school_lng, float school_lat) {
 
         return jdbcTemplate.update("update efaz_company_profile set company_name=?," +
                         "company_logo_image=?, company_address=?," +

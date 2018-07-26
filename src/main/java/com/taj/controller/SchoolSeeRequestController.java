@@ -1,13 +1,14 @@
 package com.taj.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.SchoolSeeRequest;
-import com.taj.model.TakatafSchoolSeeTenderModel;
+import com.taj.model.getSchoolSeeRequest;
+import com.taj.model.getSchoolSeeRequestById;
 import com.taj.repository.SchoolSeeRequestRepo;
-import com.taj.repository.TakatafSchoolSeeTenderRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.validation.Errors;
@@ -34,94 +35,155 @@ public class SchoolSeeRequestController {
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PostMapping("/add")
-    public ObjectNode addOfferSeen(@Valid @RequestBody SchoolSeeRequest model, Errors errors){
+    public ResponseEntity<ObjectNode> addOfferSeen(@Valid @RequestBody SchoolSeeRequest model, Errors errors) {
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
-            objectNode.put("details", errors.getAllErrors().toString());
-            return objectNode;
+            //objectNode.put("details", errors.getAllErrors().toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
-        int res =  repo.addSeen(model.getSeen_offer_id(), model.getSeen_offer_school_id());
 
-        if (res == 1) {
-            ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("seen_offer_id", model.getSeen_offer_id());
-            objectNode.put("seen_offer_school_id", model.getSeen_offer_school_id());
+        if (repo.isExistOffer(model.getSeen_offer_id()) && repo.isExistOrganization(model.getSeen_offer_school_id())) {
+            int res = repo.addSeen(model.getSeen_offer_id(), model.getSeen_offer_school_id());
 
-            return objectNode;
+            if (res == 1) {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status", 200);
+                objectNode.put("seen_offer_id", model.getSeen_offer_id());
+                objectNode.put("seen_offer_school_id", model.getSeen_offer_school_id());
+
+                return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+            } else {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status", 400);
+                objectNode.put("message", "failed to add");
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            }
         } else {
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "not success");
+            objectNode.put("status", 400);
+            objectNode.put("message", "school id or offer id not found");
 
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
+
+
     }
 
     @GetMapping("/getAll")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public List<SchoolSeeRequest> getOffersSeen(){
-        return repo.getOffersSeen();
+    public ResponseEntity<getSchoolSeeRequest> getOffersSeen() {
+
+        List<SchoolSeeRequest> schools = repo.getOffersSeen();
+        return ResponseEntity.status(HttpStatus.OK).body(new getSchoolSeeRequest("200", schools));
+
     }
 
     @GetMapping("/get/{id}")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public SchoolSeeRequest getOffersSeen(@PathVariable int id){
-        return repo.getRequestSeen(id);
+    public ResponseEntity<getSchoolSeeRequestById> getOffersSeen(@PathVariable int id) {
+        if (repo.isExist(id)) {
+            SchoolSeeRequest school = repo.getRequestSeen(id);
+            return ResponseEntity.status(HttpStatus.OK).body(new getSchoolSeeRequestById("200", school));
+        } else {
+            SchoolSeeRequest school = repo.getRequestSeen(id);
+            return ResponseEntity.status(HttpStatus.OK).body(new getSchoolSeeRequestById("400", school));
+        }
+
     }
 
     @GetMapping("/getSchool/{schoolId}")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public List<SchoolSeeRequest> getOffersSeenBySchool(@PathVariable int schoolId){
-        return repo.getOffersSeenBySchool(schoolId);
+    public ResponseEntity<getSchoolSeeRequest> getOffersSeenBySchool(@PathVariable int schoolId) {
+        if (repo.isExistOrganization(schoolId)) {
+            List<SchoolSeeRequest> offers = repo.getOffersSeenBySchool(schoolId);
+            return ResponseEntity.status(HttpStatus.OK).body(new getSchoolSeeRequest("200", offers));
+        } else {
+            List<SchoolSeeRequest> offers = repo.getOffersSeenBySchool(schoolId);
+            return ResponseEntity.status(HttpStatus.OK).body(new getSchoolSeeRequest("400", offers));
+        }
+
     }
 
     @GetMapping("/getOffer/{offerId}")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public List<SchoolSeeRequest> getOffersSeenByOffer(@PathVariable int offerId){
-        return repo.getOffersSeenByOffer(offerId);
+    public ResponseEntity<getSchoolSeeRequest> getOffersSeenByOffer(@PathVariable int offerId) {
+        if (repo.isExistOffer(offerId)) {
+            List<SchoolSeeRequest> schools = repo.getOffersSeenByOffer(offerId);
+            return ResponseEntity.status(HttpStatus.OK).body(new getSchoolSeeRequest("200", schools));
+        } else {
+            List<SchoolSeeRequest> schools = repo.getOffersSeenByOffer(offerId);
+            return ResponseEntity.status(HttpStatus.OK).body(new getSchoolSeeRequest("400", schools));
+        }
+
     }
 
     @PutMapping("/update")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public ObjectNode updateOffersSeen(@Valid @RequestBody SchoolSeeRequest model, Errors errors){
+    public ResponseEntity<ObjectNode> updateOffersSeen(@Valid @RequestBody SchoolSeeRequest model, Errors errors) {
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
-            objectNode.put("details", errors.getAllErrors().toString());
-            return objectNode;
+            //objectNode.put("details", errors.getAllErrors().toString());
+            return ResponseEntity.status(HttpStatus.OK).body(objectNode);
         }
-        int res = repo.updateOffersSeen(model.getSeen_id(), model.getSeen_offer_id(), model.getSeen_offer_school_id());
+        if (repo.isExist(model.getSeen_id()) && repo.isExistOrganization(model.getSeen_offer_school_id()) && repo.isExistOffer(model.getSeen_offer_id())) {
+            int res = repo.updateOffersSeen(model.getSeen_id(), model.getSeen_offer_id(), model.getSeen_offer_school_id());
+            if (res == 1) {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("seen_id", model.getSeen_id());
+                objectNode.put("seen_offer_id", model.getSeen_offer_id());
+                objectNode.put("seen_offer_school_id", model.getSeen_offer_school_id());
 
-        if (res == 1) {
-            ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("seen_id", model.getSeen_id());
-            objectNode.put("seen_offer_id", model.getSeen_offer_id());
-            objectNode.put("seen_offer_school_id", model.getSeen_offer_school_id());
+                return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+            } else {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status", 400);
+                objectNode.put("message", "not success");
 
-            return objectNode;
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            }
         } else {
-            ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "not success");
 
-            return objectNode;
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("status", 400);
+            objectNode.put("message", "no item with this id");
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+
         }
+
+
     }
+
     @PutMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
-    public ObjectNode deleteOffersSeen(@PathVariable int id){
-        int res = repo.deleteOffersSeen(id);
-        if (res == 1){
-            ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "success");
+    public ResponseEntity<ObjectNode> deleteOffersSeen(@PathVariable int id) {
+        if (repo.isExist(id)){
+            int res = repo.deleteOffersSeen(id);
+            if (res == 1) {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status", 200);
+                objectNode.put("message", "success");
 
-            return objectNode;
+                return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+            } else {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status", 400);
+                objectNode.put("message", "not success");
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            }
         }else {
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "not success");
+            objectNode.put("status", 400);
+            objectNode.put("message", "no item  found bu this id");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
 
-            return objectNode;
         }
+
     }
 }

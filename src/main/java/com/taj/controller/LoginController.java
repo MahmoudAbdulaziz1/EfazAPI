@@ -24,13 +24,10 @@ public class LoginController {
 
     @Autowired
     LoginRepo loginRepo;
-
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-
     @Autowired
     ObjectMapper mapper;
-
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     /**
      * add email of company to login table if email is found
@@ -41,7 +38,7 @@ public class LoginController {
      */
     @PostMapping("/loginUser")
     public ResponseEntity<ObjectNode> loginUsers(@Valid @RequestBody LoginModel model, Errors errors) {
-        if (errors.hasErrors()){
+        if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
@@ -97,7 +94,7 @@ public class LoginController {
     @PostMapping("/isLogged")
     public ResponseEntity<ObjectNode> isLogged(@Valid @RequestBody LoginModel model, Errors errors) {
 
-        if (errors.hasErrors()){
+        if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
@@ -128,16 +125,16 @@ public class LoginController {
      */
     @PutMapping("/updatePassword")
     public ResponseEntity<ObjectNode> updatePassword(@Valid @RequestBody LoginModel model, Errors errors) {
-        if (errors.hasErrors()){
+        if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
             objectNode.put("details", errors.getAllErrors().toString());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
-        int res =  loginRepo.updatePassword(model.getLogin_id(), model.getUser_email(), model.getUser_password());
+        int res = loginRepo.updatePassword(model.getLogin_id(), model.getUser_email(), model.getUser_password());
 
-        if (res == 1){
+        if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("login_id", model.getLogin_id());
             objectNode.put("user_email", model.getUser_email());
@@ -147,7 +144,7 @@ public class LoginController {
             objectNode.put("login_token", model.getLogin_token());
 
             return ResponseEntity.status(HttpStatus.OK).body(objectNode);
-        }else {
+        } else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "not success");
 
@@ -172,28 +169,25 @@ public class LoginController {
     @PutMapping("/deleteUser")
     public ResponseEntity<ObjectNode> deleteUser(@Valid @RequestBody LoginModel model, Errors errors) {
 
-        if (errors.hasErrors()){
+        if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
-            objectNode.put("message", "Validation Failed");
+            //objectNode.put("message", "Validation Failed");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
         int res = loginRepo.deleteUser(model.getLogin_id(), model.getUser_email());
 
 
-        if (res == 1){
+        if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("login_id", model.getLogin_id());
-            objectNode.put("user_email", model.getUser_email());
-            objectNode.put("user_password", model.getUser_password());
-            objectNode.put("is_active", model.getIs_active());
-            objectNode.put("login_role", model.getLogin_role());
-            objectNode.put("login_token", model.getLogin_token());
 
+            objectNode.put("status", 200);
+            objectNode.put("message", "success");
             return ResponseEntity.status(HttpStatus.OK).body(objectNode);
-        }else {
+        } else {
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "not success");
+            objectNode.put("status", 400);
+            objectNode.put("message", "not success");
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
@@ -238,7 +232,7 @@ public class LoginController {
      * @param id
      */
     @PutMapping("/inActiveUser/{id}")
-    public int  inActiveUser(@PathVariable int id) {
+    public int inActiveUser(@PathVariable int id) {
         return loginRepo.inActiveLogin(id);
     }
 

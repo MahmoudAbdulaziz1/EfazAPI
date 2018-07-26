@@ -56,7 +56,7 @@ public class ProfileController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }else {
             int res =  profileRepo.addProfile(model.getCompany_id() ,model.getCompany_name(), model.getCompany_logo_image(),
-                    model.getCompany_address(), model.getCompany_service_desc(), model.getCompany_link_youtube(),
+                    model.getCompany_address(), model.getCompany_category_id(), model.getCompany_link_youtube(),
                     model.getCompany_website_url(), model.getCompany_lng(), model.getCompany_lat());
 
             if (res == 1){
@@ -66,7 +66,7 @@ public class ProfileController {
                 objectNode.put("company_name", model.getCompany_name());
                 objectNode.put("company_logo_image", model.getCompany_logo_image());
                 objectNode.put("company_address", model.getCompany_address());
-                objectNode.put("company_service_desc", model.getCompany_service_desc());
+                objectNode.put("company_category_id", model.getCompany_category_id());
                 objectNode.put("company_link_youtube", model.getCompany_link_youtube());
                 objectNode.put("company_website_url", model.getCompany_website_url());
                 objectNode.put("company_lng", model.getCompany_lng());
@@ -74,8 +74,8 @@ public class ProfileController {
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);
             }else {
                 ObjectNode objectNode = mapper.createObjectNode();
-                objectNode.put("state", 200);
-                objectNode.put("value", "not success");
+                objectNode.put("status", 400);
+                objectNode.put("message", "not success");
 
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
             }
@@ -123,7 +123,7 @@ public class ProfileController {
         }
         if (profileRepo.isExist(model.getCompany_id())){
             int res = profileRepo.updateProfile(model.getCompany_id(), model.getCompany_name(), model.getCompany_logo_image(),
-                    model.getCompany_address(), model.getCompany_service_desc(), model.getCompany_link_youtube(),
+                    model.getCompany_address(), model.getCompany_category_id(), model.getCompany_link_youtube(),
                     model.getCompany_website_url(), model.getCompany_lng(), model.getCompany_lat());
             if (res == 1){
                 ObjectNode objectNode = mapper.createObjectNode();
@@ -131,7 +131,7 @@ public class ProfileController {
                 objectNode.put("company_name", model.getCompany_name());
                 objectNode.put("company_logo_image", model.getCompany_logo_image());
                 objectNode.put("company_address", model.getCompany_address());
-                objectNode.put("company_service_desc", model.getCompany_service_desc());
+                objectNode.put("company_category_id", model.getCompany_category_id());
                 objectNode.put("company_link_youtube", model.getCompany_link_youtube());
                 objectNode.put("company_website_url", model.getCompany_website_url());
                 objectNode.put("company_lng", model.getCompany_lng());
@@ -167,6 +167,17 @@ public class ProfileController {
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public ResponseEntity<GetCompanyById> getProfile(@PathVariable int id) {
         List<CompanyProfileModel> model =  profileRepo.getProfile(id);
+        if (model.size()>0) {
+            return ResponseEntity.status(HttpStatus.OK).body(new GetCompanyById("200", model));
+        }else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GetCompanyById("400", null));
+        }
+    }
+
+    @GetMapping("/get/{id}/category")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
+    public ResponseEntity<GetCompanyById> getProfileByCategory(@PathVariable int id) {
+        List<CompanyProfileModel> model =  profileRepo.getProfileByCategory(id);
         if (model.size()>0) {
             return ResponseEntity.status(HttpStatus.OK).body(new GetCompanyById("200", model));
         }else {

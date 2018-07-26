@@ -23,10 +23,8 @@ public class CompanyProfileModel {
     @Size(max = 450, min = 1, message="address should have at least 1 characters")
     private String company_address;
     @NotNull
-    @NotBlank
-    @NotEmpty
-    @Size(max = 450, min = 1, message="service should have at least 1 characters")
-    private String company_service_desc;
+    @Min(1)
+    private int company_category_id;
 //    @NotNull
 //    @NotBlank
 //    @NotEmpty
@@ -42,12 +40,12 @@ public class CompanyProfileModel {
 
 
     public CompanyProfileModel(int company_id, String company_name, byte[] company_logo_image, String company_address,
-                               String company_service_desc, String company_link_youtube, String company_website_url, float company_lng, float company_lat) {
+                               int company_category_id, String company_link_youtube, String company_website_url, float company_lng, float company_lat) {
         this.company_id = company_id;
         this.company_name = company_name;
         this.company_logo_image = company_logo_image;
         this.company_address = company_address;
-        this.company_service_desc = company_service_desc;
+        this.company_category_id = company_category_id;
         this.company_link_youtube = company_link_youtube;
         this.company_website_url = company_website_url;
         this.company_lng = company_lng;
@@ -56,12 +54,11 @@ public class CompanyProfileModel {
     }
 
     public CompanyProfileModel(String company_name, byte[] company_logo_image, String company_address,
-                               String company_service_desc, String company_link_youtube, String company_website_url, float company_lng, float company_lat) {
-        this.company_id = company_id;
+                               int company_category_id, String company_link_youtube, String company_website_url, float company_lng, float company_lat) {
         this.company_name = company_name;
         this.company_logo_image = company_logo_image;
         this.company_address = company_address;
-        this.company_service_desc = company_service_desc;
+        this.company_category_id = company_category_id;
         this.company_link_youtube = company_link_youtube;
         this.company_website_url = company_website_url;
         this.company_lng = company_lng;
@@ -104,12 +101,12 @@ public class CompanyProfileModel {
         this.company_address = company_address;
     }
 
-    public String getCompany_service_desc() {
-        return company_service_desc;
+    public int getCompany_category_id() {
+        return company_category_id;
     }
 
-    public void setCompany_service_desc(String company_service_desc) {
-        this.company_service_desc = company_service_desc;
+    public void setCompany_category_id(int company_category_id) {
+        this.company_category_id = company_category_id;
     }
 
     public String getCompany_link_youtube() {

@@ -18,6 +18,29 @@ public class SchoolSeeRequestRepo {
     JdbcTemplate jdbcTemplate;
 
 
+
+    public boolean isExist(int id) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_school_see_offer WHERE seen_id=?;",
+                Integer.class, id);
+        return cnt != null && cnt > 0;
+    }
+
+    public boolean isExistOffer(int id) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_company_offer WHERE offer_id=?;",
+                Integer.class, id);
+        return cnt != null && cnt > 0;
+    }
+
+    public boolean isExistOrganization(int id) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_school_profile WHERE school_id=?;",
+                Integer.class, id);
+        return cnt != null && cnt > 0;
+    }
+
+
     public int addSeen(int seen_offer_id, int seen_offer_school_id) {
         return jdbcTemplate.update("INSERT INTO efaz_school_see_offer VALUES (?,?,?)", null, seen_offer_id, seen_offer_school_id);
     }

@@ -7,7 +7,7 @@ import javax.validation.constraints.Min;
  */
 public class SchoolSeeRequest {
 
-    @Min(1)
+
     private int seen_id;
     @Min(1)
     private int seen_offer_id;
@@ -19,6 +19,11 @@ public class SchoolSeeRequest {
 
     public SchoolSeeRequest(int seen_id, int seen_offer_id, int seen_offer_school_id) {
         this.seen_id = seen_id;
+        this.seen_offer_id = seen_offer_id;
+        this.seen_offer_school_id = seen_offer_school_id;
+    }
+
+    public SchoolSeeRequest(int seen_offer_id, int seen_offer_school_id) {
         this.seen_offer_id = seen_offer_id;
         this.seen_offer_school_id = seen_offer_school_id;
     }
