@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Created by MahmoudAhmed on 6/4/2018.
  */
-@RequestMapping("/evvaz/companyOffer")
+@RequestMapping("/companyOffer")
 @RestController
 @CrossOrigin
 public class CompanyOfferController {
@@ -76,7 +76,6 @@ public class CompanyOfferController {
      */
 
     @GetMapping("/getAll")
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public List<CompanyOfferModel> getCompanyOffers() {
         return repo.getAllOffers();
     }
@@ -89,7 +88,6 @@ public class CompanyOfferController {
      */
 
     @GetMapping("/get/{id}")
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public ResponseEntity<getOffer> getCompanyOffer(@PathVariable int id) {
         if (repo.checkIfExist(id)){
             CompanyOfferModel model = repo.getCompanyOffer(id);
@@ -192,7 +190,6 @@ public class CompanyOfferController {
      */
 
     @GetMapping("/get/company/{id}")
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public ResponseEntity<getCompanyOffer> getSingleCompanyOffer(@PathVariable int id) {
         List<CompanyOfferModel> offers = repo.getCompanyOffers(id);
         return ResponseEntity.status(HttpStatus.OK).body(new getCompanyOffer("200", offers));
@@ -208,7 +205,6 @@ public class CompanyOfferController {
      */
 
     @GetMapping("/get/data/{id}")
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public List<String> getData(@PathVariable int id) {
         return repo.getProgressDate(id);
     }
