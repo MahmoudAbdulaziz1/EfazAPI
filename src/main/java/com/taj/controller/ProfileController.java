@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Created by MahmoudAhmed on 5/31/2018.
  */
-@RequestMapping("/evvaz/profile")
+@RequestMapping("/profile")
 @RestController
 @CrossOrigin
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -93,7 +93,6 @@ public class ProfileController {
      */
 
     @GetMapping("/getAll")
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public ResponseEntity<GetAllCompanies> getProfiles() {
 
         List<CompanyProfileModel> list = profileRepo.getProfiles();
@@ -164,7 +163,6 @@ public class ProfileController {
      */
 
     @GetMapping("/get/{id}")
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public ResponseEntity<GetCompanyById> getProfile(@PathVariable int id) {
         List<CompanyProfileModel> model =  profileRepo.getProfile(id);
         if (model.size()>0) {
@@ -175,7 +173,6 @@ public class ProfileController {
     }
 
     @GetMapping("/get/{id}/category")
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public ResponseEntity<GetCompanyById> getProfileByCategory(@PathVariable int id) {
         List<CompanyProfileModel> model =  profileRepo.getProfileByCategory(id);
         if (model.size()>0) {
@@ -193,7 +190,6 @@ public class ProfileController {
      * @return if >0  true else  0 not found
      */
     @GetMapping("/profileExist/{id}")
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public ResponseEntity<ObjectNode> isExist(@PathVariable int id) {
         int res = profileRepo.CheckProfile(id);
         if (res ==1){
