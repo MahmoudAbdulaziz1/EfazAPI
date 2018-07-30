@@ -17,10 +17,9 @@ import java.util.List;
 /**
  * Created by Taj 51 on 6/10/2018.
  */
-@RequestMapping("/evvaz/cat")
+@RequestMapping("/cat")
 @RestController
 @CrossOrigin
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class CategoryController {
 
     @Autowired
@@ -43,7 +42,6 @@ public class CategoryController {
      */
 
     @GetMapping("/get/{id}")
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public CategoryModel getCategory(@PathVariable int id) {
         return repo.getCategory(id);
     }
@@ -53,7 +51,6 @@ public class CategoryController {
      * @param model add company category to database
      */
     @PostMapping("/add")
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public ObjectNode addCategory(@Valid @RequestBody CategoryModel model, Errors errors) {
         if (errors.hasErrors()){
             ObjectNode objectNode = mapper.createObjectNode();
@@ -84,7 +81,6 @@ public class CategoryController {
      */
 
 
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     @PutMapping("/update")
     public ObjectNode  updateCategory(@Valid @RequestBody CategoryModel model, Errors errors) {
 
@@ -117,7 +113,6 @@ public class CategoryController {
      */
 
     @PutMapping("/delete")
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public JsonNode deleteCategory(@Valid @RequestBody CategoryModel model, Errors errors) {
         if (errors.hasErrors()){
             ObjectNode objectNode = mapper.createObjectNode();

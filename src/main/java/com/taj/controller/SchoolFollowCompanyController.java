@@ -21,10 +21,9 @@ import java.util.List;
  * Created by User on 7/19/2018.
  */
 
-@RequestMapping("/evvaz/follow")
+@RequestMapping("/follow")
 @RestController
 @CrossOrigin
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SchoolFollowCompanyController {
 
 
@@ -85,20 +84,17 @@ public class SchoolFollowCompanyController {
     }
 
     @GetMapping("/getAll")
-    @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
     public List<SchoolFollowCompany> getAllFollowers() {
         return repo.getAllFollowers();
     }
 
     @GetMapping("/get/{id}")
-    @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
     public SchoolFollowCompany getById(@PathVariable int id) {
         return repo.getById(id);
     }
 
     //followers
     @GetMapping("/get/following/{schoolId}")
-    @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
     public ResponseEntity<getFollowersList> getAllSchoolFollowing(@PathVariable int schoolId) {
 
 
@@ -116,7 +112,6 @@ public class SchoolFollowCompanyController {
 
     //who's followed
     @GetMapping("/get/followers/{companyId}")
-    @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
     public ResponseEntity<getFollowedList> getCompanyAllFollowers(@PathVariable int companyId) {
 
         if (repo.isExistFollwer(companyId)) {

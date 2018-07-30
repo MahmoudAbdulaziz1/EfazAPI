@@ -15,7 +15,6 @@ public class CompanyProfileModel {
     @Size(max = 450, min = 1, message="company_name should have at least 1 characters")
     private String company_name;
     @NotNull
-
     private byte[] company_logo_image;
     @NotNull
     @NotBlank
@@ -37,10 +36,13 @@ public class CompanyProfileModel {
     private String company_website_url;
 
     private float company_lng, company_lat;
+    @NotNull
+    private byte[] company_cover_image;
 
 
     public CompanyProfileModel(int company_id, String company_name, byte[] company_logo_image, String company_address,
-                               int company_category_id, String company_link_youtube, String company_website_url, float company_lng, float company_lat) {
+                               int company_category_id, String company_link_youtube, String company_website_url, float company_lng,
+                               float company_lat, byte[] company_cover_image) {
         this.company_id = company_id;
         this.company_name = company_name;
         this.company_logo_image = company_logo_image;
@@ -50,11 +52,12 @@ public class CompanyProfileModel {
         this.company_website_url = company_website_url;
         this.company_lng = company_lng;
         this.company_lat = company_lat;
+        this.company_cover_image = company_cover_image;
 
     }
 
     public CompanyProfileModel(String company_name, byte[] company_logo_image, String company_address,
-                               int company_category_id, String company_link_youtube, String company_website_url, float company_lng, float company_lat) {
+                               int company_category_id, String company_link_youtube, String company_website_url, float company_lng, float company_lat, byte[] company_cover_image) {
         this.company_name = company_name;
         this.company_logo_image = company_logo_image;
         this.company_address = company_address;
@@ -63,6 +66,7 @@ public class CompanyProfileModel {
         this.company_website_url = company_website_url;
         this.company_lng = company_lng;
         this.company_lat = company_lat;
+        this.company_cover_image = company_cover_image;
 
     }
 
@@ -139,6 +143,14 @@ public class CompanyProfileModel {
 
     public void setCompany_lat(float company_lat) {
         this.company_lat = company_lat;
+    }
+
+    public byte[] getCompany_cover_image() {
+        return company_cover_image;
+    }
+
+    public void setCompany_cover_image(byte[] company_cover_image) {
+        this.company_cover_image = company_cover_image;
     }
 }
 

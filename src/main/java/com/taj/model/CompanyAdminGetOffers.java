@@ -1,34 +1,26 @@
 package com.taj.model;
 
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.validation.constraints.*;
 import java.sql.Timestamp;
 
 /**
- * Created by MahmoudAhmed on 6/4/2018.
+ * Created by User on 7/30/2018.
  */
-public class CompanyOfferModel {
-
+public class CompanyAdminGetOffers {
 
     private int offer_id;
-    private int offer_images_id;
     @NotNull
     @NotBlank
     @NotEmpty
     @Size(max = 450, min = 1, message = "title should have at least 1 characters")
     private String offer_title;
-    @NotNull
-    @NotBlank
-    @NotEmpty
-    @Size(max = 450, min = 1, message = "explian should have at least 1 characters")
-    private String offer_explaination;
+
     @Min(1)
     private double offer_cost;
-    @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-    private Timestamp offer_display_date;
+    private @NotNull Timestamp offer_display_date;
     @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     private Timestamp offer_expired_date;
@@ -40,15 +32,13 @@ public class CompanyOfferModel {
     @Min(1)
     private int offer_count;
 
-    public CompanyOfferModel() {
+    public CompanyAdminGetOffers() {
     }
 
-    public CompanyOfferModel(int offer_id, int offer_images_id, String offer_title, String offer_explaination, double offer_cost,
-                             Timestamp offer_display_date, Timestamp offer_expired_date, Timestamp offer_deliver_date, int company_id, int offer_count) {
+    public CompanyAdminGetOffers(int offer_id, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String offer_title, @Min(1) double offer_cost,
+                                 @NotNull Timestamp offer_display_date, @NotNull Timestamp offer_expired_date, @NotNull Timestamp offer_deliver_date, @Min(1) int company_id, @Min(1) int offer_count) {
         this.offer_id = offer_id;
-        this.offer_images_id = offer_images_id;
         this.offer_title = offer_title;
-        this.offer_explaination = offer_explaination;
         this.offer_cost = offer_cost;
         this.offer_display_date = offer_display_date;
         this.offer_expired_date = offer_expired_date;
@@ -57,11 +47,9 @@ public class CompanyOfferModel {
         this.offer_count = offer_count;
     }
 
-    public CompanyOfferModel(int offer_images_id, String offer_title, String offer_explaination, double offer_cost,
-                             Timestamp offer_display_date, Timestamp offer_expired_date, Timestamp offer_deliver_date, int company_id, int offer_count) {
-        this.offer_images_id = offer_images_id;
+    public CompanyAdminGetOffers(@NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String offer_title, @Min(1) double offer_cost,
+                                 @NotNull Timestamp offer_display_date, @NotNull Timestamp offer_expired_date, @NotNull Timestamp offer_deliver_date, @Min(1) int company_id, @Min(1) int offer_count) {
         this.offer_title = offer_title;
-        this.offer_explaination = offer_explaination;
         this.offer_cost = offer_cost;
         this.offer_display_date = offer_display_date;
         this.offer_expired_date = offer_expired_date;
@@ -78,28 +66,12 @@ public class CompanyOfferModel {
         this.offer_id = offer_id;
     }
 
-    public int getOffer_images_id() {
-        return offer_images_id;
-    }
-
-    public void setOffer_logo(int offer_logo) {
-        this.offer_images_id = offer_logo;
-    }
-
     public String getOffer_title() {
         return offer_title;
     }
 
     public void setOffer_title(String offer_title) {
         this.offer_title = offer_title;
-    }
-
-    public String getOffer_explaination() {
-        return offer_explaination;
-    }
-
-    public void setOffer_explaination(String offer_explaination) {
-        this.offer_explaination = offer_explaination;
     }
 
     public double getOffer_cost() {

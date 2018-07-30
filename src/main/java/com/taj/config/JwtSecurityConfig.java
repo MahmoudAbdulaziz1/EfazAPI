@@ -48,8 +48,8 @@ public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable()
                 .authorizeRequests().antMatchers("/evvaz/cat/**").authenticated()
-                .and()
-                .authorizeRequests().antMatchers("/evvaz/companyOffer/**").authenticated()
+//                .and()
+//                .authorizeRequests().antMatchers("/evvaz/companyOffer/**").authenticated()
                 .and()
                 .authorizeRequests().antMatchers("/evvaz/response/school/request/**").authenticated()
                 .and()
