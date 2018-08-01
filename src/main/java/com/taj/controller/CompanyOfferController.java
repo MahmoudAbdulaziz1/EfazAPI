@@ -3,11 +3,11 @@ package com.taj.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.taj.model.CompanyAdminGetOffers;
-import com.taj.model.CompanyOfferModel;
-import com.taj.model.getCompanyOffer;
-import com.taj.model.getOffer;
+import com.taj.entity.CompanyOffersEntity;
+import com.taj.entity.SchoolSeeOfferEntity;
+import com.taj.model.*;
 import com.taj.repository.CompanyOfferRepo;
+import com.taj.service.CompanyOffersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,6 +17,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -159,7 +160,7 @@ public class CompanyOfferController {
      * @param id
      * @return 1 if success or 0 if failed
      */
-    @PutMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<ObjectNode> deleteCompanyOffer(@PathVariable int id) {
 
         if (repo.checkIfExist(id)){
@@ -210,9 +211,63 @@ public class CompanyOfferController {
         return repo.getProgressDate(id);
     }
 
-    @GetMapping(value="/admin/getAll")
-    public List<CompanyAdminGetOffers> getCompanyOffersForDash() {
-        return repo.getAllOffersForDash();
+    @GetMapping(value="/admin/getAll/{id}")
+    public List<CompanyAdminGetOffers> getCompanyOffersForDash(@PathVariable int id) {
+        return repo.getAllOffersForDash(id);
     }
+
+//    @Autowired
+//    CompanyOffersService ser;
+//    @GetMapping(value = "/admin/get/{id}",
+//            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+//    )
+//    public List<CompanyOffersEntity> getCompanyOffersForDash2(@PathVariable int id, @RequestParam(value = "page", defaultValue = "0") int page,
+//                                                              @RequestParam(value = "limit", defaultValue = "10") int limit) {
+//
+//        List<CompanyOffersEntity> returnValue = new ArrayList<>();
+//        returnValue = ser.getCompanyOffers(id ,page, limit);
+//        // other code here
+//        return returnValue;
+//    }
+
+
+
+
+    @PostMapping("/adds")
+    public ResponseEntity<Integer> addCompanyOffers(@RequestBody addOfferModel model) {
+//
+//        if (errors.hasErrors()) {
+//            ObjectNode objectNode = mapper.createObjectNode();
+//            objectNode.put("state", 400);
+//            objectNode.put("message", "Validation Failed");
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+//        } else {
+        int res = repo.addOfferEdeited(model.getImage_one(), model.getImage_two(), model.getImage_third(), model.getImage_four(), model.getOffer_title(), model.getOffer_explaination(),
+                model.getOffer_cost(), model.getOffer_display_date(), model.getOffer_expired_date(), model.getOffer_deliver_date(),
+                model.getCompany_id(), model.getOffer_count());
+        if (res == 1) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("status", 200);
+            //objectNode.put("offer_images_id", model.getOffer_images_id());
+            objectNode.put("offer_title", model.getOffer_title());
+            objectNode.put("offer_explaination", model.getOffer_explaination());
+            objectNode.put("offer_cost", model.getOffer_cost());
+            objectNode.put("offer_display_date", model.getOffer_display_date().toString());
+            objectNode.put("offer_expired_date", model.getOffer_expired_date().toString());
+            objectNode.put("offer_deliver_date", model.getOffer_deliver_date().toString());
+            objectNode.put("company_id", model.getCompany_id());
+            objectNode.put("offer_count", model.getOffer_count());
+            return ResponseEntity.status(HttpStatus.OK).body(1);
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("status", 400);
+            objectNode.put("message", "not success");
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(0);
+        }
+        //}
+    }
+
+
 
 }

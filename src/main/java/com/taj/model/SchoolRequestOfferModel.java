@@ -9,8 +9,7 @@ import javax.validation.constraints.Min;
  */
 public class SchoolRequestOfferModel {
 
-    @NonNull
-    @Min(1)
+
     private int request_id;
     @NonNull
     @Min(1)
@@ -21,15 +20,24 @@ public class SchoolRequestOfferModel {
     @NonNull
     @Min(0)
     private int is_accepted;
+    @Min(1)
+    private int request_offer_count;
 
     public SchoolRequestOfferModel() {
     }
 
-    public SchoolRequestOfferModel(int request_id, int requsted_school_id, int requsted_offer_id, int is_accepted) {
+    public SchoolRequestOfferModel(int request_id, int requsted_school_id, int requsted_offer_id, int is_accepted, int request_offer_count) {
         this.request_id = request_id;
         this.requsted_school_id = requsted_school_id;
         this.requsted_offer_id = requsted_offer_id;
         this.is_accepted = is_accepted;
+        this.request_offer_count = request_offer_count;
+    }
+    public SchoolRequestOfferModel(int requsted_school_id, int requsted_offer_id, int is_accepted, int request_offer_count) {
+        this.requsted_school_id = requsted_school_id;
+        this.requsted_offer_id = requsted_offer_id;
+        this.is_accepted = is_accepted;
+        this.request_offer_count = request_offer_count;
     }
 
     public int getRequest_id() {
@@ -62,5 +70,13 @@ public class SchoolRequestOfferModel {
 
     public void setIs_accepted(int is_accepted) {
         this.is_accepted = is_accepted;
+    }
+
+    public int getRequest_offer_count() {
+        return request_offer_count;
+    }
+
+    public void setRequest_offer_count(int request_offer_count) {
+        this.request_offer_count = request_offer_count;
     }
 }

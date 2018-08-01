@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.SchoolProfileModel;
 import com.taj.repository.SchoolProfileRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.validation.Errors;
@@ -24,10 +26,9 @@ public class SchoolProfileController {
 
 
     @Autowired
-    private SchoolProfileRepo repo;
-
-    @Autowired
     ObjectMapper mapper;
+    @Autowired
+    private SchoolProfileRepo repo;
 
     /**
      * add profile data to db
@@ -37,36 +38,53 @@ public class SchoolProfileController {
      */
     @PostMapping("/addProfile")
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
-    public ObjectNode AddUserProfile(@Valid @RequestBody SchoolProfileModel model, Errors errors) {
+    public ResponseEntity<ObjectNode> AddUserProfile(@Valid @RequestBody SchoolProfileModel model, Errors errors) {
 
-        if (errors.hasErrors()){
+        if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
             objectNode.put("details", errors.getAllErrors().toString());
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
+        if (repo.isExistInLogin(model.getSchool_id(), "school")) {
 
-        int res =  repo.addSchoolProfile(model.getSchool_name(), model.getSchool_logo_image(),
-                model.getSchool_address(), model.getSchool_service_desc(), model.getSchool_link_youtube(),
-                model.getSchool_website_url(),model.getSchool_lng(), model.getSchool_lat());
+            if (!repo.isExist(model.getSchool_id())) {
+                int res = repo.addSchoolProfile(model.getSchool_id(), model.getSchool_name(), model.getSchool_logo_image(),
+                        model.getSchool_address(), model.getSchool_service_desc(), model.getSchool_link_youtube(),
+                        model.getSchool_website_url(), model.getSchool_lng(), model.getSchool_lat(), model.getSchool_cover_image());
+                if (res == 1) {
+                    ObjectNode objectNode = mapper.createObjectNode();
+                    objectNode.put("school_name", model.getSchool_name());
+                    objectNode.put("school_logo_image", model.getSchool_logo_image());
+                    objectNode.put("school_address", model.getSchool_address());
+                    objectNode.put("school_service_desc", model.getSchool_service_desc());
+                    objectNode.put("school_link_youtube", model.getSchool_link_youtube());
+                    objectNode.put("school_website_url", model.getSchool_website_url());
+                    objectNode.put("school_lng", model.getSchool_lng());
+                    objectNode.put("school_lat", model.getSchool_lat());
+                    objectNode.put("school_cover_image", model.getSchool_cover_image());
+                    return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+                } else {
+                    ObjectNode objectNode = mapper.createObjectNode();
+                    objectNode.put("status", 400);
+                    objectNode.put("message", "not success");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+                }
+            } else {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status", 400);
+                objectNode.put("message", "id Already has profile");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            }
 
-        if (res == 1){
+
+        } else {
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("school_name", model.getSchool_name());
-            objectNode.put("school_logo_image", model.getSchool_logo_image());
-            objectNode.put("school_address", model.getSchool_address());
-            objectNode.put("school_service_desc", model.getSchool_service_desc());
-            objectNode.put("school_link_youtube", model.getSchool_link_youtube());
-            objectNode.put("school_website_url", model.getSchool_website_url());
-            objectNode.put("school_lng", model.getSchool_lng());
-            objectNode.put("school_lat", model.getSchool_lat());
-            return objectNode;
-        }else {
-            ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "not success");
+            objectNode.put("status", 400);
+            objectNode.put("message", "id not found");
 
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
 
 
@@ -99,21 +117,21 @@ public class SchoolProfileController {
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PutMapping("/updateProfile")
-    public ObjectNode updateProfile(@Valid @RequestBody SchoolProfileModel model, Errors errors) {
+    public ResponseEntity<ObjectNode> updateProfile(@Valid @RequestBody SchoolProfileModel model, Errors errors) {
 
-        if (errors.hasErrors()){
+        if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
-            objectNode.put("details", errors.getAllErrors().toString());
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+
         }
 
         int res = repo.updateProfile(model.getSchool_id(), model.getSchool_name(), model.getSchool_logo_image(),
                 model.getSchool_address(), model.getSchool_service_desc(), model.getSchool_link_youtube(),
-                model.getSchool_website_url(), model.getSchool_lng(), model.getSchool_lat());
+                model.getSchool_website_url(), model.getSchool_lng(), model.getSchool_lat(), model.getSchool_cover_image());
 
-        if (res == 1){
+        if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("school_name", model.getSchool_name());
             objectNode.put("school_logo_image", model.getSchool_logo_image());
@@ -123,12 +141,13 @@ public class SchoolProfileController {
             objectNode.put("school_website_url", model.getSchool_website_url());
             objectNode.put("school_lng", model.getSchool_lng());
             objectNode.put("school_lat", model.getSchool_lat());
-            return objectNode;
-        }else {
+            objectNode.put("school_cover_image", model.getSchool_cover_image());
+            return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+        } else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "not success");
 
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
 
 
@@ -141,19 +160,18 @@ public class SchoolProfileController {
     }
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
-    @PutMapping("/delete/{id}")
-    public ObjectNode deleteSchoolProfile(@PathVariable int id) {
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ObjectNode> deleteSchoolProfile(@PathVariable int id) {
         int res = repo.deleteSchoolProfile(id);
-        if (res == 1){
+        if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "success");
-
-            return objectNode;
-        }else {
+            objectNode.put("messsage", "success");
+            return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+        } else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "not success");
 
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
     }
 

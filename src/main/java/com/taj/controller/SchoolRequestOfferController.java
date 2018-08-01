@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.CompanyResponseSchoolRequestModel;
+import com.taj.model.GetSchoolsRequestOffersWitCoast;
 import com.taj.model.SchoolRequestOfferModel;
 import com.taj.repository.SchoolRequestOfferRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.GeneratedValue;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -41,12 +43,13 @@ public class SchoolRequestOfferController {
             objectNode.put("details", errors.getAllErrors().toString());
             return objectNode;
         }
-        int res = repo.addSchoolRequestOffer(  model.getRequsted_school_id() ,model.getRequsted_offer_id(), model.getIs_accepted());
+        int res = repo.addSchoolRequestOffer(  model.getRequsted_school_id() ,model.getRequsted_offer_id(), model.getIs_accepted(), model.getRequest_offer_count());
         if (res == 1){
             ObjectNode objectNode = mapper.createObjectNode();
             //objectNode.put("request_id", model.getRequest_id());
             objectNode.put("requsted_school_id", model.getRequsted_school_id());
             objectNode.put("requsted_offer_id", model.getRequsted_offer_id());
+            objectNode.put("request_offer_count", model.getRequest_offer_count());
             objectNode.put("is_accepted", model.getIs_accepted());
 
             return objectNode;
@@ -110,12 +113,13 @@ public class SchoolRequestOfferController {
             objectNode.put("details", errors.getAllErrors().toString());
             return objectNode;
         }
-        int res = repo.updateResponseSchoolRequest(model.getRequest_id(), model.getRequsted_school_id(), model.getRequsted_offer_id(), model.getIs_accepted());
+        int res = repo.updateResponseSchoolRequest(model.getRequest_id(), model.getRequsted_school_id(), model.getRequsted_offer_id(), model.getIs_accepted(), model.getRequest_offer_count());
         if (res == 1){
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("request_id", model.getRequest_id());
             objectNode.put("requsted_school_id", model.getRequsted_school_id());
             objectNode.put("requsted_offer_id", model.getRequsted_offer_id());
+            objectNode.put("is_accepted", model.getIs_accepted());
             objectNode.put("is_accepted", model.getIs_accepted());
 
             return objectNode;
@@ -143,6 +147,12 @@ public class SchoolRequestOfferController {
 
             return objectNode;
         }
+    }
+
+    @GetMapping("/com/{id}")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
+    public GetSchoolsRequestOffersWitCoast getSchoolRequestOfferByCompany(@PathVariable int id){
+        return  repo.getSchoolRequestOfferByCompany(id);
     }
 
 }

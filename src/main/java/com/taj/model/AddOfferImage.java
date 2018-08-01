@@ -9,26 +9,23 @@ public class AddOfferImage {
     private byte[] image_two;
     private byte[] image_third;
     private byte[] image_four;
-    private int offer_id;
 
     public AddOfferImage() {
     }
 
-    public AddOfferImage(int images_id, byte[] image_one, byte[] image_two, byte[] image_third, byte[] image_four, int offer_id) {
+    public AddOfferImage(int images_id, byte[] image_one, byte[] image_two, byte[] image_third, byte[] image_four) {
         this.images_id = images_id;
         this.image_one = image_one;
         this.image_two = image_two;
         this.image_third = image_third;
         this.image_four = image_four;
-        this.offer_id = offer_id;
     }
 
-    public AddOfferImage(byte[] image_one, byte[] image_two, byte[] image_third, byte[] image_four, int offer_id) {
+    public AddOfferImage(byte[] image_one, byte[] image_two, byte[] image_third, byte[] image_four) {
         this.image_one = image_one;
         this.image_two = image_two;
         this.image_third = image_third;
         this.image_four = image_four;
-        this.offer_id = offer_id;
     }
 
     public int getImages_id() {
@@ -71,11 +68,4 @@ public class AddOfferImage {
         this.image_four = image_four;
     }
 
-    public int getOffer_id() {
-        return offer_id;
-    }
-
-    public void setOffer_id(int offer_id) {
-        this.offer_id = offer_id;
-    }
 }

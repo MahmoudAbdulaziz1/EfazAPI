@@ -4,9 +4,12 @@ import com.taj.model.AddOfferImage;
 import com.taj.model.CompanyOfferModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.List;
 
 /**
@@ -25,41 +28,63 @@ public class AddOfferImageRepo {
         return cnt != null && cnt > 0;
     }
 
-    public boolean checkIfOfferExist(int offer_id){
-        Integer cnt = jdbcTemplate.queryForObject(
-                "SELECT count(*) FROM  company_offer_images WHERE offer_id=?;",
-                Integer.class, offer_id);
-        return cnt != null && cnt > 0;
-    }
+//    public boolean checkIfOfferExist(int offer_id){
+//        Integer cnt = jdbcTemplate.queryForObject(
+//                "SELECT count(*) FROM  company_offer_images WHERE offer_id=?;",
+//                Integer.class, offer_id);
+//        return cnt != null && cnt > 0;
+//    }
 
 
 
-    public int addOfferImage(byte[] image_one, byte[] image_two, byte[] image_three, byte[] image_four, int offer_id) {
-        return jdbcTemplate.update("INSERT INTO company_offer_images VALUES (?,?,?,?,?,?)", null, image_one, image_two, image_three, image_four, offer_id);
+    public int addOfferImage(byte[] image_one, byte[] image_two, byte[] image_three, byte[] image_four) {
+
+
+
+        KeyHolder key = new GeneratedKeyHolder();
+        jdbcTemplate.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                final PreparedStatement ps = connection.prepareStatement("INSERT INTO company_offer_images VALUES (?,?,?,?,?)",
+                        Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, null);
+                ps.setBytes(2, image_one);
+                ps.setBytes(3, image_two);/////////
+                ps.setBytes(4, image_three);
+                ps.setBytes(5, image_four);
+                return ps;
+            }
+
+        }, key);
+
+        return key.getKey().intValue();
+
+
+        //return jdbcTemplate.update("INSERT INTO company_offer_images VALUES (?,?,?,?,?,?)", null, image_one, image_two, image_three, image_four, offer_id);
     }
 
     public List<AddOfferImage> getOfferImages() {
         return jdbcTemplate.query("SELECT * FROM company_offer_images;",
                 (resultSet, i) -> new AddOfferImage(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getBytes(3)
-                        , resultSet.getBytes(4), resultSet.getBytes(5), resultSet.getInt(6)));
+                        , resultSet.getBytes(4), resultSet.getBytes(5)));
     }
 
     public List<AddOfferImage> getCompanyOfferImages(int offer_id) {
         return jdbcTemplate.query("SELECT * FROM company_offer_images WHERE offer_id=?;", new Object[]{offer_id},
                 (resultSet, i) -> new AddOfferImage(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getBytes(3)
-                        , resultSet.getBytes(4), resultSet.getBytes(5), resultSet.getInt(6)));
+                        , resultSet.getBytes(4), resultSet.getBytes(5)));
     }
 
     public AddOfferImage getCompanyOfferImage(int id) {
         return jdbcTemplate.queryForObject("SELECT * FROM company_offer_images WHERE images_id=?;", new Object[]{id},
                 (resultSet, i) -> new AddOfferImage(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getBytes(3)
-                        , resultSet.getBytes(4), resultSet.getBytes(5), resultSet.getInt(6)));
+                        , resultSet.getBytes(4), resultSet.getBytes(5)));
     }
 
-    public int updateCompanyOfferImages(int images_id, byte[] image_one, byte[] image_two, byte[] image_third, byte[] image_four, int offer_id) {
+    public int updateCompanyOfferImages(int images_id, byte[] image_one, byte[] image_two, byte[] image_third, byte[] image_four) {
         return jdbcTemplate.update("update company_offer_images set image_one=?," +
-                        "image_two=?, image_three=?," + "image_four=?, offer_id=? " + " where images_id=?",
-                image_one, image_two, image_third, image_four, offer_id, images_id);
+                        "image_two=?, image_three=?," + "image_four=? " + " where images_id=?",
+                image_one, image_two, image_third, image_four, images_id);
     }
 
     public int deleteCompanyOffer(int id) {

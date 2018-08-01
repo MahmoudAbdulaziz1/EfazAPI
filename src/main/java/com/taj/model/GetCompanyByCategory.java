@@ -3,19 +3,20 @@ package com.taj.model;
 import java.util.List;
 
 /**
- * Created by User on 7/24/2018.
+ * Created by User on 8/1/2018.
  */
-public class GetCompanyById {
+public class GetCompanyByCategory {
+
 
     private String states;
-    private CompanyProfileModel model;
+    private List<CompanyProfileModel> model;
 
-    public GetCompanyById(String states, CompanyProfileModel model) {
+    public GetCompanyByCategory(String states, List<CompanyProfileModel> model) {
         this.states = states;
         this.model = model;
     }
 
-    public GetCompanyById() {
+    public GetCompanyByCategory() {
     }
 
     public String getStates() {
@@ -26,11 +27,13 @@ public class GetCompanyById {
         this.states = states;
     }
 
-    public CompanyProfileModel getModel() {
+    public List<CompanyProfileModel> getModel() {
         return model;
     }
 
-    public void setModel(CompanyProfileModel model) {
+    public void setModel(List<CompanyProfileModel> model) {
         this.model = model;
     }
+
+
 }

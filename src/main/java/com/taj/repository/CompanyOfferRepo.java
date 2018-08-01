@@ -4,9 +4,13 @@ import com.taj.model.CompanyAdminGetOffers;
 import com.taj.model.CompanyOfferModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
+import javax.validation.constraints.*;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,6 +33,7 @@ public class CompanyOfferRepo {
 
     public int addCompanyOffer(int offer_logo, String offer_title, String offer_explaination, double offer_cost,
                                Timestamp offer_display_date, Timestamp offer_expired_date, Timestamp offer_deliver_date, int company_id, int offer_count) {
+
         return jdbcTemplate.update("INSERT INTO efaz_company_offer VALUES (?,?,?,?,?,?,?,?,?,?)", null, offer_logo, offer_title, offer_explaination,
                 offer_cost, offer_display_date, offer_expired_date, offer_deliver_date, company_id, offer_count);
     }
@@ -65,7 +70,10 @@ public class CompanyOfferRepo {
     }
 
     public int deleteCompanyOffer(int id) {
-        return jdbcTemplate.update("DELETE FROM efaz_company_offer WHERE offer_id=?", id);
+        jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=0;");
+        int response = jdbcTemplate.update("DELETE FROM efaz_company_offer WHERE offer_id=?", id);
+        jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=1;");
+        return response;
     }
 
 
@@ -103,11 +111,42 @@ public class CompanyOfferRepo {
     }
 
 
-    public List<CompanyAdminGetOffers> getAllOffersForDash() {
-        return jdbcTemplate.query("SELECT * FROM efaz_company_offer;",
+    public List<CompanyAdminGetOffers> getAllOffersForDash(int company_id) {
+        return jdbcTemplate.query("SELECT * FROM efaz_company_offer where company_id=?;", new Object[]{company_id},
                 (resultSet, i) -> new CompanyAdminGetOffers(resultSet.getInt(1), resultSet.getString(3)
                         , resultSet.getDouble(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
                         resultSet.getTimestamp(8), resultSet.getInt(9), resultSet.getInt(10)));
+    }
+
+
+    public int  addOfferEdeited(byte[] image_one, byte[] image_two, byte[] image_third, byte[] image_four, String offer_title, String offer_explaination, double offer_cost,
+                                 Timestamp offer_display_date,  Timestamp offer_expired_date,  Timestamp offer_deliver_date, int company_id, int offer_count){
+
+        KeyHolder key = new GeneratedKeyHolder();
+        jdbcTemplate.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                final PreparedStatement ps = connection.prepareStatement("INSERT INTO company_offer_images VALUES (?,?,?,?,?)",
+                        Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, null);
+                ps.setBytes(2, image_one);
+                ps.setBytes(3, image_two);/////////
+                ps.setBytes(4, image_third);
+                ps.setBytes(5, image_four);
+                return ps;
+            }
+
+        }, key);
+
+        int images_id = key.getKey().intValue();
+
+        if (images_id > 0){
+            return jdbcTemplate.update("INSERT INTO efaz_company_offer VALUES (?,?,?,?,?,?,?,?,?,?)", null, images_id, offer_title, offer_explaination,
+                    offer_cost, offer_display_date, offer_expired_date, offer_deliver_date, company_id, offer_count);
+        }else {
+            return 0;
+        }
+
     }
 
 

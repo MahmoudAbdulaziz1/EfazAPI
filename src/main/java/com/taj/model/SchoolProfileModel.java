@@ -16,7 +16,6 @@ public class SchoolProfileModel {
     @Size(max = 450, min = 1, message="name should have at least 1 characters")
     private String school_name;
     @NotNull
-
     private byte[] school_logo_image;
     @NotNull
     @NotBlank
@@ -39,9 +38,11 @@ public class SchoolProfileModel {
     @Size(max = 450, min = 1, message="website should have at least 1 characters")
     private String school_website_url;
     private float school_lng, school_lat;
+    @NotNull
+    private byte[] school_cover_image;
 
     public SchoolProfileModel(int school_id, String school_name, byte[] school_logo_image, String school_address,
-                              String school_service_desc, String school_link_youtube, String school_website_url, float school_lng, float school_lat) {
+                              String school_service_desc, String school_link_youtube, String school_website_url, float school_lng, float school_lat,byte[] school_cover_image) {
         this.school_id = school_id;
         this.school_name = school_name;
         this.school_logo_image = school_logo_image;
@@ -51,6 +52,20 @@ public class SchoolProfileModel {
         this.school_website_url = school_website_url;
         this.school_lng = school_lng;
         this.school_lat = school_lat;
+        this.school_cover_image = school_cover_image;
+    }
+
+    public SchoolProfileModel( String school_name, byte[] school_logo_image, String school_address,
+                              String school_service_desc, String school_link_youtube, String school_website_url, float school_lng, float school_lat,byte[] school_cover_image) {
+        this.school_name = school_name;
+        this.school_logo_image = school_logo_image;
+        this.school_address = school_address;
+        this.school_service_desc = school_service_desc;
+        this.school_link_youtube = school_link_youtube;
+        this.school_website_url = school_website_url;
+        this.school_lng = school_lng;
+        this.school_lat = school_lat;
+        this.school_cover_image = school_cover_image;
     }
 
     public SchoolProfileModel() {
@@ -126,5 +141,13 @@ public class SchoolProfileModel {
 
     public void setSchool_lat(float school_lat) {
         this.school_lat = school_lat;
+    }
+
+    public byte[] getSchool_cover_image() {
+        return school_cover_image;
+    }
+
+    public void setSchool_cover_image(byte[] school_cover_image) {
+        this.school_cover_image = school_cover_image;
     }
 }
