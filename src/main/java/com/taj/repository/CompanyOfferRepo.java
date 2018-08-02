@@ -39,10 +39,13 @@ public class CompanyOfferRepo {
     }
 
     public List<CompanyOfferModel> getAllOffers() {
-        return jdbcTemplate.query("SELECT * FROM efaz_company_offer;",
+        List<CompanyOfferModel> list = jdbcTemplate.query("SELECT * FROM efaz_company_offer;",
                 (resultSet, i) -> new CompanyOfferModel(resultSet.getInt(1), resultSet.getInt(2), resultSet.getString(3)
                         , resultSet.getString(4), resultSet.getDouble(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
                         resultSet.getTimestamp(8), resultSet.getInt(9), resultSet.getInt(10)));
+
+        //int images_id = list.get
+        return list;
     }
 
     public CompanyOfferModel getCompanyOffer(int id) {

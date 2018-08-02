@@ -33,7 +33,6 @@ public class SchoolFollowCompanyController {
     ObjectMapper mapper;
 
 
-    @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
     @PostMapping("/add")
     public ResponseEntity<ObjectNode> addFollower(@RequestBody @Valid SchoolFollowCompany model, Errors errors) {
         if (errors.hasErrors()) {
@@ -124,7 +123,6 @@ public class SchoolFollowCompanyController {
     }
 
     @PutMapping("/update")
-    @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
     public ResponseEntity<ObjectNode> updateSchoolFollowCompany(@Valid @RequestBody SchoolFollowCompany model, Errors errors) {
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -161,8 +159,7 @@ public class SchoolFollowCompanyController {
 
     }
 
-    @PutMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
+    @DeleteMapping("/delete/{id}")
     public ObjectNode deleteSchoolFollowCompany(@PathVariable int id) {
         if (repo.isExist(id)) {
             int res = repo.deleteSchoolFollowCompany(id);

@@ -11,10 +11,8 @@ import java.sql.Timestamp;
 public class SchoolRequestsModel {
 
 
-    @Min(1)
     private int request_id;
-    @NotNull
-    private byte[] request_details_file;
+    private byte[] request_details_file;//attachment file
     @NotNull
     @NotBlank
     @NotEmpty
@@ -36,13 +34,13 @@ public class SchoolRequestsModel {
     private Timestamp request_deliver_date;
     @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-    private Timestamp request_payment_date;
+    private Timestamp request_payment_date;//مده التسليم
     @NotNull
     @Min(0)
     private int request_is_available;
     @NotNull
     @Min(0)
-    private int request_is_conformied;
+    private int request_is_conformied;//التعميد
     @NotNull
     @Min(1)
     private int school_id;
@@ -54,18 +52,20 @@ public class SchoolRequestsModel {
     private int receive_palce_id;
     @NotNull
     @Min(0)
-    private int extended_payment;
+    private int extended_payment;   //مده الدفع
+    private int images_id;
 
 
     public SchoolRequestsModel() {
     }
 
-    public SchoolRequestsModel(int request_id, byte[] request_details_file, String request_title, String request_explaination,
+    public SchoolRequestsModel(int request_id, byte[] request_details_file, int images_id, String request_title, String request_explaination,
                                Timestamp request_display_date, Timestamp request_expired_date, Timestamp request_deliver_date,
                                int request_is_available, int request_is_conformied, Timestamp request_payment_date, int school_id,
                                int request_category_id, int receive_palce_id, int extended_payment) {
         this.request_id = request_id;
         this.request_details_file = request_details_file;
+        this.images_id = images_id;
         this.request_title = request_title;
         this.request_explaination = request_explaination;
         this.request_display_date = request_display_date;
@@ -80,11 +80,12 @@ public class SchoolRequestsModel {
         this.extended_payment = extended_payment;
     }
 
-    public SchoolRequestsModel(byte[] request_details_file, String request_title, String request_explaination,
+    public SchoolRequestsModel(byte[] request_details_file, int images_id, String request_title, String request_explaination,
                                Timestamp request_display_date, Timestamp request_expired_date, Timestamp request_deliver_date,
                                int request_is_available, int request_is_conformied, Timestamp request_payment_date, int school_id,
                                int request_category_id, int receive_palce_id, int extended_payment) {
         this.request_details_file = request_details_file;
+        this.images_id = images_id;
         this.request_title = request_title;
         this.request_explaination = request_explaination;
         this.request_display_date = request_display_date;
@@ -210,5 +211,13 @@ public class SchoolRequestsModel {
 
     public void setExtended_payment(int extended_payment) {
         this.extended_payment = extended_payment;
+    }
+
+    public int getImages_id() {
+        return images_id;
+    }
+
+    public void setImages_id(int images_id) {
+        this.images_id = images_id;
     }
 }

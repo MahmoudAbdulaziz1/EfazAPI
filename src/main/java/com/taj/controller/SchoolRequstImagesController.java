@@ -3,9 +3,10 @@ package com.taj.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.taj.model.AddOfferImage;
-import com.taj.model.getOfferImage;
+import com.taj.model.*;
 import com.taj.repository.AddOfferImageRepo;
+import com.taj.repository.SchoolRequestOfferRepo;
+import com.taj.repository.SchoolRequstImagesRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +15,17 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * Created by User on 7/30/2018.
+ * Created by User on 8/2/2018.
  */
-@RequestMapping("/offer/image")
+@RequestMapping("/request/image")
 @RestController
 @CrossOrigin
-public class AddOfferImageController {
+public class SchoolRequstImagesController {
+
+
 
     @Autowired
-    AddOfferImageRepo repo;
+    SchoolRequstImagesRepo repo;
 
     @Autowired
     ObjectMapper mapper;
@@ -30,23 +33,23 @@ public class AddOfferImageController {
     @PostMapping("/")
     public ResponseEntity<Integer> addOfferImages(@RequestBody AddOfferImage model) {
         //if (repo.checkIfOfferExist(model.getOffer_id())){
-            int response = repo.addOfferImage(model.getImage_one(), model.getImage_two(), model.getImage_third(), model.getImage_four());
-            if (response > 0) {
-                ObjectNode objectNode = mapper.createObjectNode();
-                objectNode.put("status", 200);
-                objectNode.put("images_id", response);
-                objectNode.put("image_one", model.getImage_one());
-                objectNode.put("image_two", model.getImage_two());
-                objectNode.put("image_third", model.getImage_third());
-                objectNode.put("image_four", model.getImage_four());
-                return ResponseEntity.status(HttpStatus.OK).body(response);
-            } else {
-                ObjectNode objectNode = mapper.createObjectNode();
-                objectNode.put("status", 400);
-                objectNode.put("message", "not success");
+        int response = repo.addRequestImage(model.getImage_one(), model.getImage_two(), model.getImage_third(), model.getImage_four());
+        if (response > 0) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("status", 200);
+            objectNode.put("images_id", response);
+            objectNode.put("image_one", model.getImage_one());
+            objectNode.put("image_two", model.getImage_two());
+            objectNode.put("image_third", model.getImage_third());
+            objectNode.put("image_four", model.getImage_four());
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("status", 400);
+            objectNode.put("message", "not success");
 
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(0);
-            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(0);
+        }
 //        }else {
 //            ObjectNode objectNode = mapper.createObjectNode();
 //            objectNode.put("status", 400);
@@ -58,43 +61,44 @@ public class AddOfferImageController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ObjectNode> deleteCompanyOffer(@PathVariable int id) {
+
         if (repo.checkIfExist(id)) {
-            int res = repo.deleteCompanyOffer(id);
+            int res = repo.deleteSchoolRequest(id);
             if (res == 1) {
                 ObjectNode objectNode = mapper.createObjectNode();
-                objectNode.put("value", "success");
+                objectNode.put("message", "success");
 
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);
             } else {
                 ObjectNode objectNode = mapper.createObjectNode();
-                objectNode.put("value", "not success");
+                objectNode.put("message", "not success");
 
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
             }
         } else {
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "no id like this");
+            objectNode.put("message", "no id like this");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
 
     }
 
     @GetMapping("/")
-    public List<AddOfferImage> getCompanyOffersImages() {
+    public List<SchoolRequstImagesModel> getCompanyOffersImages() {
 
-        List<AddOfferImage> list = repo.getOfferImages();
+        List<SchoolRequstImagesModel> list = repo.getRequestImages();
         return list;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<getOfferImage> getOfferImages(@PathVariable int id) {
+    public ResponseEntity<getRequestImage> getOfferImages(@PathVariable int id) {
         if (repo.checkIfExist(id)) {
-            AddOfferImage model = repo.getCompanyOfferImage(id);
+            SchoolRequstImagesModel model = repo.getSchoolRequestImagesById(id);
 
-            return ResponseEntity.status(HttpStatus.OK).body(new getOfferImage("200", model));
+            return ResponseEntity.status(HttpStatus.OK).body(new getRequestImage("200", model));
 
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new getOfferImage("400", null));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new getRequestImage("400", null));
         }
 
     }
@@ -119,20 +123,20 @@ public class AddOfferImageController {
 //
 
     @PutMapping("/update")
-    public ResponseEntity<JsonNode> updateCompanyOffer(@RequestBody AddOfferImage model) {
+    public ResponseEntity<JsonNode> updateCompanyOffer(@RequestBody SchoolRequstImagesModel model) {
 
 
-        if (repo.checkIfExist(model.getImages_id())){
-            int res = repo.updateCompanyOfferImages(model.getImages_id(), model.getImage_one(), model.getImage_two(),
-                    model.getImage_third(), model.getImage_four());
+        if (repo.checkIfExist(model.getImage_id())){
+            int res = repo.updateSchoolRequestImages(model.getImage_id(), model.getImage_one(), model.getImage_two(),
+                    model.getImage_three(), model.getImage_four());
 
             if (res == 1){
                 ObjectNode objectNode = mapper.createObjectNode();
                 objectNode.put("status",200);
-                objectNode.put("images_id", model.getImages_id());
+                objectNode.put("image_id", model.getImage_id());
                 objectNode.put("image_one", model.getImage_one());
                 objectNode.put("image_two", model.getImage_two());
-                objectNode.put("image_third", model.getImage_third());
+                objectNode.put("image_third", model.getImage_three());
                 objectNode.put("image_four", model.getImage_four());
 
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);
@@ -152,6 +156,8 @@ public class AddOfferImageController {
         }
 
     }
+
+
 
 
 }

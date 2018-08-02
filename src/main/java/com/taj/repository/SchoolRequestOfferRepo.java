@@ -19,6 +19,15 @@ public class SchoolRequestOfferRepo {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+
+    public boolean checkIfExist(int offer_id){
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM  efaz_school_request_offer WHERE request_id=?;;",
+                Integer.class, offer_id);
+        return cnt != null && cnt > 0;
+    }
+
+
     public int addSchoolRequestOffer(int requsted_school_id, int requsted_offer_id, int is_accepted, int request_offer_count) {
         return jdbcTemplate.update("INSERT INTO efaz_school_request_offer VALUES (?,?,?,?,?)", null, requsted_school_id, requsted_offer_id, is_accepted, request_offer_count);
     }
@@ -80,8 +89,9 @@ public class SchoolRequestOfferRepo {
     }
 
     public int updateResponseSchoolRequest(int request_id, int requsted_school_id, int requsted_offer_id, int is_accepted, int request_offer_count) {
+
         return jdbcTemplate.update("UPDATE efaz_school_request_offer SET requsted_school_id=?, requsted_offer_id=?, is_accepted=? , request_offer_count=?" +
-                        " WHERE request_id=?", requsted_school_id, requsted_offer_id, is_accepted, request_id, request_offer_count);
+                        " WHERE request_id=?", requsted_school_id, requsted_offer_id, is_accepted, request_offer_count, request_id);
     }
 
     public int deleteResponseSchoolRequest(int seen_id) {

@@ -17,47 +17,48 @@ public class SchoolRequestRepo {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    public int addRequest(byte[] request_details_file, String request_title, String request_explaination,
+    public int addRequest(byte[] request_details_file, int images_id, String request_title, String request_explaination,
                           Timestamp request_display_date, Timestamp request_expired_date, Timestamp request_deliver_date,
                           Timestamp request_payment_date, int request_is_available, int request_is_conformied, int school_id,
                           int request_category_id, int receive_palce_id, int extended_payment) {
-        return jdbcTemplate.update("INSERT INTO efaz_school_tender VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", null, request_details_file, request_title,
+        return jdbcTemplate.update("INSERT INTO efaz_school_tender VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", null, request_details_file, images_id, request_title,
                 request_explaination, request_display_date, request_expired_date, request_deliver_date, request_is_available, request_is_conformied,
                 request_payment_date, school_id, request_category_id, receive_palce_id, extended_payment);
     }
 
     public List<SchoolRequestsModel> getRequests() {
         return jdbcTemplate.query("SELECT * FROM efaz_school_tender;",
-                (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2),
-                        resultSet.getString(3), resultSet.getString(4), resultSet.getTimestamp(5), resultSet.getTimestamp(6),
-                        resultSet.getTimestamp(7), resultSet.getInt(8), resultSet.getInt(9), resultSet.getTimestamp(10), resultSet.getInt(11),
-                        resultSet.getInt(12), resultSet.getInt(13), resultSet.getInt(14)));
+                (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getInt(3),
+                        resultSet.getString(4), resultSet.getString(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7), resultSet.getTimestamp(8),
+                        resultSet.getInt(9), resultSet.getInt(10), resultSet.getTimestamp(11), resultSet.getInt(12), resultSet.getInt(13),
+                        resultSet.getInt(14), resultSet.getInt(15)));
     }
 
     public SchoolRequestsModel getRequestByID(int id) {
         return jdbcTemplate.queryForObject("SELECT * FROM efaz_school_tender WHERE  request_id=?;",
-                new Object[]{id}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2),
-                        resultSet.getString(3), resultSet.getString(4), resultSet.getTimestamp(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
-                        resultSet.getInt(8), resultSet.getInt(9), resultSet.getTimestamp(10), resultSet.getInt(11), resultSet.getInt(12), resultSet.getInt(13), resultSet.getInt(14)));
+                new Object[]{id}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getInt(3),
+                        resultSet.getString(4), resultSet.getString(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7), resultSet.getTimestamp(8),
+                        resultSet.getInt(9), resultSet.getInt(10), resultSet.getTimestamp(11), resultSet.getInt(12), resultSet.getInt(13),
+                        resultSet.getInt(14), resultSet.getInt(15)));
     }
 
     public List<SchoolRequestsModel> getRequestsByID(int id) {
         return jdbcTemplate.query("SELECT * FROM efaz_school_tender WHERE  school_id=?;",
-                new Object[]{id}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2),
-                        resultSet.getString(3), resultSet.getString(4), resultSet.getTimestamp(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
-                        resultSet.getInt(8), resultSet.getInt(9), resultSet.getTimestamp(10), resultSet.getInt(11), resultSet.getInt(12), resultSet.getInt(13), resultSet.getInt(14)));
+                new Object[]{id}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getInt(3),
+                        resultSet.getString(4), resultSet.getString(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7), resultSet.getTimestamp(8),
+                        resultSet.getInt(9), resultSet.getInt(10), resultSet.getTimestamp(11), resultSet.getInt(12), resultSet.getInt(13), resultSet.getInt(14), resultSet.getInt(15)));
     }
 
 
-    public int updateRequest(int request_id, byte[] request_details_file, String request_title, String request_explaination,
+    public int updateRequest(int request_id, byte[] request_details_file, int images_id, String request_title, String request_explaination,
                              Timestamp request_display_date, Timestamp request_expired_date, Timestamp request_deliver_date,
                              Timestamp request_payment_date, int request_is_available, int request_is_conformied, int school_id,
                              int request_category_id, int receive_palce_id, int extended_payment) {
 
-        return jdbcTemplate.update("update efaz_school_tender set request_details_file=?," + "request_title=?," +
+        return jdbcTemplate.update("update efaz_school_tender set request_details_file=?," + " images_id=?, request_title=?," +
                         "request_explaination=?," + " request_display_date=?, request_expired_date=?, request_deliver_date=?," +
                         "request_payment_date=?, request_is_available=?, request_is_conformied=?, school_id=?, request_category_id=?, receive_palce_id=?, extended_payment=?" +
-                        " where request_id=?", request_details_file, request_title, request_explaination, request_display_date
+                        " where request_id=?", request_details_file, images_id, request_title, request_explaination, request_display_date
                 , request_expired_date, request_deliver_date, request_payment_date, request_is_available, request_is_conformied, school_id, request_category_id,
                 receive_palce_id, extended_payment, request_id);
 
@@ -69,46 +70,51 @@ public class SchoolRequestRepo {
 
     public List<SchoolRequestsModel> filterByIsAvailable(int isAvailable) {
         return jdbcTemplate.query("SELECT * FROM efaz_school_tender WHERE  request_is_available=?;",
-                new Object[]{isAvailable}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2),
-                        resultSet.getString(3), resultSet.getString(4), resultSet.getTimestamp(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
-                        resultSet.getInt(8), resultSet.getInt(9), resultSet.getTimestamp(10), resultSet.getInt(11), resultSet.getInt(12), resultSet.getInt(13), resultSet.getInt(14)));
+                new Object[]{isAvailable}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getInt(3),
+                        resultSet.getString(4), resultSet.getString(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7), resultSet.getTimestamp(8),
+                        resultSet.getInt(9), resultSet.getInt(10), resultSet.getTimestamp(11), resultSet.getInt(12), resultSet.getInt(13), resultSet.getInt(14), resultSet.getInt(15)));
     }
 
 
     public List<SchoolRequestsModel> filterByIsConfirmed(int isConfirmed) {
         return jdbcTemplate.query("SELECT * FROM efaz_school_tender WHERE  request_is_conformied=?;",
-                new Object[]{isConfirmed}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2),
-                        resultSet.getString(3), resultSet.getString(4), resultSet.getTimestamp(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
-                        resultSet.getInt(8), resultSet.getInt(9), resultSet.getTimestamp(10), resultSet.getInt(11), resultSet.getInt(12), resultSet.getInt(13), resultSet.getInt(14)));
+                new Object[]{isConfirmed}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getInt(3),
+                        resultSet.getString(4), resultSet.getString(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7), resultSet.getTimestamp(8),
+                        resultSet.getInt(9), resultSet.getInt(10), resultSet.getTimestamp(11), resultSet.getInt(12), resultSet.getInt(13),
+                        resultSet.getInt(14), resultSet.getInt(15)));
     }
 
 
     public List<SchoolRequestsModel> filterByTitle(String title) {
         String sql = "SELECT * FROM efaz_school_tender WHERE  request_title LIKE ?;";
-        return jdbcTemplate.query(sql, new String[]{"%" + title + "%"}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2),
-                resultSet.getString(3), resultSet.getString(4), resultSet.getTimestamp(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
-                resultSet.getInt(8), resultSet.getInt(9), resultSet.getTimestamp(10), resultSet.getInt(11), resultSet.getInt(12), resultSet.getInt(13), resultSet.getInt(14)));
+        return jdbcTemplate.query(sql, new String[]{"%" + title + "%"}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getInt(3),
+                resultSet.getString(4), resultSet.getString(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7), resultSet.getTimestamp(8),
+                resultSet.getInt(9), resultSet.getInt(10), resultSet.getTimestamp(11), resultSet.getInt(12), resultSet.getInt(13),
+                resultSet.getInt(14), resultSet.getInt(15)));
     }
 
     public List<SchoolRequestsModel> filterByExplain(String explain) {
         String sql = "SELECT * FROM efaz_school_tender WHERE  request_explaination LIKE ?;";
-        return jdbcTemplate.query(sql, new String[]{"%" + explain + "%"}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2),
-                resultSet.getString(3), resultSet.getString(4), resultSet.getTimestamp(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
-                resultSet.getInt(8), resultSet.getInt(9), resultSet.getTimestamp(10), resultSet.getInt(11), resultSet.getInt(12), resultSet.getInt(13), resultSet.getInt(14)));
+        return jdbcTemplate.query(sql, new String[]{"%" + explain + "%"}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getInt(3),
+                resultSet.getString(4), resultSet.getString(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7), resultSet.getTimestamp(8),
+                resultSet.getInt(9), resultSet.getInt(10), resultSet.getTimestamp(11), resultSet.getInt(12), resultSet.getInt(13),
+                resultSet.getInt(14), resultSet.getInt(15)));
     }
 
     public List<SchoolRequestsModel> filterByCategory(int cat) {
         return jdbcTemplate.query("SELECT * FROM efaz_school_tender WHERE  request_category_id=?;",
-                new Object[]{cat}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2),
-                        resultSet.getString(3), resultSet.getString(4), resultSet.getTimestamp(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
-                        resultSet.getInt(8), resultSet.getInt(9), resultSet.getTimestamp(10), resultSet.getInt(11), resultSet.getInt(12), resultSet.getInt(13), resultSet.getInt(14)));
+                new Object[]{cat}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getInt(3),
+                        resultSet.getString(4), resultSet.getString(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7), resultSet.getTimestamp(8),
+                        resultSet.getInt(9), resultSet.getInt(10), resultSet.getTimestamp(11), resultSet.getInt(12), resultSet.getInt(13),
+                        resultSet.getInt(14), resultSet.getInt(15)));
     }
 
     public List<SchoolRequestsModel> filterByReceivePlace(int placeId) {
         return jdbcTemplate.query("SELECT * FROM efaz_school_tender WHERE  receive_palce_id=?;",
-                new Object[]{placeId}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2),
-                        resultSet.getString(3), resultSet.getString(4), resultSet.getTimestamp(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
-                        resultSet.getInt(8), resultSet.getInt(9), resultSet.getTimestamp(10), resultSet.getInt(11), resultSet.getInt(12), resultSet.getInt(13), resultSet.getInt(14)));
+                new Object[]{placeId}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getInt(3),
+                        resultSet.getString(4), resultSet.getString(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7), resultSet.getTimestamp(8),
+                        resultSet.getInt(9), resultSet.getInt(10), resultSet.getTimestamp(11), resultSet.getInt(12), resultSet.getInt(13),
+                        resultSet.getInt(14), resultSet.getInt(15)));
     }
 
 

@@ -24,7 +24,6 @@ import java.util.List;
 @RequestMapping("/evvaz/school/request/offer")
 @RestController
 @CrossOrigin
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SchoolRequestOfferController {
 
     @Autowired
@@ -33,7 +32,6 @@ public class SchoolRequestOfferController {
     @Autowired
     ObjectMapper mapper;
 
-    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PostMapping("/add")
     public JsonNode addSchoolRequestOffer(@Valid @RequestBody SchoolRequestOfferModel model, Errors errors) {
         if (errors.hasErrors()){
@@ -62,49 +60,41 @@ public class SchoolRequestOfferController {
 
     }
 
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     @GetMapping("/getAll")
     public List<SchoolRequestOfferModel> getSchoolRequestsOffer() {
         return repo.getSchoolRequestOffer();
     }
 
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     @GetMapping("/get/{id}")
     public SchoolRequestOfferModel getSchoolRequestOffer(@PathVariable int id) {
         return repo.getSchoolRequestOffer(id);
     }
 
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     @GetMapping("/getSchool/{schoolId}")
     public List<SchoolRequestOfferModel> getSchoolRequestOfferBySchool(@PathVariable int schoolId) {
         return repo.getSchoolRequestOfferBySchool(schoolId);
     }
 
     @GetMapping("/getOffer/{offerId}")
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public List<SchoolRequestOfferModel> SchoolRequestOfferByOffer(@PathVariable int offerId) {
         return repo.getSchoolRequestOfferByOffer(offerId);
     }
 
-    @GetMapping("/approval/{accept}")
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
+    @GetMapping("/getApproved/{accept}")
     public List<SchoolRequestOfferModel> SchoolRequestOfferByAprove(@PathVariable int accept) {
         return repo.getSchoolRequestOfferByAccept(accept);
     }
 
     @PutMapping("/accept/{id}")
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public int acceptSchoolRequestOffer(@PathVariable int id) {
         return repo.acceptSchoolRequestOffer(id);
     }
     @PutMapping("/refuse/{id}")
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public int refuseSchoolRequestOffer(@PathVariable int id) {
         return repo.refuseSchoolRequestOffer(id);
     }
 
     @PutMapping("/update")
-    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     public ObjectNode updateSchoolRequestOffer(@Valid @RequestBody SchoolRequestOfferModel model, Errors errors) {
         if (errors.hasErrors()){
             ObjectNode objectNode = mapper.createObjectNode();
@@ -120,20 +110,19 @@ public class SchoolRequestOfferController {
             objectNode.put("requsted_school_id", model.getRequsted_school_id());
             objectNode.put("requsted_offer_id", model.getRequsted_offer_id());
             objectNode.put("is_accepted", model.getIs_accepted());
-            objectNode.put("is_accepted", model.getIs_accepted());
+            objectNode.put("request_offer_count", model.getRequest_offer_count());
 
             return objectNode;
         }else {
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "not success");
+            objectNode.put("message", "not success");
 
             return objectNode;
         }
 
     }
 
-    @PutMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
+    @DeleteMapping("/delete/{id}")
     public ObjectNode deleteSchoolRequestOffer(@PathVariable int id) {
         int res = repo.deleteResponseSchoolRequest(id);
         if (res == 1){
@@ -150,7 +139,6 @@ public class SchoolRequestOfferController {
     }
 
     @GetMapping("/com/{id}")
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public GetSchoolsRequestOffersWitCoast getSchoolRequestOfferByCompany(@PathVariable int id){
         return  repo.getSchoolRequestOfferByCompany(id);
     }

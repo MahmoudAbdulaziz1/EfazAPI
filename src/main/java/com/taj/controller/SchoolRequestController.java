@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by MahmoudAhmed on 6/3/2018.
  */
-@RequestMapping("/evvaz/school/request")
+@RequestMapping("/evvaz/school/requests")
 @RestController
 @CrossOrigin
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -40,13 +40,14 @@ public class SchoolRequestController {
             return objectNode;
         }
 
-        int res = repo.addRequest(model.getRequest_details_file(), model.getRequest_title(), model.getRequest_explaination(),
+        int res = repo.addRequest(model.getRequest_details_file(), model.getImages_id(), model.getRequest_title(), model.getRequest_explaination(),
                 model.getRequest_display_date(), model.getRequest_expired_date(), model.getRequest_deliver_date(), model.getRequest_payment_date(),
                 model.getRequest_is_available(), model.getRequest_is_conformied(), model.getSchool_id(), model.getRequest_category_id(), model.getReceive_palce_id(), model.getExtended_payment());
         if (res == 1){
             ObjectNode objectNode = mapper.createObjectNode();
             //objectNode.put("request_id", model.getRequest_id());
             objectNode.put("request_details_file", model.getRequest_details_file());
+            //objectNode.put("images_id", model.getImages_id());
             objectNode.put("request_title", model.getRequest_title());
             objectNode.put("request_explaination", model.getRequest_explaination());
             objectNode.put("request_display_date", model.getRequest_display_date().toString());
@@ -96,7 +97,7 @@ public class SchoolRequestController {
             objectNode.put("details", errors.getAllErrors().toString());
             return objectNode;
         }
-        int res = repo.updateRequest(model.getRequest_id(), model.getRequest_details_file(), model.getRequest_title(), model.getRequest_explaination(),
+        int res = repo.updateRequest(model.getRequest_id(), model.getRequest_details_file(), model.getImages_id(), model.getRequest_title(), model.getRequest_explaination(),
                 model.getRequest_display_date(), model.getRequest_expired_date(), model.getRequest_deliver_date(), model.getRequest_payment_date(),
                 model.getRequest_is_available(), model.getRequest_is_conformied(), model.getSchool_id(), model.getRequest_category_id(), model.getReceive_palce_id(), model.getExtended_payment());
 
@@ -104,6 +105,7 @@ public class SchoolRequestController {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("request_id", model.getRequest_id());
             objectNode.put("request_details_file", model.getRequest_details_file());
+            objectNode.put("images_id", model.getImages_id());
             objectNode.put("request_title", model.getRequest_title());
             objectNode.put("request_explaination", model.getRequest_explaination());
             objectNode.put("request_display_date", model.getRequest_display_date().toString());
