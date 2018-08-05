@@ -154,6 +154,113 @@ public class CompanyOfferController {
 
     }
 
+    @PutMapping("/updatess")
+    public ResponseEntity<JsonNode> updateCompanyOfferForAdmin(@Valid @RequestBody CompanyOfferModel model, Errors errors) {
+
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            //objectNode.put("details", errors.getAllErrors().toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+        if (repo.checkIfExist(model.getOffer_id())){
+            int res = repo.updateCompanyOffer(model.getOffer_id(), model.getOffer_images_id(), model.getOffer_title(), model.getOffer_explaination(),
+                    model.getOffer_cost(), model.getOffer_display_date(), model.getOffer_expired_date(), model.getOffer_deliver_date(),
+                    model.getCompany_id(), model.getOffer_count());
+
+            if (res == 1){
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status",200);
+                objectNode.put("offer_id", model.getOffer_id());
+                objectNode.put("offer_images_id", model.getOffer_images_id());
+                objectNode.put("offer_title", model.getOffer_title());
+                objectNode.put("offer_explaination", model.getOffer_explaination());
+                objectNode.put("offer_cost", model.getOffer_cost());
+                objectNode.put("offer_display_date", model.getOffer_display_date().toString());
+                objectNode.put("offer_expired_date", model.getOffer_expired_date().toString());
+                objectNode.put("offer_deliver_date", model.getOffer_deliver_date().toString());
+                objectNode.put("company_id", model.getCompany_id());
+                objectNode.put("offer_count", model.getOffer_count());
+                return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+            }else {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status", 400);
+                objectNode.put("message", "not success");
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            }
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("status", 400);
+            objectNode.put("message", "not exist");
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+
+    }
+
+
+
+
+    /**
+     * update offer of company
+     *
+     * @param model
+     * @return 1 if success or 0 if failed
+     */
+    @PutMapping("/updates")
+    public ResponseEntity<JsonNode> updateCompanyOfferWithImage(@Valid @RequestBody addOfferModel model, Errors errors) {
+
+        if (errors.hasErrors()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            //objectNode.put("details", errors.getAllErrors().toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+        if (repo.checkIfExist(model.getOffer_id())){
+            int res = repo.updateCompanyOfferWithImages(model.getOffer_id(), model.getImage_one(), model.getImage_two(), model.getImage_third(), model.getImage_four(), model.getOffer_title(), model.getOffer_explaination(),
+                    model.getOffer_cost(), model.getOffer_display_date(), model.getOffer_expired_date(), model.getOffer_deliver_date(),
+                    model.getCompany_id(), model.getOffer_count());
+
+            if (res == 1){
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status",200);
+                objectNode.put("offer_id", model.getOffer_id());
+                objectNode.put("image_one", model.getImage_one());
+                objectNode.put("image_two", model.getImage_two());
+                objectNode.put("image_three", model.getImage_third());
+                objectNode.put("image_four", model.getImage_four());
+                objectNode.put("offer_title", model.getOffer_title());
+                objectNode.put("offer_explaination", model.getOffer_explaination());
+                objectNode.put("offer_cost", model.getOffer_cost());
+                objectNode.put("offer_display_date", model.getOffer_display_date().toString());
+                objectNode.put("offer_expired_date", model.getOffer_expired_date().toString());
+                objectNode.put("offer_deliver_date", model.getOffer_deliver_date().toString());
+                objectNode.put("company_id", model.getCompany_id());
+                objectNode.put("offer_count", model.getOffer_count());
+                return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+            }else {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status", 400);
+                objectNode.put("message", "not success");
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            }
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("status", 400);
+            objectNode.put("message", "not exist");
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+
+    }
+
+
+
+
     /**
      * delete offer by offer id
      *
@@ -265,8 +372,10 @@ public class CompanyOfferController {
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(0);
         }
-        //}
+
     }
+
+
 
 
 

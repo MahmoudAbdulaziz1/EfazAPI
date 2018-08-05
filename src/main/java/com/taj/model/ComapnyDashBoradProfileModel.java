@@ -3,10 +3,9 @@ package com.taj.model;
 import javax.validation.constraints.*;
 
 /**
- * Created by MahmoudAhmed on 5/31/2018.
+ * Created by User on 8/5/2018.
  */
-public class CompanyProfileModel {
-
+public class ComapnyDashBoradProfileModel {
 
     private int company_id;
     @NotNull
@@ -21,9 +20,7 @@ public class CompanyProfileModel {
     @NotEmpty
     @Size(max = 450, min = 1, message = "address should have at least 1 characters")
     private String company_address;
-    @NotNull
-    @Min(1)
-    private int company_category_id;
+
     //    @NotNull
 //    @NotBlank
 //    @NotEmpty
@@ -34,47 +31,34 @@ public class CompanyProfileModel {
     @NotEmpty
     @Size(max = 450, min = 1, message = "website should have at least 1 characters")
     private String company_website_url;
-
-    private float company_lng, company_lat;
     @NotNull
     private byte[] company_cover_image;
     private String company_phone_number;
 
+    public ComapnyDashBoradProfileModel() {
+    }
 
-    public CompanyProfileModel(int company_id, String company_name, byte[] company_logo_image, String company_address,
-                               int company_category_id, String company_link_youtube, String company_website_url, float company_lng,
-                               float company_lat, byte[] company_cover_image, String company_phone_number) {
+    public ComapnyDashBoradProfileModel(int company_id, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String company_name, @NotNull byte[] company_logo_image, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "address should have at least 1 characters") String company_address, String company_link_youtube,
+                                        @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "website should have at least 1 characters") String company_website_url, @NotNull byte[] company_cover_image, String company_phone_number) {
         this.company_id = company_id;
         this.company_name = company_name;
         this.company_logo_image = company_logo_image;
         this.company_address = company_address;
-        this.company_category_id = company_category_id;
         this.company_link_youtube = company_link_youtube;
         this.company_website_url = company_website_url;
-        this.company_lng = company_lng;
-        this.company_lat = company_lat;
         this.company_cover_image = company_cover_image;
         this.company_phone_number = company_phone_number;
-
     }
 
-    public CompanyProfileModel(String company_name, byte[] company_logo_image, String company_address,
-                               int company_category_id, String company_link_youtube, String company_website_url,
-                               float company_lng, float company_lat, byte[] company_cover_image, String company_phone_number) {
+    public ComapnyDashBoradProfileModel(@NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String company_name, @NotNull byte[] company_logo_image, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "address should have at least 1 characters") String company_address, String company_link_youtube, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "website should have at least 1 characters") String company_website_url,
+                                        @NotNull byte[] company_cover_image, String company_phone_number) {
         this.company_name = company_name;
         this.company_logo_image = company_logo_image;
         this.company_address = company_address;
-        this.company_category_id = company_category_id;
         this.company_link_youtube = company_link_youtube;
         this.company_website_url = company_website_url;
-        this.company_lng = company_lng;
-        this.company_lat = company_lat;
         this.company_cover_image = company_cover_image;
         this.company_phone_number = company_phone_number;
-
-    }
-
-    public CompanyProfileModel() {
     }
 
     public int getCompany_id() {
@@ -109,14 +93,6 @@ public class CompanyProfileModel {
         this.company_address = company_address;
     }
 
-    public int getCompany_category_id() {
-        return company_category_id;
-    }
-
-    public void setCompany_category_id(int company_category_id) {
-        this.company_category_id = company_category_id;
-    }
-
     public String getCompany_link_youtube() {
         return company_link_youtube;
     }
@@ -131,22 +107,6 @@ public class CompanyProfileModel {
 
     public void setCompany_website_url(String company_website_url) {
         this.company_website_url = company_website_url;
-    }
-
-    public float getCompany_lng() {
-        return company_lng;
-    }
-
-    public void setCompany_lng(float company_lng) {
-        this.company_lng = company_lng;
-    }
-
-    public float getCompany_lat() {
-        return company_lat;
-    }
-
-    public void setCompany_lat(float company_lat) {
-        this.company_lat = company_lat;
     }
 
     public byte[] getCompany_cover_image() {
@@ -165,5 +125,3 @@ public class CompanyProfileModel {
         this.company_phone_number = company_phone_number;
     }
 }
-
-

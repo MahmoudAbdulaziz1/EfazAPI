@@ -1,5 +1,6 @@
 package com.taj.repository;
 
+import com.taj.model.ComapnyDashBoradProfileModel;
 import com.taj.model.CompanyProfileModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,12 +26,13 @@ public class ProfileRepo {
     }
 
     public int addProfile(int company_id, String company_name, byte[] company_logo_image, String company_address,
-                          int company_service_desc, String company_link_youtube, String company_website_url, float school_lng, float school_lat, byte[] company_cover_image) {
+                          int company_service_desc, String company_link_youtube, String company_website_url, float school_lng,
+                          float school_lat, byte[] company_cover_image, String company_phone_number) {
         jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=0;");
 
 
-        int id = jdbcTemplate.update("INSERT INTO efaz_company_profile VALUES (?,?,?,?,?,?,?,?,?,?)", company_id, company_name, company_logo_image,
-                company_address, company_service_desc, company_link_youtube, company_website_url, school_lng, school_lat, company_cover_image);
+        int id = jdbcTemplate.update("INSERT INTO efaz_company_profile VALUES (?,?,?,?,?,?,?,?,?,?,?)", company_id, company_name, company_logo_image,
+                company_address, company_service_desc, company_link_youtube, company_website_url, school_lng, school_lat, company_cover_image, company_phone_number);
 
         jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=1;");
 
@@ -42,7 +44,7 @@ public class ProfileRepo {
         return jdbcTemplate.query("SELECT * FROM efaz_company_profile;",
                 (resultSet, i) -> new CompanyProfileModel(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getBytes(3), resultSet.getString(4), resultSet.getInt(5),
-                        resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9), resultSet.getBytes(10)));
+                        resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9), resultSet.getBytes(10), resultSet.getString(11)));
     }
 
 
@@ -50,14 +52,14 @@ public class ProfileRepo {
         return jdbcTemplate.queryForObject("SELECT * FROM efaz_company_profile WHERE  company_id=?;",
                 new Object[]{id}, (resultSet, i) -> new CompanyProfileModel(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getBytes(3), resultSet.getString(4), resultSet.getInt(5),
-                        resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9), resultSet.getBytes(10)));
+                        resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9), resultSet.getBytes(10), resultSet.getString(11)));
     }
 
     public List<CompanyProfileModel> getProfileByCategory(int id) {
         return jdbcTemplate.query("SELECT * FROM efaz_company_profile WHERE  company_category_id=?;",
                 new Object[]{id}, (resultSet, i) -> new CompanyProfileModel(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getBytes(3), resultSet.getString(4), resultSet.getInt(5),
-                        resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9), resultSet.getBytes(10)));
+                        resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9), resultSet.getBytes(10), resultSet.getString(11)));
     }
 
     public int CheckProfile(int id) {
@@ -69,15 +71,67 @@ public class ProfileRepo {
 
     public int updateProfile(int id, String company_name, byte[] company_logo_image, String company_address,
                              int company_service_desc, String company_link_youtube, String company_website_url,
-                             float school_lng, float school_lat, byte[] company_cover_image) {
+                             float school_lng, float school_lat, byte[] company_cover_image, String company_phone_number) {
 
         return jdbcTemplate.update("update efaz_company_profile set company_name=?," +
                         "company_logo_image=?, company_address=?," +
-                        "company_category_id=?, company_link_youtube=?, company_website_url=?, company_lng=?, company_lat=?, company_cover_image=?" +
+                        "company_category_id=?, company_link_youtube=?, company_website_url=?, company_lng=?, company_lat=?, company_cover_image=?, company_phone_number=? " +
                         " where company_id=?", company_name, company_logo_image, company_address, company_service_desc
-                , company_link_youtube, company_website_url, school_lng, school_lat, company_cover_image, id);
+                , company_link_youtube, company_website_url, school_lng, school_lat, company_cover_image, company_phone_number, id);
 
     }
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    public List<ComapnyDashBoradProfileModel> getProfilesForDashCompany() {
+        return jdbcTemplate.query("SELECT * FROM efaz_company_profile;",
+                (resultSet, i) -> new ComapnyDashBoradProfileModel(resultSet.getInt(1), resultSet.getString(2),
+                        resultSet.getBytes(3), resultSet.getString(4),
+                        resultSet.getString(6), resultSet.getString(7), resultSet.getBytes(10), resultSet.getString(11)));
+    }
+
+
+//    public int CheckProfile(int id) {
+//        int count = jdbcTemplate.queryForObject("SELECT Count(*) FROM efaz_company_profile WHERE  company_id=?;",
+//                Integer.class, id);
+//        return count;
+//    }
+//
+//
+    public int updateProfileForAdmin(int id, String company_name, byte[] company_logo_image, String company_address,
+                              String company_link_youtube, String company_website_url,
+                             byte[] company_cover_image, String company_phone_number) {
+
+        float lat = jdbcTemplate.queryForObject("SELECT company_lat FROM efaz_company_profile WHERE  company_id=?;",
+                Float.class, id);
+        float lng = jdbcTemplate.queryForObject("SELECT company_lng FROM efaz_company_profile WHERE  company_id=?;",
+                Float.class, id);
+        int category = jdbcTemplate.queryForObject("SELECT company_category_id FROM efaz_company_profile WHERE  company_id=?;",
+                Integer.class, id);
+
+        return jdbcTemplate.update("update efaz_company_profile set company_name=?," +
+                        "company_logo_image=?, company_address=?," +
+                        "company_category_id=?, company_link_youtube=?, company_website_url=?, company_lng=?, company_lat=?, company_cover_image=?, company_phone_number=? " +
+                        " where company_id=?", company_name, company_logo_image, company_address, category
+                , company_link_youtube, company_website_url, lng, lat, company_cover_image, company_phone_number, id);
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

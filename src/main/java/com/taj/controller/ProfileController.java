@@ -2,10 +2,7 @@ package com.taj.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.taj.model.CompanyProfileModel;
-import com.taj.model.GetAllCompanies;
-import com.taj.model.GetCompanyByCategory;
-import com.taj.model.GetCompanyById;
+import com.taj.model.*;
 import com.taj.repository.ProfileRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,7 +52,7 @@ public class ProfileController {
         } else {
             int res = profileRepo.addProfile(model.getCompany_id(), model.getCompany_name(), model.getCompany_logo_image(),
                     model.getCompany_address(), model.getCompany_category_id(), model.getCompany_link_youtube(),
-                    model.getCompany_website_url(), model.getCompany_lng(), model.getCompany_lat(), model.getCompany_cover_image());
+                    model.getCompany_website_url(), model.getCompany_lng(), model.getCompany_lat(), model.getCompany_cover_image(), model.getCompany_phone_number());
 
             if (res == 1) {
                 ObjectNode objectNode = mapper.createObjectNode();
@@ -70,6 +67,7 @@ public class ProfileController {
                 objectNode.put("company_lng", model.getCompany_lng());
                 objectNode.put("company_lat", model.getCompany_lat());
                 objectNode.put("company_cover_image", model.getCompany_cover_image());
+                objectNode.put("company_phone_number", model.getCompany_phone_number());
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);
             } else {
                 ObjectNode objectNode = mapper.createObjectNode();
@@ -99,6 +97,16 @@ public class ProfileController {
 
     }
 
+    @GetMapping("/getAlls")
+    public ResponseEntity<GetAllCompaniesForCompanyAdmin> getProfilesForCompanyAdmin() {
+
+        List<ComapnyDashBoradProfileModel> list = profileRepo.getProfilesForDashCompany();
+        ObjectNode objectNode = mapper.createObjectNode();
+        GetAllCompaniesForCompanyAdmin getAllCompanies = new GetAllCompaniesForCompanyAdmin("200", list);
+        return ResponseEntity.status(HttpStatus.OK).body(getAllCompanies);
+
+    }
+
     /**
      * update profile
      *
@@ -119,7 +127,7 @@ public class ProfileController {
         if (profileRepo.isExist(model.getCompany_id())) {
             int res = profileRepo.updateProfile(model.getCompany_id(), model.getCompany_name(), model.getCompany_logo_image(),
                     model.getCompany_address(), model.getCompany_category_id(), model.getCompany_link_youtube(),
-                    model.getCompany_website_url(), model.getCompany_lng(), model.getCompany_lat(), model.getCompany_cover_image());
+                    model.getCompany_website_url(), model.getCompany_lng(), model.getCompany_lat(), model.getCompany_cover_image(), model.getCompany_phone_number());
             if (res == 1) {
                 ObjectNode objectNode = mapper.createObjectNode();
                 objectNode.put("company_id", model.getCompany_id());
@@ -132,6 +140,7 @@ public class ProfileController {
                 objectNode.put("company_lng", model.getCompany_lng());
                 objectNode.put("company_lat", model.getCompany_lat());
                 objectNode.put("company_cover_image", model.getCompany_cover_image());
+                objectNode.put("company_phone_number", model.getCompany_phone_number());
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);
             } else {
                 ObjectNode objectNode = mapper.createObjectNode();
@@ -149,6 +158,77 @@ public class ProfileController {
 
 
     }
+
+
+
+
+
+
+
+
+
+
+
+    @PutMapping("/updates")
+    public ResponseEntity<ObjectNode> updateProfileForAdmin(@Valid @RequestBody ComapnyDashBoradProfileModel model, Errors errors) {
+
+        if (errors.hasErrors()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            //objectNode.put("details", errors.getAllErrors().toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+        if (profileRepo.isExist(model.getCompany_id())) {
+            int res = profileRepo.updateProfileForAdmin(model.getCompany_id(), model.getCompany_name(), model.getCompany_logo_image(),
+                    model.getCompany_address(),  model.getCompany_link_youtube(),
+                    model.getCompany_website_url(), model.getCompany_cover_image(), model.getCompany_phone_number());
+            if (res == 1) {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("company_id", model.getCompany_id());
+                objectNode.put("company_name", model.getCompany_name());
+                objectNode.put("company_logo_image", model.getCompany_logo_image());
+                objectNode.put("company_address", model.getCompany_address());
+                objectNode.put("company_link_youtube", model.getCompany_link_youtube());
+                objectNode.put("company_website_url", model.getCompany_website_url());
+                objectNode.put("company_cover_image", model.getCompany_cover_image());
+                objectNode.put("company_phone_number", model.getCompany_phone_number());
+                return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+            } else {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("value", "not success");
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            }
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 200);
+            objectNode.put("value", "not found");
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * get profile date by its id
@@ -173,6 +253,7 @@ public class ProfileController {
             objectNode.put("company_lng", model.getCompany_lng());
             objectNode.put("company_lat", model.getCompany_lat());
             objectNode.put("company_cover_image", model.getCompany_cover_image());
+            objectNode.put("company_phone_number", model.getCompany_phone_number());
             return ResponseEntity.status(HttpStatus.OK).body(objectNode);
             //return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GetCompanyById("400", null));
 

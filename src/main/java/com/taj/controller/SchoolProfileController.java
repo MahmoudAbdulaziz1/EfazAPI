@@ -18,10 +18,11 @@ import java.util.List;
 /**
  * Created by MahmoudAhmed on 6/3/2018.
  */
-@RequestMapping("/evvaz/school/profile")
+//@RequestMapping("/evvaz/school/profile")
+@RequestMapping("/school/profile")
 @RestController
 @CrossOrigin
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SchoolProfileController {
 
 
@@ -37,7 +38,7 @@ public class SchoolProfileController {
      * @return 1 if added and 0  if not
      */
     @PostMapping("/addProfile")
-    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     public ResponseEntity<ObjectNode> AddUserProfile(@Valid @RequestBody SchoolProfileModel model, Errors errors) {
 
         if (errors.hasErrors()) {
@@ -96,7 +97,7 @@ public class SchoolProfileController {
      * @return list of profiles
      */
 
-    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @GetMapping("/getProfiles")
     public List<SchoolProfileModel> getProfiles() {
         return repo.getSchoolSProfiles();
@@ -109,13 +110,13 @@ public class SchoolProfileController {
      * @param id
      * @return school profile by id
      */
-    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @GetMapping("/getProfile/{id}")
     public SchoolProfileModel getProfile(@PathVariable int id) {
         return repo.getSchoolProfile(id);
     }
 
-    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PutMapping("/updateProfile")
     public ResponseEntity<ObjectNode> updateProfile(@Valid @RequestBody SchoolProfileModel model, Errors errors) {
 
@@ -153,13 +154,13 @@ public class SchoolProfileController {
 
     }
 
-    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @GetMapping("/profileExist/{id}")
     public int isExist(@PathVariable int id) {
         return repo.checkSchoolProfile(id);
     }
 
-    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ObjectNode> deleteSchoolProfile(@PathVariable int id) {
         int res = repo.deleteSchoolProfile(id);

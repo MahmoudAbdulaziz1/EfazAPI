@@ -1,7 +1,6 @@
 package com.taj.repository;
 
 import com.taj.model.AddOfferImage;
-import com.taj.model.CompanyOfferModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -9,7 +8,10 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 /**
@@ -21,7 +23,7 @@ public class AddOfferImageRepo {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public boolean checkIfExist(int images_id){
+    public boolean checkIfExist(int images_id) {
         Integer cnt = jdbcTemplate.queryForObject(
                 "SELECT count(*) FROM  company_offer_images WHERE images_id=?;",
                 Integer.class, images_id);
@@ -36,9 +38,7 @@ public class AddOfferImageRepo {
 //    }
 
 
-
     public int addOfferImage(byte[] image_one, byte[] image_two, byte[] image_three, byte[] image_four) {
-
 
 
         KeyHolder key = new GeneratedKeyHolder();
@@ -75,11 +75,29 @@ public class AddOfferImageRepo {
                         , resultSet.getBytes(4), resultSet.getBytes(5)));
     }
 
+
     public AddOfferImage getCompanyOfferImage(int id) {
         return jdbcTemplate.queryForObject("SELECT * FROM company_offer_images WHERE images_id=?;", new Object[]{id},
                 (resultSet, i) -> new AddOfferImage(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getBytes(3)
                         , resultSet.getBytes(4), resultSet.getBytes(5)));
     }
+
+    public byte[] getCompanyOfferOneImage(int id) {
+        return jdbcTemplate.queryForObject("SELECT image_one FROM company_offer_images WHERE images_id=?;", byte[].class, id);
+    }
+
+    public byte[] getCompanyOfferTwoImage(int id) {
+        return jdbcTemplate.queryForObject("SELECT image_two FROM company_offer_images WHERE images_id=?;", byte[].class, id);
+    }
+
+    public byte[] getCompanyOfferThreeImage(int id) {
+        return jdbcTemplate.queryForObject("SELECT image_three FROM company_offer_images WHERE images_id=?;", byte[].class, id);
+    }
+
+    public byte[] getCompanyOfferFourImage(int id) {
+        return jdbcTemplate.queryForObject("SELECT image_four FROM company_offer_images WHERE images_id=?;", byte[].class, id);
+    }
+
 
     public int updateCompanyOfferImages(int images_id, byte[] image_one, byte[] image_two, byte[] image_third, byte[] image_four) {
         return jdbcTemplate.update("update company_offer_images set image_one=?," +
