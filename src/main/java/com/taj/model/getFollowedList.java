@@ -8,9 +8,9 @@ import java.util.List;
 public class getFollowedList {
 
     private String status;
-    private List<SchoolFollowCompany> followed;
+    private List<SchoolProfileModel> followed;
 
-    public getFollowedList(String status, List<SchoolFollowCompany> model) {
+    public getFollowedList(String status, List<SchoolProfileModel> model) {
         this.status = status;
         this.followed = model;
     }
@@ -26,11 +26,11 @@ public class getFollowedList {
         this.status = status;
     }
 
-    public List<SchoolFollowCompany> getModel() {
+    public List<SchoolProfileModel> getModel() {
         return followed;
     }
 
-    public void setModel(List<SchoolFollowCompany> model) {
+    public void setModel(List<SchoolProfileModel> model) {
         this.followed = model;
     }
 }

@@ -2,9 +2,7 @@ package com.taj.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.taj.model.SchoolFollowCompany;
-import com.taj.model.getFollowedList;
-import com.taj.model.getFollowersList;
+import com.taj.model.*;
 import com.taj.repository.SchoolFollowCompanyRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -111,14 +109,27 @@ public class SchoolFollowCompanyController {
 
     //who's followed
     @GetMapping("/get/followers/{companyId}")
-    public ResponseEntity<getFollowedList> getCompanyAllFollowers(@PathVariable int companyId) {
+    public ResponseEntity<List<SchoolProfileModel>> getCompanyAllFollowers(@PathVariable int companyId) {
 
         if (repo.isExistFollwer(companyId)) {
-            List<SchoolFollowCompany> followed = repo.getCompanyAllFollowers(companyId);
-            return ResponseEntity.status(HttpStatus.OK).body(new getFollowedList("200", followed));
+            List<SchoolProfileModel> followed = repo.getCompanyAllFollowersNew(companyId);
+            return ResponseEntity.status(HttpStatus.OK).body(followed);
         } else {
-            List<SchoolFollowCompany> followed = repo.getCompanyAllFollowers(companyId);
-            return ResponseEntity.status(HttpStatus.OK).body(new getFollowedList("400", followed));
+            List<SchoolProfileModel> followed = repo.getCompanyAllFollowersNew(companyId);
+            return ResponseEntity.status(HttpStatus.OK).body(followed);
+        }
+    }
+
+    //who's followed
+    @GetMapping("/school/followers/{schoolId}")
+    public ResponseEntity<List<CompanyFollowSch0oolDto>> getSchoolAllFollowers(@PathVariable int schoolId) {
+
+        if (repo.isExistFollwer(schoolId)) {
+            List<CompanyFollowSch0oolDto> followed = repo.getSchoolAllFollowersNew(schoolId);
+            return ResponseEntity.status(HttpStatus.OK).body(followed);
+        } else {
+            List<CompanyFollowSch0oolDto> followed = repo.getSchoolAllFollowersNew(schoolId);
+            return ResponseEntity.status(HttpStatus.OK).body(followed);
         }
     }
 
@@ -184,6 +195,14 @@ public class SchoolFollowCompanyController {
             return objectNode;
         }
 
+    }
+
+
+
+    //who's followed
+    @GetMapping("/followers/{companyId}/count")
+    public int getFollowersCount(@PathVariable int companyId) {
+        return repo.getFollowersCount(companyId);
     }
 
 

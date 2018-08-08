@@ -1,9 +1,7 @@
 package com.taj.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import javax.validation.constraints.*;
-import java.sql.Timestamp;
+
 
 /**
  * Created by MahmoudAhmed on 6/3/2018.
@@ -16,25 +14,21 @@ public class SchoolRequestsModel {
     @NotNull
     @NotBlank
     @NotEmpty
-    @Size(max = 450, min = 1, message="title should have at least 1 characters")
+    @Size(max = 450, min = 1, message = "title should have at least 1 characters")
     private String request_title;
     @NotNull
     @NotBlank
     @NotEmpty
-    @Size(max = 450, min = 1, message="explain should have at least 1 characters")
+    @Size(max = 450, min = 1, message = "explain should have at least 1 characters")
     private String request_explaination;
     @NotNull
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-    private Timestamp request_display_date;
+    private long request_display_date;
     @NotNull
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-    private Timestamp request_expired_date;
+    private long request_expired_date;
     @NotNull
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-    private Timestamp request_deliver_date;
+    private long request_deliver_date;
     @NotNull
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-    private Timestamp request_payment_date;//مده التسليم
+    private long request_payment_date;//مده التسليم
     @NotNull
     @Min(0)
     private int request_is_available;
@@ -53,16 +47,19 @@ public class SchoolRequestsModel {
     @NotNull
     @Min(0)
     private int extended_payment;   //مده الدفع
+    @Min(1)
     private int images_id;
+    @Min(1)
+    private int request_count;
 
 
     public SchoolRequestsModel() {
     }
 
     public SchoolRequestsModel(int request_id, byte[] request_details_file, int images_id, String request_title, String request_explaination,
-                               Timestamp request_display_date, Timestamp request_expired_date, Timestamp request_deliver_date,
-                               int request_is_available, int request_is_conformied, Timestamp request_payment_date, int school_id,
-                               int request_category_id, int receive_palce_id, int extended_payment) {
+                               long request_display_date, long request_expired_date, long request_deliver_date,
+                               int request_is_available, int request_is_conformied, long request_payment_date, int school_id,
+                               int request_category_id, int receive_palce_id, int extended_payment, int request_count) {
         this.request_id = request_id;
         this.request_details_file = request_details_file;
         this.images_id = images_id;
@@ -78,12 +75,13 @@ public class SchoolRequestsModel {
         this.request_category_id = request_category_id;
         this.receive_palce_id = receive_palce_id;
         this.extended_payment = extended_payment;
+        this.request_count = request_count;
     }
 
     public SchoolRequestsModel(byte[] request_details_file, int images_id, String request_title, String request_explaination,
-                               Timestamp request_display_date, Timestamp request_expired_date, Timestamp request_deliver_date,
-                               int request_is_available, int request_is_conformied, Timestamp request_payment_date, int school_id,
-                               int request_category_id, int receive_palce_id, int extended_payment) {
+                               long request_display_date, long request_expired_date, long request_deliver_date,
+                               int request_is_available, int request_is_conformied, long request_payment_date, int school_id,
+                               int request_category_id, int receive_palce_id, int extended_payment, int request_count) {
         this.request_details_file = request_details_file;
         this.images_id = images_id;
         this.request_title = request_title;
@@ -98,6 +96,7 @@ public class SchoolRequestsModel {
         this.request_category_id = request_category_id;
         this.receive_palce_id = receive_palce_id;
         this.extended_payment = extended_payment;
+        this.request_count = request_count;
     }
 
     public int getRequest_id() {
@@ -133,35 +132,35 @@ public class SchoolRequestsModel {
     }
 
 
-    public Timestamp getRequest_display_date() {
+    public long getRequest_display_date() {
         return request_display_date;
     }
 
-    public void setRequest_display_date(Timestamp request_display_date) {
+    public void setRequest_display_date(long request_display_date) {
         this.request_display_date = request_display_date;
     }
 
-    public Timestamp getRequest_expired_date() {
+    public long getRequest_expired_date() {
         return request_expired_date;
     }
 
-    public void setRequest_expired_date(Timestamp request_expired_date) {
+    public void setRequest_expired_date(long request_expired_date) {
         this.request_expired_date = request_expired_date;
     }
 
-    public Timestamp getRequest_deliver_date() {
+    public long getRequest_deliver_date() {
         return request_deliver_date;
     }
 
-    public void setRequest_deliver_date(Timestamp request_deliver_date) {
+    public void setRequest_deliver_date(long request_deliver_date) {
         this.request_deliver_date = request_deliver_date;
     }
 
-    public Timestamp getRequest_payment_date() {
+    public long getRequest_payment_date() {
         return request_payment_date;
     }
 
-    public void setRequest_payment_date(Timestamp request_payment_date) {
+    public void setRequest_payment_date(long request_payment_date) {
         this.request_payment_date = request_payment_date;
     }
 
@@ -219,5 +218,13 @@ public class SchoolRequestsModel {
 
     public void setImages_id(int images_id) {
         this.images_id = images_id;
+    }
+
+    public int getRequest_count() {
+        return request_count;
+    }
+
+    public void setRequest_count(int request_count) {
+        this.request_count = request_count;
     }
 }

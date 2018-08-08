@@ -1,11 +1,12 @@
 package com.taj.repository;
 
-import com.taj.model.SchoolFollowCompany;
-import com.taj.model.SchoolSeeRequest;
+import com.taj.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -58,10 +59,55 @@ public class SchoolFollowCompanyRepo {
                 ((resultSet, i) -> new SchoolFollowCompany(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3))));
     }
 
-    public List<SchoolFollowCompany> getCompanyAllFollowers(int organization_id) {
-        return jdbcTemplate.query("SELECT * FROM efaz_organization_following WHERE organization_id=?;", new Object[]{organization_id},
+    @Autowired
+    SchoolProfileRepo repo;
+
+    public List<SchoolProfileModel> getCompanyAllFollowers(int organization_id) {
+        List<SchoolFollowCompany> list = jdbcTemplate.query("SELECT * FROM efaz_organization_following WHERE organization_id=?;", new Object[]{organization_id},
                 ((resultSet, i) -> new SchoolFollowCompany(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3))));
+        List<SchoolProfileModel> school_data = new ArrayList<>();
+        for (SchoolFollowCompany model : list) {
+            int id = model.getFollower_id();
+            school_data.add(repo.getSchoolProfile(id));
+        }
+
+        return school_data;
     }
+
+
+    public List<SchoolProfileModel> getCompanyAllFollowersNew(int organization_id) {
+        String sql = "SELECT school_id, school_name, school_logo_image, school_address, school_service_desc, school_link_youtube, school_website_url," +
+                " school_lng, school_lat, school_cover_image, school_phone_number FROM (efaz_company.efaz_school_profile AS profile INNER JOIN " +
+                " efaz_company.efaz_organization_following AS follow ON profile.school_id = follow.follower_id) Where follow.organization_id = ?;";
+
+        return jdbcTemplate.query(sql, new Object[]{organization_id}, (resultSet, i) -> new SchoolProfileModel(resultSet.getInt(1), resultSet.getString(2),
+                resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
+                resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9),resultSet.getBytes(10), resultSet.getString(11)));
+    }
+
+
+
+//, company_address, company_category_id, company_link_youtube, company_website_url, company_lng, company_lat, company_cover_image, " +
+    //"company_phone_number
+
+    public List<CompanyFollowSch0oolDto> getSchoolAllFollowersNew(int organization_id) {
+
+        String sql = "SELECT  company_name, company_logo_image FROM (efaz_company.efaz_company_profile AS profile INNER JOIN " +
+                " efaz_company.efaz_organization_following AS follow ON profile.company_id = follow.follower_id) Where follow.organization_id = ?;";
+
+        return jdbcTemplate.query(sql, new Object[]{organization_id}, (resultSet, i) -> new CompanyFollowSch0oolDto(resultSet.getString(1), resultSet.getBytes(2)));
+
+    }
+
+
+
+
+    public int getFollowersCount(int organization_id) {
+        return jdbcTemplate.queryForObject("SELECT count(*) FROM efaz_organization_following WHERE organization_id=?;",
+                Integer.class, organization_id);
+
+    }
+
 
     public int updateSchoolFollowCompany(int follow_id, int organization_id, int follower_id) {
         return jdbcTemplate.update("UPDATE efaz_organization_following SET follower_id=?, organization_id=? WHERE follow_id=?", follower_id, organization_id, follow_id);

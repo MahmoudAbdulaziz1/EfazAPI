@@ -2,6 +2,7 @@ package com.taj.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.taj.model.LoginIsLoggedDTO;
 import com.taj.model.LoginModel;
 import com.taj.repository.LoginRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +93,7 @@ public class LoginController {
      */
 
     @PostMapping("/isLogged")
-    public ResponseEntity<ObjectNode> isLogged(@Valid @RequestBody LoginModel model, Errors errors) {
+    public ResponseEntity<ObjectNode> isLogged(@Valid @RequestBody LoginIsLoggedDTO model, Errors errors) {
 
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();

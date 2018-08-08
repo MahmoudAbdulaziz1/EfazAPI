@@ -3,10 +3,9 @@ package com.taj.model;
 import javax.validation.constraints.*;
 
 /**
- * Created by MahmoudAhmed on 6/3/2018.
+ * Created by User on 8/8/2018.
  */
-public class SchoolProfileModel {
-
+public class CustomSchoolProfileModel {
 
     @Min(1)
     private int school_id;
@@ -22,26 +21,29 @@ public class SchoolProfileModel {
     @NotEmpty
     @Size(max = 450, min = 1, message="address should have at least 1 characters")
     private String school_address;
-
     private String school_service_desc;
-//    @NotNull
-//    @NotBlank
-//    @NotEmpty
-//    @Size(max = 450, min = 1, message="company_name should have at least 1 characters")
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(max = 450, min = 1, message="service should have at least 1 characters")
     private String school_link_youtube;
     @NotNull
     @NotBlank
     @NotEmpty
     @Size(max = 450, min = 1, message="website should have at least 1 characters")
     private String school_website_url;
-    private float school_lng, school_lat;
     @NotNull
     private byte[] school_cover_image;
     private String school_phone_number;
 
-    public SchoolProfileModel(int school_id, String school_name, byte[] school_logo_image, String school_address,
-                              String school_service_desc, String school_link_youtube, String school_website_url, float school_lng,
-                              float school_lat,byte[] school_cover_image, String school_phone_number) {
+    public CustomSchoolProfileModel() {
+    }
+
+    public CustomSchoolProfileModel(@Min(1) int school_id, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1,
+            message = "name should have at least 1 characters") String school_name, @NotNull byte[] school_logo_image,
+                                    @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "address should have at least 1 characters") String school_address,
+                                    String school_service_desc, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "service should have at least 1 characters") String school_link_youtube, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1,
+            message = "website should have at least 1 characters") String school_website_url, @NotNull byte[] school_cover_image, String school_phone_number) {
         this.school_id = school_id;
         this.school_name = school_name;
         this.school_logo_image = school_logo_image;
@@ -49,28 +51,22 @@ public class SchoolProfileModel {
         this.school_service_desc = school_service_desc;
         this.school_link_youtube = school_link_youtube;
         this.school_website_url = school_website_url;
-        this.school_lng = school_lng;
-        this.school_lat = school_lat;
         this.school_cover_image = school_cover_image;
         this.school_phone_number = school_phone_number;
     }
 
-    public SchoolProfileModel( String school_name, byte[] school_logo_image, String school_address,
-                              String school_service_desc, String school_link_youtube, String school_website_url, float school_lng,
-                               float school_lat,byte[] school_cover_image, String school_phone_number) {
+    public CustomSchoolProfileModel(@NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "name should have at least 1 characters") String school_name,
+                                    @NotNull byte[] school_logo_image, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "address should have at least 1 characters") String school_address,
+                                    String school_service_desc, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "service should have at least 1 characters") String school_link_youtube, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "website should have at least 1 characters")
+    String school_website_url, @NotNull byte[] school_cover_image, String school_phone_number) {
         this.school_name = school_name;
         this.school_logo_image = school_logo_image;
         this.school_address = school_address;
         this.school_service_desc = school_service_desc;
         this.school_link_youtube = school_link_youtube;
         this.school_website_url = school_website_url;
-        this.school_lng = school_lng;
-        this.school_lat = school_lat;
         this.school_cover_image = school_cover_image;
         this.school_phone_number = school_phone_number;
-    }
-
-    public SchoolProfileModel() {
     }
 
     public int getSchool_id() {
@@ -105,14 +101,6 @@ public class SchoolProfileModel {
         this.school_address = school_address;
     }
 
-    public String getSchool_service_desc() {
-        return school_service_desc;
-    }
-
-    public void setSchool_service_desc(String school_service_desc) {
-        this.school_service_desc = school_service_desc;
-    }
-
     public String getSchool_link_youtube() {
         return school_link_youtube;
     }
@@ -129,22 +117,6 @@ public class SchoolProfileModel {
         this.school_website_url = school_website_url;
     }
 
-    public float getSchool_lng() {
-        return school_lng;
-    }
-
-    public void setSchool_lng(float school_lng) {
-        this.school_lng = school_lng;
-    }
-
-    public float getSchool_lat() {
-        return school_lat;
-    }
-
-    public void setSchool_lat(float school_lat) {
-        this.school_lat = school_lat;
-    }
-
     public byte[] getSchool_cover_image() {
         return school_cover_image;
     }
@@ -159,5 +131,13 @@ public class SchoolProfileModel {
 
     public void setSchool_phone_number(String school_phone_number) {
         this.school_phone_number = school_phone_number;
+    }
+
+    public String getSchool_service_desc() {
+        return school_service_desc;
+    }
+
+    public void setSchool_service_desc(String school_service_desc) {
+        this.school_service_desc = school_service_desc;
     }
 }

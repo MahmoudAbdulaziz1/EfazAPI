@@ -8,13 +8,15 @@ import java.util.List;
 public class GetSchoolsRequestOffersWitCoast {
 
     private double offerCoast;
+    private String offerTitle;
     private List<SchoolRequestOfferModel> allSchoolRequestOffer;
 
     public GetSchoolsRequestOffersWitCoast() {
     }
 
-    public GetSchoolsRequestOffersWitCoast(double offerCoast, List<SchoolRequestOfferModel> allSchoolRequestOffer) {
+    public GetSchoolsRequestOffersWitCoast(double offerCoast, String offerTitle, List<SchoolRequestOfferModel> allSchoolRequestOffer) {
         this.offerCoast = offerCoast;
+        this.offerTitle = offerTitle;
         this.allSchoolRequestOffer = allSchoolRequestOffer;
     }
 
@@ -32,5 +34,13 @@ public class GetSchoolsRequestOffersWitCoast {
 
     public void setAllSchoolRequestOffer(List<SchoolRequestOfferModel> allSchoolRequestOffer) {
         this.allSchoolRequestOffer = allSchoolRequestOffer;
+    }
+
+    public String getOfferTitle() {
+        return offerTitle;
+    }
+
+    public void setOfferTitle(String offerTitle) {
+        this.offerTitle = offerTitle;
     }
 }

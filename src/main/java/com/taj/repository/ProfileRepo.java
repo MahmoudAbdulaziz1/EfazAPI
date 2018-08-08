@@ -26,7 +26,7 @@ public class ProfileRepo {
     }
 
     public int addProfile(int company_id, String company_name, byte[] company_logo_image, String company_address,
-                          int company_service_desc, String company_link_youtube, String company_website_url, float school_lng,
+                          String company_service_desc, String company_link_youtube, String company_website_url, float school_lng,
                           float school_lat, byte[] company_cover_image, String company_phone_number) {
         jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=0;");
 
@@ -41,24 +41,30 @@ public class ProfileRepo {
 
 
     public List<CompanyProfileModel> getProfiles() {
-        return jdbcTemplate.query("SELECT * FROM efaz_company_profile;",
+
+        String sql = "SELECT company_id, company_name, company_logo_image, company_address, category_name, company_link_youtube, company_website_url, " +
+                "company_lng, company_lat, company_cover_image, company_phone_number, (SELECT count(*) FROM efaz_organization_following WHERE organization_id=company_id) AS count FROM " +
+                " efaz_company.efaz_company_profile as profile INNER JOIN efaz_company.efaz_company_category as cat on profile.company_category_id = cat.category_id;";
+
+        return jdbcTemplate.query(sql,
                 (resultSet, i) -> new CompanyProfileModel(resultSet.getInt(1), resultSet.getString(2),
-                        resultSet.getBytes(3), resultSet.getString(4), resultSet.getInt(5),
-                        resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9), resultSet.getBytes(10), resultSet.getString(11)));
+                        resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
+                        resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9),
+                        resultSet.getBytes(10), resultSet.getString(11)));
     }
 
 
     public CompanyProfileModel getProfile(int id) {
         return jdbcTemplate.queryForObject("SELECT * FROM efaz_company_profile WHERE  company_id=?;",
                 new Object[]{id}, (resultSet, i) -> new CompanyProfileModel(resultSet.getInt(1), resultSet.getString(2),
-                        resultSet.getBytes(3), resultSet.getString(4), resultSet.getInt(5),
+                        resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
                         resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9), resultSet.getBytes(10), resultSet.getString(11)));
     }
 
     public List<CompanyProfileModel> getProfileByCategory(int id) {
         return jdbcTemplate.query("SELECT * FROM efaz_company_profile WHERE  company_category_id=?;",
                 new Object[]{id}, (resultSet, i) -> new CompanyProfileModel(resultSet.getInt(1), resultSet.getString(2),
-                        resultSet.getBytes(3), resultSet.getString(4), resultSet.getInt(5),
+                        resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
                         resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9), resultSet.getBytes(10), resultSet.getString(11)));
     }
 
@@ -70,7 +76,7 @@ public class ProfileRepo {
 
 
     public int updateProfile(int id, String company_name, byte[] company_logo_image, String company_address,
-                             int company_service_desc, String company_link_youtube, String company_website_url,
+                             String company_service_desc, String company_link_youtube, String company_website_url,
                              float school_lng, float school_lat, byte[] company_cover_image, String company_phone_number) {
 
         return jdbcTemplate.update("update efaz_company_profile set company_name=?," +
@@ -123,7 +129,20 @@ public class ProfileRepo {
 
 
 
-
+//
+//
+//    public List<CompanyProfileModel> getProfiles() {
+//
+//        String sql = "SELECT company_id, company_name, company_logo_image, company_address, category_name, company_link_youtube, company_website_url, " +
+//                "company_lng, company_lat, company_cover_image, company_phone_number FROM " +
+//                " efaz_company.efaz_company_profile as profile INNER JOIN efaz_company.efaz_company_category as cat on profile.company_category_id = cat.category_id;";
+//
+//        return jdbcTemplate.query(sql,
+//                (resultSet, i) -> new CompanyProfileModel(resultSet.getInt(1), resultSet.getString(2),
+//                        resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
+//                        resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9),
+//                        resultSet.getBytes(10), resultSet.getString(11)));
+//    }
 
 
 

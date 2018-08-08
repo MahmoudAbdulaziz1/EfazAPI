@@ -3,10 +3,9 @@ package com.taj.model;
 import javax.validation.constraints.*;
 
 /**
- * Created by MahmoudAhmed on 5/31/2018.
+ * Created by User on 8/8/2018.
  */
-public class CompanyProfileModel {
-
+public class CompantProfileDto {
 
     private int company_id;
     @NotNull
@@ -40,10 +39,14 @@ public class CompanyProfileModel {
     private byte[] company_cover_image;
     private String company_phone_number;
 
+    private int follower_count;
+    private int offer_count;
 
-    public CompanyProfileModel(int company_id, String company_name, byte[] company_logo_image, String company_address,
-                               String company_category_id, String company_link_youtube, String company_website_url, float company_lng,
-                               float company_lat, byte[] company_cover_image, String company_phone_number) {
+    public CompantProfileDto() {
+    }
+
+    public CompantProfileDto(int company_id, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String company_name, @NotNull byte[] company_logo_image, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "address should have at least 1 characters") String company_address, @NotNull @Min(1) String company_category_id, String company_link_youtube, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "website should have at least 1 characters") String company_website_url,
+                             float company_lng, float company_lat, @NotNull byte[] company_cover_image, String company_phone_number, int follower_count, int offer_count) {
         this.company_id = company_id;
         this.company_name = company_name;
         this.company_logo_image = company_logo_image;
@@ -55,12 +58,12 @@ public class CompanyProfileModel {
         this.company_lat = company_lat;
         this.company_cover_image = company_cover_image;
         this.company_phone_number = company_phone_number;
-
+        this.follower_count = follower_count;
+        this.offer_count = offer_count;
     }
 
-    public CompanyProfileModel(String company_name, byte[] company_logo_image, String company_address,
-                               String company_category_id, String company_link_youtube, String company_website_url,
-                               float company_lng, float company_lat, byte[] company_cover_image, String company_phone_number) {
+    public CompantProfileDto(@NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String company_name, @NotNull byte[] company_logo_image, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "address should have at least 1 characters") String company_address, @NotNull @Min(1) String company_category_id, String company_link_youtube, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "website should have at least 1 characters") String company_website_url,
+                             float company_lng, float company_lat, @NotNull byte[] company_cover_image, String company_phone_number, int follower_count, int offer_count) {
         this.company_name = company_name;
         this.company_logo_image = company_logo_image;
         this.company_address = company_address;
@@ -71,10 +74,8 @@ public class CompanyProfileModel {
         this.company_lat = company_lat;
         this.company_cover_image = company_cover_image;
         this.company_phone_number = company_phone_number;
-
-    }
-
-    public CompanyProfileModel() {
+        this.follower_count = follower_count;
+        this.offer_count = offer_count;
     }
 
     public int getCompany_id() {
@@ -164,6 +165,20 @@ public class CompanyProfileModel {
     public void setCompany_phone_number(String company_phone_number) {
         this.company_phone_number = company_phone_number;
     }
+
+    public int getFollower_count() {
+        return follower_count;
+    }
+
+    public void setFollower_count(int follower_count) {
+        this.follower_count = follower_count;
+    }
+
+    public int getOffer_count() {
+        return offer_count;
+    }
+
+    public void setOffer_count(int offer_count) {
+        this.offer_count = offer_count;
+    }
 }
-
-

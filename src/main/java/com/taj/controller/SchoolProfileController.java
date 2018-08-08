@@ -2,6 +2,7 @@ package com.taj.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.taj.model.CustomSchoolProfileModel;
 import com.taj.model.SchoolProfileModel;
 import com.taj.repository.SchoolProfileRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,7 @@ public class SchoolProfileController {
             if (!repo.isExist(model.getSchool_id())) {
                 int res = repo.addSchoolProfile(model.getSchool_id(), model.getSchool_name(), model.getSchool_logo_image(),
                         model.getSchool_address(), model.getSchool_service_desc(), model.getSchool_link_youtube(),
-                        model.getSchool_website_url(), model.getSchool_lng(), model.getSchool_lat(), model.getSchool_cover_image());
+                        model.getSchool_website_url(), model.getSchool_lng(), model.getSchool_lat(), model.getSchool_cover_image(), model.getSchool_phone_number());
                 if (res == 1) {
                     ObjectNode objectNode = mapper.createObjectNode();
                     objectNode.put("school_name", model.getSchool_name());
@@ -65,6 +66,7 @@ public class SchoolProfileController {
                     objectNode.put("school_lng", model.getSchool_lng());
                     objectNode.put("school_lat", model.getSchool_lat());
                     objectNode.put("school_cover_image", model.getSchool_cover_image());
+                    objectNode.put("school_phone_number", model.getSchool_phone_number());
                     return ResponseEntity.status(HttpStatus.OK).body(objectNode);
                 } else {
                     ObjectNode objectNode = mapper.createObjectNode();
@@ -130,7 +132,7 @@ public class SchoolProfileController {
 
         int res = repo.updateProfile(model.getSchool_id(), model.getSchool_name(), model.getSchool_logo_image(),
                 model.getSchool_address(), model.getSchool_service_desc(), model.getSchool_link_youtube(),
-                model.getSchool_website_url(), model.getSchool_lng(), model.getSchool_lat(), model.getSchool_cover_image());
+                model.getSchool_website_url(), model.getSchool_lng(), model.getSchool_lat(), model.getSchool_cover_image(), model.getSchool_phone_number());
 
         if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -143,6 +145,7 @@ public class SchoolProfileController {
             objectNode.put("school_lng", model.getSchool_lng());
             objectNode.put("school_lat", model.getSchool_lat());
             objectNode.put("school_cover_image", model.getSchool_cover_image());
+            objectNode.put("school_phone_number", model.getSchool_phone_number());
             return ResponseEntity.status(HttpStatus.OK).body(objectNode);
         } else {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -175,6 +178,51 @@ public class SchoolProfileController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
     }
+
+    @GetMapping("/get/{id}")
+    public CustomSchoolProfileModel getProfileForAdmin(@PathVariable int id) {
+        return repo.getSchoolProfileForAdmin(id);
+    }
+
+
+
+
+    @PutMapping("/update")
+    public ResponseEntity<ObjectNode> updateProfileForAdmin(@Valid @RequestBody SchoolProfileModel model, Errors errors) {
+
+        if (errors.hasErrors()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+
+        }
+
+        int res = repo.updateProfileForAdmin(model.getSchool_id(), model.getSchool_name(), model.getSchool_logo_image(),
+                model.getSchool_address(), model.getSchool_service_desc(), model.getSchool_link_youtube(),
+                model.getSchool_website_url(), model.getSchool_cover_image(), model.getSchool_phone_number());
+
+        if (res == 1) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("school_name", model.getSchool_name());
+            objectNode.put("school_logo_image", model.getSchool_logo_image());
+            objectNode.put("school_address", model.getSchool_address());
+            objectNode.put("school_service_desc", model.getSchool_service_desc());
+            objectNode.put("school_link_youtube", model.getSchool_link_youtube());
+            objectNode.put("school_website_url", model.getSchool_website_url());
+            objectNode.put("school_cover_image", model.getSchool_cover_image());
+            objectNode.put("school_phone_number", model.getSchool_phone_number());
+            return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+
+
+    }
+
 
 
 }

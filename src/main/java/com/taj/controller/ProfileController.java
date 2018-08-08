@@ -88,14 +88,25 @@ public class ProfileController {
      */
 
     @GetMapping("/getAll")
-    public ResponseEntity<GetAllCompanies> getProfiles() {
+    public ResponseEntity<List<CompanyProfileModel>> getProfiles() {
 
         List<CompanyProfileModel> list = profileRepo.getProfiles();
         ObjectNode objectNode = mapper.createObjectNode();
         GetAllCompanies getAllCompanies = new GetAllCompanies("200", list);
-        return ResponseEntity.status(HttpStatus.OK).body(getAllCompanies);
+        return ResponseEntity.status(HttpStatus.OK).body(list);
 
     }
+
+//    @GetMapping("/getAll")
+//    public ResponseEntity<List<CompantProfileDto>> getProfiles() {
+//
+//        List<CompantProfileDto> list = profileRepo.getProfiles();
+////        ObjectNode objectNode = mapper.createObjectNode();
+////        GetAllCompanies getAllCompanies = new GetAllCompanies("200", list);
+//        return ResponseEntity.status(HttpStatus.OK).body(list);
+//
+//    }
+
 
     @GetMapping("/getAlls")
     public ResponseEntity<GetAllCompaniesForCompanyAdmin> getProfilesForCompanyAdmin() {
@@ -304,5 +315,17 @@ public class ProfileController {
         }
         //return profileRepo.CheckProfile(id);
     }
+
+
+
+//    @GetMapping("/getAlls")
+//    public ResponseEntity<GetAllCompaniesForCompanyAdmin> getProfilesForCompanyAdmin() {
+//
+//        List<CompanyProfileModel> list = profileRepo.getProfiles();
+//        ObjectNode objectNode = mapper.createObjectNode();
+//        GetAllCompaniesForCompanyAdmin getAllCompanies = new GetAllCompaniesForCompanyAdmin("200", list);
+//        return ResponseEntity.status(HttpStatus.OK).body(getAllCompanies);
+//
+//    }
 
 }

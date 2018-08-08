@@ -58,12 +58,13 @@ public class SchoolRequestOfferRepo {
                         , resultSet.getString(4), resultSet.getDouble(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
                         resultSet.getTimestamp(8), resultSet.getInt(9), resultSet.getInt(10)));
         double cost = model.getOffer_cost();
+        String title = model.getOffer_title();
 //        List<SchoolRequestOfferModel> allSchoolRequestOffer = jdbcTemplate.query("SELECT * FROM efaz_school_request_offer WHERE requsted_offer_id=?;",
 //                new Object[]{offerId},
 //                ((resultSet, i) -> new SchoolRequestOfferModel(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3),
 //                        resultSet.getInt(4), resultSet.getInt(5))));
 
-        return new GetSchoolsRequestOffersWitCoast(cost, getSchoolRequestOfferByOffer(offerId));
+        return new GetSchoolsRequestOffersWitCoast(cost, title, getSchoolRequestOfferByOffer(offerId));
 
 
     }
