@@ -45,7 +45,9 @@ public class CompantProfileDto {
     public CompantProfileDto() {
     }
 
-    public CompantProfileDto(int company_id, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String company_name, @NotNull byte[] company_logo_image, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "address should have at least 1 characters") String company_address, @NotNull @Min(1) String company_category_id, String company_link_youtube, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "website should have at least 1 characters") String company_website_url,
+    public CompantProfileDto(int company_id, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String company_name, @NotNull byte[] company_logo_image,
+                             @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "address should have at least 1 characters") String company_address,
+                             @NotNull @Min(1) String company_category_id, String company_link_youtube, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "website should have at least 1 characters") String company_website_url,
                              float company_lng, float company_lat, @NotNull byte[] company_cover_image, String company_phone_number, int follower_count, int offer_count) {
         this.company_id = company_id;
         this.company_name = company_name;

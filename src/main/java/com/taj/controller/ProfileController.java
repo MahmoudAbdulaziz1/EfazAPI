@@ -20,7 +20,6 @@ import java.util.List;
 @RequestMapping("/profile")
 @RestController
 @CrossOrigin
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ProfileController {
 
     @Autowired
@@ -88,9 +87,9 @@ public class ProfileController {
      */
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<CompanyProfileModel>> getProfiles() {
+    public ResponseEntity<List<CompantProfileDto>> getProfiles() {
 
-        List<CompanyProfileModel> list = profileRepo.getProfiles();
+        List<CompantProfileDto> list = profileRepo.getProfiles();
         ObjectNode objectNode = mapper.createObjectNode();
         GetAllCompanies getAllCompanies = new GetAllCompanies("200", list);
         return ResponseEntity.status(HttpStatus.OK).body(list);

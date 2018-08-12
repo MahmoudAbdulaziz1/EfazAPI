@@ -1,6 +1,7 @@
 package com.taj.repository;
 
 import com.taj.model.ComapnyDashBoradProfileModel;
+import com.taj.model.CompantProfileDto;
 import com.taj.model.CompanyProfileModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,9 +31,10 @@ public class ProfileRepo {
                           float school_lat, byte[] company_cover_image, String company_phone_number) {
         jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=0;");
 
-
+        int category = jdbcTemplate.queryForObject("SELECT category_id FROM efaz_company_category WHERE  category_name=?;",
+                Integer.class, company_service_desc);
         int id = jdbcTemplate.update("INSERT INTO efaz_company_profile VALUES (?,?,?,?,?,?,?,?,?,?,?)", company_id, company_name, company_logo_image,
-                company_address, company_service_desc, company_link_youtube, company_website_url, school_lng, school_lat, company_cover_image, company_phone_number);
+                company_address, category, company_link_youtube, company_website_url, school_lng, school_lat, company_cover_image, company_phone_number);
 
         jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=1;");
 
@@ -40,17 +42,17 @@ public class ProfileRepo {
     }
 
 
-    public List<CompanyProfileModel> getProfiles() {
+    public List<CompantProfileDto> getProfiles() {
 
-        String sql = "SELECT company_id, company_name, company_logo_image, company_address, category_name, company_link_youtube, company_website_url, " +
-                "company_lng, company_lat, company_cover_image, company_phone_number, (SELECT count(*) FROM efaz_organization_following WHERE organization_id=company_id) AS count FROM " +
-                " efaz_company.efaz_company_profile as profile INNER JOIN efaz_company.efaz_company_category as cat on profile.company_category_id = cat.category_id;";
+        String sql = "SELECT company_id, company_name, company_logo_image, company_address, company_category_id, company_link_youtube, company_website_url, company_lng, company_lat, company_cover_image, " +
+                "company_phone_number, count(follow_id) AS follower_count, count(offer_id) AS order_count FROM ((efaz_company.efaz_company_profile AS profile LEFT JOIN " +
+                " efaz_company.efaz_organization_following AS follow ON profile.company_id = follow.follower_id) LEFT JOIN efaz_company_offer AS offer ON profile.company_id = offer.offer_company_id) GROUP BY profile.company_id;";
 
         return jdbcTemplate.query(sql,
-                (resultSet, i) -> new CompanyProfileModel(resultSet.getInt(1), resultSet.getString(2),
+                (resultSet, i) -> new CompantProfileDto(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
                         resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9),
-                        resultSet.getBytes(10), resultSet.getString(11)));
+                        resultSet.getBytes(10), resultSet.getString(11), resultSet.getInt(12), resultSet.getInt(13)));
     }
 
 
@@ -79,10 +81,12 @@ public class ProfileRepo {
                              String company_service_desc, String company_link_youtube, String company_website_url,
                              float school_lng, float school_lat, byte[] company_cover_image, String company_phone_number) {
 
+        int category = jdbcTemplate.queryForObject("SELECT company_category_id FROM efaz_company_profile WHERE  company_id=?;",
+                Integer.class, id);
         return jdbcTemplate.update("update efaz_company_profile set company_name=?," +
                         "company_logo_image=?, company_address=?," +
                         "company_category_id=?, company_link_youtube=?, company_website_url=?, company_lng=?, company_lat=?, company_cover_image=?, company_phone_number=? " +
-                        " where company_id=?", company_name, company_logo_image, company_address, company_service_desc
+                        " where company_id=?", company_name, company_logo_image, company_address, category
                 , company_link_youtube, company_website_url, school_lng, school_lat, company_cover_image, company_phone_number, id);
 
     }
@@ -129,20 +133,7 @@ public class ProfileRepo {
 
 
 
-//
-//
-//    public List<CompanyProfileModel> getProfiles() {
-//
-//        String sql = "SELECT company_id, company_name, company_logo_image, company_address, category_name, company_link_youtube, company_website_url, " +
-//                "company_lng, company_lat, company_cover_image, company_phone_number FROM " +
-//                " efaz_company.efaz_company_profile as profile INNER JOIN efaz_company.efaz_company_category as cat on profile.company_category_id = cat.category_id;";
-//
-//        return jdbcTemplate.query(sql,
-//                (resultSet, i) -> new CompanyProfileModel(resultSet.getInt(1), resultSet.getString(2),
-//                        resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
-//                        resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9),
-//                        resultSet.getBytes(10), resultSet.getString(11)));
-//    }
+
 
 
 

@@ -8,9 +8,9 @@ import java.util.List;
 public class GetAllCompanies {
 
     private String states;
-    private List<CompanyProfileModel> model;
+    private List<CompantProfileDto> model;
 
-    public GetAllCompanies(String states, List<CompanyProfileModel> model) {
+    public GetAllCompanies(String states, List<CompantProfileDto> model) {
         this.states = states;
         this.model = model;
     }
@@ -26,11 +26,11 @@ public class GetAllCompanies {
         this.states = states;
     }
 
-    public List<CompanyProfileModel> getModel() {
+    public List<CompantProfileDto> getModel() {
         return model;
     }
 
-    public void setModel(List<CompanyProfileModel> model) {
+    public void setModel(List<CompantProfileDto> model) {
         this.model = model;
     }
 }

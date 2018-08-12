@@ -92,7 +92,20 @@ public class CustomComapnyOfferController {
     @GetMapping("/{id}/company")
     public ResponseEntity<getCustomeCompanyOffer> getSingleCompanyOffer(@PathVariable int id) {
         List<CustomCompanyOfferModel> offers = repo.getCompanyOffers(id);
-        return ResponseEntity.status(HttpStatus.OK).body(new getCustomeCompanyOffer("200", offers));
+        if (offers!= null)
+        {
+            return ResponseEntity.status(HttpStatus.OK).body(new getCustomeCompanyOffer("200", offers));
+        }else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new getCustomeCompanyOffer("400", offers));
+        }
+
+    }
+
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity<List<CustomCompanyOfferModel>> getSingleCompanyOffers(@PathVariable int id) {
+        List<CustomCompanyOfferModel> offers = repo.getCompanyOffers(id);
+        return ResponseEntity.status(HttpStatus.OK).body(offers);
     }
 
 

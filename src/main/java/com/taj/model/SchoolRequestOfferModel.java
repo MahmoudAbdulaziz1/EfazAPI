@@ -17,8 +17,7 @@ public class SchoolRequestOfferModel {
     @NonNull
     @Min(1)
     private int requsted_offer_id;
-    @NonNull
-    @Min(0)
+
     private int is_accepted;
     @Min(1)
     private int request_offer_count;

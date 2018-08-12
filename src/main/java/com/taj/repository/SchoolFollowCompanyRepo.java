@@ -116,4 +116,10 @@ public class SchoolFollowCompanyRepo {
     public int deleteSchoolFollowCompany(int follow_id) {
         return jdbcTemplate.update("DELETE FROM efaz_organization_following WHERE follow_id=?", follow_id);
     }
+
+
+    public int getId(int id1, int id2){
+        return jdbcTemplate.queryForObject("SELECT follow_id FROM efaz_organization_following WHERE organization_id=? AND follower_id=?;",
+                Integer.class, id1, id2);
+    }
 }

@@ -22,7 +22,6 @@ public class CompanyProfileModel {
     @Size(max = 450, min = 1, message = "address should have at least 1 characters")
     private String company_address;
     @NotNull
-    @Min(1)
     private String company_category_id;
     //    @NotNull
 //    @NotBlank

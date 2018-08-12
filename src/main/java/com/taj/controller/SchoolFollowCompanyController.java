@@ -31,6 +31,7 @@ public class SchoolFollowCompanyController {
     ObjectMapper mapper;
 
 
+
     @PostMapping("/add")
     public ResponseEntity<ObjectNode> addFollower(@RequestBody @Valid SchoolFollowCompany model, Errors errors) {
         if (errors.hasErrors()) {
@@ -53,8 +54,11 @@ public class SchoolFollowCompanyController {
                 int res = repo.addFollower(model.getOrganization_id(), model.getFollower_id());
                 if (res == 1) {
 
+                    int id = repo.getId(model.getOrganization_id(), model.getFollower_id());
+
                     ObjectNode objectNode = mapper.createObjectNode();
                     objectNode.put("status", 200);
+                    objectNode.put("follow_id", id);
                     objectNode.put("Organization_id", model.getOrganization_id());
                     objectNode.put("Follower_id", model.getFollower_id());
 
