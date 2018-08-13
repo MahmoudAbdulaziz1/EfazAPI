@@ -8,8 +8,7 @@ import javax.validation.constraints.*;
 public class CategoryModel {
 
 
-    @NotNull
-    @Min(1)
+
     private int category_id;
     @NotNull
     @NotBlank

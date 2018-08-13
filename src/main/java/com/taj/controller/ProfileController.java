@@ -282,7 +282,7 @@ public class ProfileController {
     }
 
     @GetMapping("/get/{id}/category")
-    public ResponseEntity<GetCompanyByCategory> getProfileByCategory(@PathVariable int id) {
+    public ResponseEntity<GetCompanyByCategory> getProfileByCategory(@PathVariable String id) {
         List<CompanyProfileModel> model = profileRepo.getProfileByCategory(id);
         if (model.size() > 0) {
             return ResponseEntity.status(HttpStatus.OK).body(new GetCompanyByCategory("200", model));

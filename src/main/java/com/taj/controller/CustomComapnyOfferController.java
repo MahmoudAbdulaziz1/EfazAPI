@@ -35,13 +35,13 @@ public class CustomComapnyOfferController {
      */
 
     @PostMapping("/")
-    public ResponseEntity<Integer> addCompanyOffers(@Valid @RequestBody CustomCompanyOfferModel model, Errors errors) {
+    public ResponseEntity<ObjectNode> addCompanyOffers(@Valid @RequestBody CustomCompanyOfferModel model, Errors errors) {
 
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(0);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         } else {
             int res = repo.addOfferEdeited(model.getImage_one(), model.getImage_two(), model.getImage_third(), model.getImage_four(), model.getOffer_title(), model.getOffer_explaination(),
                     model.getOffer_cost(), model.getOffer_display_date(), model.getOffer_expired_date(), model.getOffer_deliver_date(),
@@ -58,13 +58,13 @@ public class CustomComapnyOfferController {
                 objectNode.put("offer_deliver_date", model.getOffer_deliver_date().toString());
                 objectNode.put("company_id", model.getCompany_id());
                 objectNode.put("offer_count", model.getOffer_count());
-                return ResponseEntity.status(HttpStatus.OK).body(1);
+                return ResponseEntity.status(HttpStatus.OK).body(objectNode);
             } else {
                 ObjectNode objectNode = mapper.createObjectNode();
                 objectNode.put("status", 400);
                 objectNode.put("message", "not success");
 
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(0);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
             }
         }
 

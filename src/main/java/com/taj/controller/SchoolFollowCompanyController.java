@@ -32,6 +32,8 @@ public class SchoolFollowCompanyController {
 
 
 
+
+
     @PostMapping("/add")
     public ResponseEntity<ObjectNode> addFollower(@RequestBody @Valid SchoolFollowCompany model, Errors errors) {
         if (errors.hasErrors()) {
@@ -207,6 +209,12 @@ public class SchoolFollowCompanyController {
     @GetMapping("/followers/{companyId}/count")
     public int getFollowersCount(@PathVariable int companyId) {
         return repo.getFollowersCount(companyId);
+    }
+
+
+    @GetMapping("/school/{id}")
+    public  List<FollowSchoolProfilesDto> getSchoolsWithFollow(@PathVariable  int id){
+        return repo.getSchoolsWithFollow(id);
     }
 
 

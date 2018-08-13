@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.LoginIsLoggedDTO;
 import com.taj.model.LoginModel;
+import com.taj.model.RestPasswordModel;
+import com.taj.model.UpdatePasswordModel;
 import com.taj.repository.LoginRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -125,24 +127,23 @@ public class LoginController {
      * @param model
      */
     @PutMapping("/updatePassword")
-    public ResponseEntity<ObjectNode> updatePassword(@Valid @RequestBody LoginModel model, Errors errors) {
+    public ResponseEntity<ObjectNode> updatePassword(@RequestBody @Valid UpdatePasswordModel model, Errors errors) {
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
-            objectNode.put("details", errors.getAllErrors().toString());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
         int res = loginRepo.updatePassword(model.getLogin_id(), model.getUser_email(), model.getUser_password());
 
         if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("login_id", model.getLogin_id());
-            objectNode.put("user_email", model.getUser_email());
-            objectNode.put("user_password", model.getUser_password());
-            objectNode.put("is_active", model.getIs_active());
-            objectNode.put("login_role", model.getLogin_role());
-            objectNode.put("login_token", model.getLogin_token());
+            objectNode.put("status", 200);
+            objectNode.put("message", "success");
+            //objectNode.put("user_password", model.getUser_password());
+//            objectNode.put("is_active", model.getIs_active());
+//            objectNode.put("login_role", model.getLogin_role());
+//            objectNode.put("login_token", model.getLogin_token());
 
             return ResponseEntity.status(HttpStatus.OK).body(objectNode);
         } else {
@@ -235,6 +236,34 @@ public class LoginController {
     @PutMapping("/inActiveUser/{id}")
     public int inActiveUser(@PathVariable int id) {
         return loginRepo.inActiveLogin(id);
+    }
+
+
+    @PutMapping("/restPassword")
+    public ResponseEntity<ObjectNode> restPassword(@RequestBody @Valid RestPasswordModel model, Errors errors) {
+        if (errors.hasErrors()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+        int res = loginRepo.restPassword(model.getUser_email(), model.getLogin_role());
+
+        if (res == 1) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("status", 200);
+            objectNode.put("message", "success");
+            //objectNode.put("login_role", model.getLogin_role());
+
+
+            return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("message", "not success");
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
     }
 
 }

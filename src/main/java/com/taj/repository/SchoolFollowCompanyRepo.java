@@ -25,6 +25,14 @@ public class SchoolFollowCompanyRepo {
         return cnt != null && cnt > 0;
     }
 
+
+    public boolean isRecordExist(int o_id, int f_id) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_organization_following WHERE organization_id=? AND follower_id=?;",
+                Integer.class, o_id, f_id);
+        return cnt != null && cnt > 0;
+    }
+
     public boolean isExistFollwing(int id) {
         Integer cnt = jdbcTemplate.queryForObject(
                 "SELECT count(*) FROM efaz_login WHERE login_id=?;",
@@ -121,5 +129,21 @@ public class SchoolFollowCompanyRepo {
     public int getId(int id1, int id2){
         return jdbcTemplate.queryForObject("SELECT follow_id FROM efaz_organization_following WHERE organization_id=? AND follower_id=?;",
                 Integer.class, id1, id2);
+
     }
+
+    public  List<FollowSchoolProfilesDto> getSchoolsWithFollow(int companyId){
+        String sql = "SELECT school_id, school_name, school_logo_image, IF (profile.school_id = follow.organization_id AND follow.follower_id=?, true, false) " +
+                "AS is_follow FROM efaz_company.efaz_school_profile AS profile Left JOIN efaz_company.efaz_organization_following " +
+                "AS follow ON profile.school_id = follow.organization_id AND follow.follower_id=?;";
+
+
+        List<FollowSchoolProfilesDto> list = jdbcTemplate.query(sql, new Object[]{companyId, companyId},
+                ((resultSet, i) -> new FollowSchoolProfilesDto(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getBoolean(4))));
+
+        return list;
+
+    }
+
+
 }

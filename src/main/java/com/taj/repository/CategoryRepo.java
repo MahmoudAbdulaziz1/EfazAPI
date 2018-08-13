@@ -38,7 +38,11 @@ public class CategoryRepo {
     }
 
     public int deleteCategory(int id) {
-        return jdbcTemplate.update("DELETE FROM efaz_company_category WHERE category_id=?", id);
+        jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=0;");
+        int res = jdbcTemplate.update("DELETE FROM efaz_company_category WHERE category_id=?", id);
+        jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=1;");
+        return res;
+
     }
 
 }

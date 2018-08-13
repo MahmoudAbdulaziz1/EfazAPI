@@ -10,10 +10,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.mail.internet.MimeMessage;
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -37,6 +41,9 @@ public class LoginRepo {
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    private JavaMailSender sender;
 
     public LoginModel loginUser(String user_email, String user_password, int is_active, String login_role, String login_token) {
 
@@ -112,6 +119,7 @@ public class LoginRepo {
                 objectNode.put("message", "in correct password");
                 return objectNode;
             }else {
+                System.out.println(user_passwords);
                 if (bCryptPasswordEncoder.matches(user_passwords, model.getUser_password())) {
 
                     Integer cnt = jdbcTemplate.queryForObject(
@@ -196,12 +204,7 @@ public class LoginRepo {
     }
 
 
-    public int updatePassword(int login_id, String user_email, String user_password) {
-        String encodedPassword = bCryptPasswordEncoder.encode(user_password);
-        jdbcTemplate.update("update efaz_login set user_password=? where login_id=?", encodedPassword, login_id);
-        return jdbcTemplate.update("update efaz_registration set registeration_password=? where registeration_email=? AND registration_isActive=1",
-                encodedPassword, user_email);
-    }
+
 
     public int  updateActiveState(int login_id, int is_active) {
         return jdbcTemplate.update("update efaz_login set is_active=? where login_id=?", is_active, login_id);
@@ -235,6 +238,71 @@ public class LoginRepo {
 
     public int inActiveLogin(int id) {
         return jdbcTemplate.update("update efaz_login set is_active=0 WHERE login_id=?", id);
+    }
+
+
+
+    static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    static SecureRandom rnd = new SecureRandom();
+
+    private String randomString( int len ){
+        StringBuilder sb = new StringBuilder( len );
+        for( int i = 0; i < len; i++ )
+            sb.append( AB.charAt( rnd.nextInt(AB.length()) ) );
+        return sb.toString();
+    }
+
+
+    public int updatePassword(int login_id, String user_email, String user_password) {
+        String encodedPassword = bCryptPasswordEncoder.encode(user_password);
+        jdbcTemplate.update("update efaz_login set user_password=? where login_id=?", encodedPassword, login_id);
+        return jdbcTemplate.update("update efaz_registration set registeration_password=? where registeration_email=? AND registration_isActive=1",
+                encodedPassword, user_email);
+    }
+
+    public int restPassword( String user_email, String role) {
+
+        String user_password = randomString(8);
+        String encodedPassword = bCryptPasswordEncoder.encode(user_password);
+
+        int register = jdbcTemplate.update("update efaz_registration set registeration_password=? where registeration_email=? AND registration_role=? AND registration_isActive=1",
+                encodedPassword, user_email, role);
+        int login = jdbcTemplate.update("update efaz_login set user_password=? where user_email=? AND login_role=?;", encodedPassword, user_email, role);
+        if (login>0 && register>0){
+            System.out.println(login+" "+ register + " "+ user_password);
+
+            try {
+                restPasswordEmail(user_email, user_password);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return 1;
+        }else {
+            return 0;
+        }
+    }
+
+
+
+    private void restPasswordEmail(String email, String newPassword) throws Exception {
+        MimeMessage message = sender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        helper.setTo(email);
+        helper.setText("Just Few Moments to Reset Password");
+        helper.setText(
+                "<table>\n" +
+                        "    <tr>" +
+                        "        <td style=\"background-color: #4ecdc4;border-color: #4c5764;border: 2px solid #45b7af;padding: 10px;text-align: center;\">" +
+                        "            <P style=\"display: block;color: #ffffff;font-size: 12px;text-decoration: none;\">" +
+                                       "Your new Password is   " + newPassword +
+                        "            </p>" +
+                        "        </td>" +
+                        "    </tr>" +
+                        "</table>"
+                , true);
+        helper.setSubject("Change Password for " + email);
+        sender.send(message);
     }
 
 }
