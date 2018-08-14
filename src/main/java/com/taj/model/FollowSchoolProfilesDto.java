@@ -16,11 +16,12 @@ public class FollowSchoolProfilesDto {
     @NotEmpty
     @Size(max = 450, min = 1, message = "company_name should have at least 1 characters")
     private String school_name;
-    private String school_logo_image;
+    private  byte[] school_logo_image;
     private boolean isFollowed;
 
     public FollowSchoolProfilesDto(int school_id,
-                                   @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String school_name, String school_logo_image, boolean isFollowed) {
+                                   @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String school_name,
+                                   byte[] school_logo_image, boolean isFollowed) {
         this.school_id = school_id;
         this.school_name = school_name;
         this.school_logo_image = school_logo_image;
@@ -46,11 +47,11 @@ public class FollowSchoolProfilesDto {
         this.school_name = school_name;
     }
 
-    public String getSchool_logo_image() {
+    public  byte[] getSchool_logo_image() {
         return school_logo_image;
     }
 
-    public void setSchool_logo_image(String school_logo_image) {
+    public void setSchool_logo_image( byte[] school_logo_image) {
         this.school_logo_image = school_logo_image;
     }
 

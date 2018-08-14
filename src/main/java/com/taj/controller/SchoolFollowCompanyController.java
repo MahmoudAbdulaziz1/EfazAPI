@@ -7,11 +7,10 @@ import com.taj.repository.SchoolFollowCompanyRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.GeneratedValue;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -29,9 +28,6 @@ public class SchoolFollowCompanyController {
     SchoolFollowCompanyRepo repo;
     @Autowired
     ObjectMapper mapper;
-
-
-
 
 
     @PostMapping("/add")
@@ -65,10 +61,16 @@ public class SchoolFollowCompanyController {
                     objectNode.put("Follower_id", model.getFollower_id());
 
                     return ResponseEntity.status(HttpStatus.OK).body(objectNode);
-                } else {
+                } else if (res == 0) {
                     ObjectNode objectNode = mapper.createObjectNode();
                     objectNode.put("status", 400);
                     objectNode.put("message", "not success");
+
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+                } else  {
+                    ObjectNode objectNode = mapper.createObjectNode();
+                    objectNode.put("status", 400);
+                    objectNode.put("message", "is already follow it");
 
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
                 }
@@ -204,6 +206,33 @@ public class SchoolFollowCompanyController {
     }
 
 
+    @DeleteMapping("/org/{org_id}/follower/{follow_id}")
+    public ObjectNode deleteSchoolFollowCompanyByIds(@PathVariable int org_id, @PathVariable int follow_id) {
+        if (repo.isRecordExist(org_id, follow_id)) {
+            int res = repo.deleteSchoolFollowCompanyByIds(org_id, follow_id);
+            if (res == 1) {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status", 200);
+                objectNode.put("message", "success");
+
+                return objectNode;
+            } else {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status", 400);
+                objectNode.put("message", "not success");
+
+                return objectNode;
+            }
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("status", 400);
+            objectNode.put("message", "not exist");
+
+            return objectNode;
+        }
+
+    }
+
 
     //who's followed
     @GetMapping("/followers/{companyId}/count")
@@ -213,8 +242,24 @@ public class SchoolFollowCompanyController {
 
 
     @GetMapping("/school/{id}")
-    public  List<FollowSchoolProfilesDto> getSchoolsWithFollow(@PathVariable  int id){
+    public List<FollowSchoolProfilesDto> getSchoolsWithFollow(@PathVariable int id) {
         return repo.getSchoolsWithFollow(id);
+    }
+
+
+    @GetMapping("/company/{id}")
+    public List<getCompaniesWithFollowDTo> getCompaniesWithFollow(@PathVariable int id) {
+        return repo.getCompaniesWithFollow(id);
+    }
+
+    @GetMapping("/companies/{id}")
+    public List<GetCompaniesWithFollowANDOffers> getCompaniesWithFollowANDOffres(@PathVariable int id) {
+        return repo.getCompaniesWithFollowAndOffers(id);
+    }
+
+    @GetMapping("/company/{org_id}/school/{fol_id}")
+    public boolean isRecordExist(@PathVariable int org_id,@PathVariable int fol_id){
+        return repo.isRecordExist(org_id, fol_id);
     }
 
 

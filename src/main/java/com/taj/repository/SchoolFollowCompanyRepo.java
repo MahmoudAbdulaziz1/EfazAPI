@@ -48,7 +48,15 @@ public class SchoolFollowCompanyRepo {
     }
 
     public int addFollower(int organization_id, int follower_id) {
-        return jdbcTemplate.update("INSERT INTO efaz_organization_following VALUES (?,?,?)", null, organization_id, follower_id);
+        if (isRecordExist(organization_id, follower_id)){
+            return 2;
+        }else {
+
+            return jdbcTemplate.update("INSERT INTO efaz_organization_following VALUES (?,?,?)", null, organization_id, follower_id);
+        }
+
+
+
     }
 
     public List<SchoolFollowCompany> getAllFollowers() {
@@ -126,6 +134,11 @@ public class SchoolFollowCompanyRepo {
     }
 
 
+    public int deleteSchoolFollowCompanyByIds(int organization_id, int follower_id) {
+        return jdbcTemplate.update("DELETE FROM efaz_organization_following WHERE organization_id=? AND follower_id=?", organization_id, follower_id);
+    }
+
+
     public int getId(int id1, int id2){
         return jdbcTemplate.queryForObject("SELECT follow_id FROM efaz_organization_following WHERE organization_id=? AND follower_id=?;",
                 Integer.class, id1, id2);
@@ -139,7 +152,52 @@ public class SchoolFollowCompanyRepo {
 
 
         List<FollowSchoolProfilesDto> list = jdbcTemplate.query(sql, new Object[]{companyId, companyId},
-                ((resultSet, i) -> new FollowSchoolProfilesDto(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getBoolean(4))));
+                ((resultSet, i) -> new FollowSchoolProfilesDto(resultSet.getInt(1), resultSet.getString(2), resultSet.getBytes(3), resultSet.getBoolean(4))));
+
+        return list;
+
+    }
+
+    public  List<getCompaniesWithFollowDTo> getCompaniesWithFollow(int schoolId){
+        String sql = "SELECT company_id, company_name, company_logo_image, company_address, category_name, company_link_youtube, company_website_url," +
+                " company_lng, company_lat, company_cover_image, company_phone_number, IF (profile.company_id = follow.organization_id AND follow.follower_id=?, true, false) " +
+                "AS is_follow FROM ((efaz_company.efaz_company_profile AS profile Left JOIN efaz_company.efaz_organization_following " +
+                "AS follow ON profile.company_id = follow.organization_id AND follow.follower_id=?) INNER JOIN efaz_company_category AS cat" +
+                " ON profile.company_category_id = cat.category_id) GROUP BY profile.company_id;";
+
+
+        List<getCompaniesWithFollowDTo> list = jdbcTemplate.query(sql, new Object[]{schoolId, schoolId},
+                ((resultSet, i) -> new getCompaniesWithFollowDTo(resultSet.getInt(1), resultSet.getString(2),
+                        resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
+                        resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9),
+                        resultSet.getBytes(10), resultSet.getString(11), resultSet.getBoolean(12))));
+
+        return list;
+
+    }
+
+    public  List<GetCompaniesWithFollowANDOffers> getCompaniesWithFollowAndOffers(int schoolId){
+        String sql = "SELECT company_id, company_name, company_logo_image, company_address, category_name, company_link_youtube, company_website_url," +
+                "                 company_lng, company_lat, company_cover_image, company_phone_number, IF (profile.company_id = follow.organization_id" +
+                "                 AND follow.follower_id=?, true, false) AS is_follow," +
+                "                 count(distinct offer.offer_id) AS offer_count," +
+                "                 count(distinct fol.follow_id) AS follow_count" +
+                "                 FROM ((efaz_company.efaz_company_profile AS profile" +
+                "                 Left JOIN efaz_company.efaz_organization_following" +
+                "                AS follow ON profile.company_id = follow.organization_id AND follow.follower_id=?" +
+                "                 INNER JOIN efaz_company_category AS cat" +
+                "                 ON profile.company_category_id = cat.category_id" +
+                "                 LEFT JOIN efaz_company_offer AS offer ON profile.company_id = offer.offer_company_id)" +
+                "                 LEFT JOIN efaz_company.efaz_organization_following AS fol ON profile.company_id = fol.organization_id)" +
+                "                 GROUP BY profile.company_id;";
+
+
+        List<GetCompaniesWithFollowANDOffers> list = jdbcTemplate.query(sql, new Object[]{schoolId, schoolId},
+                ((resultSet, i) -> new GetCompaniesWithFollowANDOffers(resultSet.getInt(1), resultSet.getString(2),
+                        resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
+                        resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9),
+                        resultSet.getBytes(10), resultSet.getString(11), resultSet.getBoolean(12), resultSet.getInt(13),
+                        resultSet.getInt(14))));
 
         return list;
 
