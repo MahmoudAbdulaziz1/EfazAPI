@@ -16,10 +16,10 @@ import java.util.List;
 /**
  * Created by User on 7/3/2018.
  */
-@RequestMapping("/evvaz/school/category")
+@RequestMapping("/school/category")
 @RestController
 @CrossOrigin
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SchoolRequestCategoryController {
 
     @Autowired
@@ -33,7 +33,7 @@ public class SchoolRequestCategoryController {
      */
 
     @GetMapping("/getAll")
-    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+//    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     public List<SchoolRequestCategoryModel> getCategories() {
         return repo.getSchoolRequestCategories();
     }
@@ -44,7 +44,7 @@ public class SchoolRequestCategoryController {
      */
 
     @GetMapping("/getCategory/{id}")
-    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+//    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     public SchoolRequestCategoryModel getCategory(@PathVariable int id) {
         return repo.getSchoolRequestCategory(id);
     }
@@ -54,7 +54,7 @@ public class SchoolRequestCategoryController {
      * @param model add company category to database
      */
     @PostMapping("/addCategory")
-    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     public ObjectNode addCategory(@Valid @RequestBody SchoolRequestCategoryModel model, Errors errors) {
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -85,7 +85,7 @@ public class SchoolRequestCategoryController {
      */
 
     @PutMapping("/updateCategory")
-    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     public ObjectNode updateCategory(@Valid @RequestBody SchoolRequestCategoryModel model, Errors errors) {
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -116,7 +116,7 @@ public class SchoolRequestCategoryController {
      */
 
     @PutMapping("/deleteCategory")
-    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     public ObjectNode deleteCategory(@Valid @RequestBody SchoolRequestCategoryModel model, Errors errors) {
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();

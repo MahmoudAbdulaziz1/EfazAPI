@@ -178,10 +178,11 @@ public class SchoolFollowCompanyRepo {
 
     public  List<GetCompaniesWithFollowANDOffers> getCompaniesWithFollowAndOffers(int schoolId){
         String sql = "SELECT company_id, company_name, company_logo_image, company_address, category_name, company_link_youtube, company_website_url," +
-                "                 company_lng, company_lat, company_cover_image, company_phone_number, IF (profile.company_id = follow.organization_id" +
-                "                 AND follow.follower_id=?, true, false) AS is_follow," +
+                "                 company_lng, company_lat, company_cover_image, company_phone_number, "+
+                "                 count(distinct fol.follow_id) AS follower_count," +
                 "                 count(distinct offer.offer_id) AS offer_count," +
-                "                 count(distinct fol.follow_id) AS follow_count" +
+                "                 IF (profile.company_id = follow.organization_id " +
+                "                 AND follow.follower_id=?, true, false) AS is_follow" +
                 "                 FROM ((efaz_company.efaz_company_profile AS profile" +
                 "                 Left JOIN efaz_company.efaz_organization_following" +
                 "                AS follow ON profile.company_id = follow.organization_id AND follow.follower_id=?" +

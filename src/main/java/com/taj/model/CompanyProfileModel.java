@@ -163,6 +163,8 @@ public class CompanyProfileModel {
     public void setCompany_phone_number(String company_phone_number) {
         this.company_phone_number = company_phone_number;
     }
+
+
 }
 
 

@@ -21,11 +21,13 @@ public class CompanyResponseSchoolRequestModel {
     private int  is_aproved;
     @Min(1)
     private double responsed_cost;
+    private long response_date;
 
     public CompanyResponseSchoolRequestModel() {
     }
 
-    public CompanyResponseSchoolRequestModel(int response_id, int responsed_company_id, int responsed_request_id, int responsed_from, int responsed_to, double responsed_cost, int is_aproved) {
+    public CompanyResponseSchoolRequestModel(int response_id, int responsed_company_id, int responsed_request_id, int responsed_from,
+                                             int responsed_to, double responsed_cost, int is_aproved, long response_date) {
         this.response_id = response_id;
         this.responsed_company_id = responsed_company_id;
         this.responsed_request_id = responsed_request_id;
@@ -33,7 +35,45 @@ public class CompanyResponseSchoolRequestModel {
         this.responsed_to = responsed_to;
         this.responsed_cost = responsed_cost;
         this.is_aproved = is_aproved;
+        this.response_date = response_date;
     }
+
+    public CompanyResponseSchoolRequestModel(@Min(1) int responsed_company_id, @Min(1) int responsed_request_id,
+                                             @Min(1) int responsed_from, @Min(1) int responsed_to, @Min(0) int is_aproved,
+                                             @Min(1) double responsed_cost, @Min(1) int response_id) {
+        this.responsed_company_id = responsed_company_id;
+        this.responsed_request_id = responsed_request_id;
+        this.responsed_from = responsed_from;
+        this.responsed_to = responsed_to;
+        this.is_aproved = is_aproved;
+        this.responsed_cost = responsed_cost;
+        this.response_id = response_id;
+    }
+
+    public CompanyResponseSchoolRequestModel(@Min(1) int responsed_company_id, @Min(1) int responsed_request_id,
+                                             @Min(1) int responsed_from, @Min(1) int responsed_to, @Min(0) int is_aproved,
+                                             @Min(1) double responsed_cost, long response_date) {
+        this.responsed_company_id = responsed_company_id;
+        this.responsed_request_id = responsed_request_id;
+        this.responsed_from = responsed_from;
+        this.responsed_to = responsed_to;
+        this.is_aproved = is_aproved;
+        this.responsed_cost = responsed_cost;
+        this.response_date = response_date;
+    }
+
+    public CompanyResponseSchoolRequestModel(@Min(1) int response_id, @Min(1) int responsed_company_id, @Min(1) int responsed_request_id,
+                                             @Min(1) int responsed_from, @Min(1) int responsed_to, @Min(0) int is_aproved, @Min(1) double responsed_cost, long response_date) {
+        this.response_id = response_id;
+        this.responsed_company_id = responsed_company_id;
+        this.responsed_request_id = responsed_request_id;
+        this.responsed_from = responsed_from;
+        this.responsed_to = responsed_to;
+        this.is_aproved = is_aproved;
+        this.responsed_cost = responsed_cost;
+        this.response_date = response_date;
+    }
+
 
     public int getResponse_id() {
         return response_id;
@@ -89,5 +129,13 @@ public class CompanyResponseSchoolRequestModel {
 
     public void setIs_aproved(int is_aproved) {
         this.is_aproved = is_aproved;
+    }
+
+    public long getResponse_date() {
+        return response_date;
+    }
+
+    public void setResponse_date(long response_date) {
+        this.response_date = response_date;
     }
 }

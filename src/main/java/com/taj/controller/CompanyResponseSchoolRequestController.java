@@ -11,6 +11,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -41,6 +42,7 @@ public class CompanyResponseSchoolRequestController {
                 model.getResponsed_to(), model.getResponsed_cost(), model.getIs_aproved());
 
         if (res == 1){
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             ObjectNode objectNode = mapper.createObjectNode();
             //objectNode.put("response_id", model.getResponse_id());
             objectNode.put("responsed_company_id", model.getResponsed_company_id());
@@ -49,6 +51,7 @@ public class CompanyResponseSchoolRequestController {
             objectNode.put("responsed_from", model.getResponsed_to());
             objectNode.put("responsed_cost", model.getResponsed_cost());
             objectNode.put("is_aproved", model.getIs_aproved());
+            objectNode.put("response_date", timestamp.getTime());
 
             return objectNode;
         }else {
