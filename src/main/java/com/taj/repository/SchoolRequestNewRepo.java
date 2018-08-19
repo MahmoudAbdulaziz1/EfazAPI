@@ -207,30 +207,51 @@ public class SchoolRequestNewRepo {
     public SchoolRequestNewDtoWitCompany getSingleTenderDetails(int request_id) {
 
 
+//        String sql = "SELECT " +
+//                "request_id, request_title, request_explaination, request_display_date, " +
+//                "    request_expired_date, " +
+//                "    count(distinct req.responsed_request_id) AS response_count, res.response_date, res.responsed_cost, " +
+//                "company_name, company_logo_image, company_category_id" +
+//                " FROM (efaz_school_tender AS tender " +
+//                "                         LEFT JOIN efaz_company.efaz_company_response_school_request AS req " +
+//                "                         ON tender.request_id = req.responsed_request_id)" +
+//                "                         LEFT JOIN efaz_company.efaz_company_response_school_request AS res" +
+//                "                         ON tender.request_id = res.responsed_request_id" +
+//                "                         LEFT JOIN efaz_company.efaz_company_profile AS com" +
+//                "                         ON res.responsed_company_id = com.company_id" +
+//                " where request_id =?" +
+//                "                         GROUP BY request_id;";
         String sql = "SELECT " +
                 "request_id, request_title, request_explaination, request_display_date, " +
                 "    request_expired_date, " +
-                "    count(distinct req.responsed_request_id) AS response_count, res.response_date, res.responsed_cost, " +
-                "company_name, company_logo_image, company_category_id" +
+                "    count(distinct req.responsed_request_id) AS response_count, res.response_date, res.responsed_cost, company_name, company_logo_image, category_name " +
                 " FROM (efaz_school_tender AS tender " +
                 "                         LEFT JOIN efaz_company.efaz_company_response_school_request AS req " +
                 "                         ON tender.request_id = req.responsed_request_id)" +
-                "                         LEFT JOIN efaz_company.efaz_company_response_school_request AS res" +
-                "                         ON tender.request_id = res.responsed_request_id" +
-                "                         LEFT JOIN efaz_company.efaz_company_profile AS com" +
+                "                         LEFT JOIN efaz_company.efaz_company_response_school_request AS res " +
+                "                         ON tender.request_id = res.responsed_request_id " +
+                "                         LEFT JOIN efaz_company.efaz_company_profile AS com " +
                 "                         ON res.responsed_company_id = com.company_id" +
-                " where request_id =?" +
+                "                         INNER JOIN efaz_company.efaz_company_category AS cat " +
+                "                         ON com.company_category_id = cat.category_id " +
+                "where request_id =?" +
                 "                         GROUP BY request_id;";
 
 
-        return jdbcTemplate.query(sql,
-                new Object[]{request_id},
-                (resultSet, i) -> new SchoolRequestNewDtoWitCompany(resultSet.getString(1),
-                        resultSet.getString(2), resultSet.getTimestamp(3).getTime(), resultSet.getTimestamp(4).getTime(),
-                        resultSet.getInt(5), resultSet.getTimestamp(6).getTime(), resultSet.getDouble(7),
-                        resultSet.getString(8), resultSet.getBytes(9), resultSet.getString(10)));
+        return jdbcTemplate.queryForObject(sql,
+                new Object[]{request_id}, (resultSet, i) -> new SchoolRequestNewDtoWitCompany(resultSet.getInt(1), resultSet.getString(2),
+                        resultSet.getString(3), resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(),
+                        resultSet.getInt(6), resultSet.getTimestamp(7).getTime(), resultSet.getDouble(8),
+                        resultSet.getString(9), resultSet.getBytes(10), resultSet.getString(11)));
 
 
+    }
+
+    public int acceptOffer(int request_id){
+        return jdbcTemplate.update("UPDATE efaz_company.efaz_school_tender SET request_is_conformied=1 WHERE request_id=?;", request_id);
+    }
+    public int cancelOffer(int request_id){
+        return jdbcTemplate.update("UPDATE efaz_company.efaz_school_tender SET request_is_conformied=0 WHERE request_id=?;", request_id);
     }
 
 

@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 public class TakatafTenderModel {
 
 
-    @Min(1)
+
     private int tender_id;
     @NotNull
     private byte[] tender_logo;

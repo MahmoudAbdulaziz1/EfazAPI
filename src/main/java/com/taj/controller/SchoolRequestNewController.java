@@ -3,6 +3,7 @@ package com.taj.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.taj.model.RequstResponsePOJO;
 import com.taj.model.SchoolRequestNewDto;
 import com.taj.model.SchoolRequestsDTO;
 import com.taj.repository.SchoolRequestNewRepo;
@@ -125,7 +126,7 @@ public class SchoolRequestNewController {
 
     @DeleteMapping("/{id}")
     public ObjectNode deleteSchoolRequest(@PathVariable int id) {
-        if (repo.isExist(id)){
+        if (repo.isExist(id)) {
             int res = repo.deleteSchoolRequest(id);
             if (res == 1) {
                 ObjectNode objectNode = mapper.createObjectNode();
@@ -138,13 +139,74 @@ public class SchoolRequestNewController {
 
                 return objectNode;
             }
-        }else {
+        } else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("message", "not element by this id");
 
             return objectNode;
         }
 
+    }
+
+    @GetMapping("/response/{request_id}")
+    public ResponseEntity<RequstResponsePOJO> getSingleTenderDetails(@PathVariable int request_id) {
+        if (repo.isExist(request_id)) {
+            if (repo.getSingleTenderDetails(request_id) != null) {
+                RequstResponsePOJO requstResponsePOJO = new RequstResponsePOJO(200, repo.getSingleTenderDetails(request_id));
+                return ResponseEntity.status(HttpStatus.OK).body(requstResponsePOJO);
+            } else {
+                RequstResponsePOJO requstResponsePOJO = new RequstResponsePOJO(400, repo.getSingleTenderDetails(request_id));
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(requstResponsePOJO);
+            }
+        } else {
+
+            RequstResponsePOJO requstResponsePOJO = new RequstResponsePOJO(400, null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(requstResponsePOJO);
+
+        }
+
+
+    }
+
+    @PutMapping("/accept/{request_id}")
+    public ResponseEntity<ObjectNode> acceptOffer(@PathVariable int request_id) {
+        if (repo.isExist(request_id)) {
+            int response = repo.acceptOffer(request_id);
+            if (response == 1) {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("message", "success");
+                return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+            } else {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("message", "not sucess");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            }
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("message", "no exist request");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+
+    }
+
+    @PutMapping("/cancel/{request_id}")
+    public ResponseEntity<ObjectNode> cancelOffer(@PathVariable int request_id) {
+        if (repo.isExist(request_id)) {
+            int response = repo.cancelOffer(request_id);
+            if (response == 1) {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("message", "success");
+                return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+            } else {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("message", "not sucess");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            }
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("message", "no exist request");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
     }
 
 

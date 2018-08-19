@@ -1,10 +1,9 @@
 package com.taj.model;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
-
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Created by MahmoudAhmed on 5/30/2018.
@@ -12,49 +11,48 @@ import javax.validation.constraints.*;
 public class RegistrationModel {
 
 
-
     private int registration_id;
     @NotNull
     @NotBlank
     @NotEmpty
-    @Size(max = 450, min = 11, message="email should have at least 11 characters")
+    @Size(max = 450, min = 10, message = "email should have at least 11 characters")
     private String registeration_email;
     @NotNull
     @NotBlank
     @NotEmpty
-    @Size(max = 450, min = 8, message="password should have at least 8 characters")
+    @Size(max = 450, min = 8, message = "password should have at least 8 characters")
     private String registeration_password;
     @NotNull
     @NotBlank
     @NotEmpty
-    @Size(max = 450, min = 1, message="username should have at least 1 characters")
+    @Size(max = 450, min = 1, message = "username should have at least 1 characters")
     private String registeration_username;
     @NotNull
     @NotBlank
     @NotEmpty
-    @Size(max = 450, min = 1, message="phone_number should have at least 1 characters")
+    @Size(max = 450, min = 1, message = "phone_number should have at least 1 characters")
     private String registeration_phone_number;
     @NotNull
     @NotBlank
     @NotEmpty
-    @Size(max = 450, min = 1, message="organization_name should have at least 1 characters")
+    @Size(max = 450, min = 1, message = "organization_name should have at least 1 characters")
     private String registration_organization_name;
     @NotNull
     @NotBlank
     @NotEmpty
-    @Size(max = 450, min = 1, message="address_desc should have at least 1 characters")
+    @Size(max = 450, min = 1, message = "address_desc should have at least 1 characters")
     private String registration_address_desc;
     @NotNull
     @NotBlank
     @NotEmpty
-    @Size(max = 450, min = 11, message="website_url should have at least 11characters")
+    @Size(max = 450, min = 7, message = "website_url should have at least 11characters")
     private String registration_website_url;
     @NotNull
     private int registration_isActive;
     @NotNull
     @NotBlank
     @NotEmpty
-    @Size(max = 450, min = 1, message="role should have at least 1 characters")
+    @Size(max = 450, min = 1, message = "role should have at least 1 characters")
     private String registration_role;//for confirmation
 
 
