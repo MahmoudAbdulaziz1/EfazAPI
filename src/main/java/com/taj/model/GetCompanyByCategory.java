@@ -9,9 +9,9 @@ public class GetCompanyByCategory {
 
 
     private String states;
-    private List<CompanyProfileModel> model;
+    private List<CompantProfileDto> model;
 
-    public GetCompanyByCategory(String states, List<CompanyProfileModel> model) {
+    public GetCompanyByCategory(String states, List<CompantProfileDto> model) {
         this.states = states;
         this.model = model;
     }
@@ -27,11 +27,11 @@ public class GetCompanyByCategory {
         this.states = states;
     }
 
-    public List<CompanyProfileModel> getModel() {
+    public List<CompantProfileDto> getModel() {
         return model;
     }
 
-    public void setModel(List<CompanyProfileModel> model) {
+    public void setModel(List<CompantProfileDto> model) {
         this.model = model;
     }
 

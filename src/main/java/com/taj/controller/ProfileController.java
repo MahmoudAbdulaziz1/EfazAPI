@@ -283,7 +283,18 @@ public class ProfileController {
 
     @GetMapping("/get/{id}/category")
     public ResponseEntity<GetCompanyByCategory> getProfileByCategory(@PathVariable String id) {
-        List<CompanyProfileModel> model = profileRepo.getProfileByCategory(id);
+        List<CompantProfileDto> model = profileRepo.getProfileByCategory(id);
+        if (model.size() > 0) {
+            return ResponseEntity.status(HttpStatus.OK).body(new GetCompanyByCategory("200", model));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GetCompanyByCategory("400", null));
+        }
+    }
+
+
+    @GetMapping("/get/category/{id}")
+    public ResponseEntity<GetCompanyByCategory> getProfileByCategoryAndroid(@PathVariable String id) {
+        List<CompantProfileDto> model = profileRepo.getProfileByCategory(id);
         if (model.size() > 0) {
             return ResponseEntity.status(HttpStatus.OK).body(new GetCompanyByCategory("200", model));
         } else {

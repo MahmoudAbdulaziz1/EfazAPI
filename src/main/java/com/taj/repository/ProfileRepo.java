@@ -67,14 +67,19 @@ public class ProfileRepo {
                         resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9), resultSet.getBytes(10), resultSet.getString(11)));
     }
 
-    public List<CompanyProfileModel> getProfileByCategory(String id) {
+    public List<CompantProfileDto> getProfileByCategory(String id) {
 
+        String sql = "SELECT company_id, company_name, company_logo_image, company_address, category_name, company_link_youtube, company_website_url, company_lng, company_lat, company_cover_image, " +
+                "                company_phone_number, count(follow_id) AS follower_count, count(offer_id) AS order_count FROM (((efaz_company.efaz_company_profile AS profile LEFT JOIN " +
+                "                 efaz_company.efaz_organization_following AS follow ON profile.company_id = follow.follower_id) LEFT JOIN efaz_company_offer AS offer ON profile.company_id = offer.offer_company_id) INNER JOIN efaz_company_category AS cat" +
+                "                 ON profile.company_category_id = cat.category_id) WHERE  company_category_id=? GROUP BY profile.company_id;";
         int category = jdbcTemplate.queryForObject("SELECT category_id FROM efaz_company_category WHERE  category_name=?;",
                 Integer.class, id);
-        return jdbcTemplate.query("SELECT * FROM efaz_company_profile WHERE  company_category_id=?;",
-                new Object[]{category}, (resultSet, i) -> new CompanyProfileModel(resultSet.getInt(1), resultSet.getString(2),
-                        resultSet.getBytes(3), resultSet.getString(4), id,
-                        resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9), resultSet.getBytes(10), resultSet.getString(11)));
+        return jdbcTemplate.query(sql,new Object[]{category},
+                (resultSet, i) -> new CompantProfileDto(resultSet.getInt(1), resultSet.getString(2),
+                        resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
+                        resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9),
+                        resultSet.getBytes(10), resultSet.getString(11), resultSet.getInt(12), resultSet.getInt(13)));
     }
 
     public int CheckProfile(int id) {

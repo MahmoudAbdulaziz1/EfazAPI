@@ -22,7 +22,6 @@ import java.util.List;
 @RequestMapping("/school/requests")
 @RestController
 @CrossOrigin
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SchoolRequestController {
 
     @Autowired

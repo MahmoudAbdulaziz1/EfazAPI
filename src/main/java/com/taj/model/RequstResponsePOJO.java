@@ -1,5 +1,7 @@
 package com.taj.model;
 
+import java.util.List;
+
 /**
  * Created by User on 8/19/2018.
  */
@@ -7,9 +9,9 @@ public class RequstResponsePOJO {
 
 
     private int status;
-    private SchoolRequestNewDtoWitCompany schoolRequestNewDtoWitCompany;
+    private List<SchoolRequestNewDtoWitCompany> schoolRequestNewDtoWitCompany;
 
-    public RequstResponsePOJO(int status, SchoolRequestNewDtoWitCompany schoolRequestNewDtoWitCompany) {
+    public RequstResponsePOJO(int status, List<SchoolRequestNewDtoWitCompany> schoolRequestNewDtoWitCompany) {
         this.status = status;
         this.schoolRequestNewDtoWitCompany = schoolRequestNewDtoWitCompany;
     }
@@ -25,11 +27,11 @@ public class RequstResponsePOJO {
         this.status = status;
     }
 
-    public SchoolRequestNewDtoWitCompany getSchoolRequestNewDtoWitCompany() {
+    public List<SchoolRequestNewDtoWitCompany> getSchoolRequestNewDtoWitCompany() {
         return schoolRequestNewDtoWitCompany;
     }
 
-    public void setSchoolRequestNewDtoWitCompany(SchoolRequestNewDtoWitCompany schoolRequestNewDtoWitCompany) {
+    public void setSchoolRequestNewDtoWitCompany(List<SchoolRequestNewDtoWitCompany> schoolRequestNewDtoWitCompany) {
         this.schoolRequestNewDtoWitCompany = schoolRequestNewDtoWitCompany;
     }
 }

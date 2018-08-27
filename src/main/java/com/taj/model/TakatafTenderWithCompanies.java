@@ -29,6 +29,9 @@ public class TakatafTenderWithCompanies {
     @NotNull
     private long tender_expire_date;
     private int response_count;
+    private @NotNull long tender_company_display_date;
+    @NotNull
+    private long tender_company_expired_date;
 
 
     //from company
@@ -43,7 +46,11 @@ public class TakatafTenderWithCompanies {
     @NotNull
     private String school_service_desc;
 
-    public TakatafTenderWithCompanies(int tender_id, byte[] tender_logo, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String tender_title, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String tender_explain, @NotNull String tender_cat_id, @NotNull long tender_display_date, @NotNull long tender_expire_date, int response_count, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String school_name, @NotNull byte[] school_logo_image, @NotNull String school_service_desc) {
+    public TakatafTenderWithCompanies(int tender_id, byte[] tender_logo, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String tender_title,
+                                      @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String tender_explain,
+                                      @NotNull String tender_cat_id, @NotNull long tender_display_date, @NotNull long tender_expire_date, @NotNull long tender_company_display_date, @NotNull long tender_company_expired_date
+                                      , int response_count, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String school_name,
+                                      @NotNull byte[] school_logo_image, @NotNull String school_service_desc) {
         this.tender_id = tender_id;
         this.tender_logo = tender_logo;
         this.tender_title = tender_title;
@@ -51,19 +58,28 @@ public class TakatafTenderWithCompanies {
         this.tender_cat_id = tender_cat_id;
         this.tender_display_date = tender_display_date;
         this.tender_expire_date = tender_expire_date;
+        this.tender_company_display_date = tender_company_display_date;
+        this.tender_company_expired_date = tender_company_expired_date;
         this.response_count = response_count;
         this.school_name = school_name;
         this.school_logo_image = school_logo_image;
         this.school_service_desc = school_service_desc;
     }
 
-    public TakatafTenderWithCompanies(byte[] tender_logo, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String tender_title, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String tender_explain, @NotNull String tender_cat_id, @NotNull long tender_display_date, @NotNull long tender_expire_date, int response_count, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String school_name, @NotNull byte[] school_logo_image, @NotNull String school_service_desc) {
+    public TakatafTenderWithCompanies(byte[] tender_logo, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String tender_title,
+                                      @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String tender_explain,
+                                      @NotNull String tender_cat_id, @NotNull long tender_display_date, @NotNull long tender_expire_date,
+                                      @NotNull long tender_company_display_date, @NotNull long tender_company_expired_date, int response_count,
+                                      @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String school_name,
+                                      @NotNull byte[] school_logo_image, @NotNull String school_service_desc) {
         this.tender_logo = tender_logo;
         this.tender_title = tender_title;
         this.tender_explain = tender_explain;
         this.tender_cat_id = tender_cat_id;
         this.tender_display_date = tender_display_date;
         this.tender_expire_date = tender_expire_date;
+        this.tender_company_display_date = tender_company_display_date;
+        this.tender_company_expired_date = tender_company_expired_date;
         this.response_count = response_count;
         this.school_name = school_name;
         this.school_logo_image = school_logo_image;
@@ -159,5 +175,21 @@ public class TakatafTenderWithCompanies {
 
     public void setSchool_service_desc(String school_service_desc) {
         this.school_service_desc = school_service_desc;
+    }
+
+    public long getTender_company_display_date() {
+        return tender_company_display_date;
+    }
+
+    public void setTender_company_display_date(long tender_company_display_date) {
+        this.tender_company_display_date = tender_company_display_date;
+    }
+
+    public long getTender_company_expired_date() {
+        return tender_company_expired_date;
+    }
+
+    public void setTender_company_expired_date(long tender_company_expired_date) {
+        this.tender_company_expired_date = tender_company_expired_date;
     }
 }

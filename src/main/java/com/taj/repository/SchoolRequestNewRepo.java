@@ -115,7 +115,7 @@ public class SchoolRequestNewRepo {
                 "request_id, request_title, request_explaination, request_display_date, " +
                 "    request_expired_date, school_id," +
                 "    request_category_name, " +
-                "    count(distinct responsed_request_id) AS response_count" +
+                "    count( responsed_request_id) AS response_count" +
                 " FROM efaz_school_tender AS tender INNER JOIN" +
                 "                        efaz_company.efaz_school_request_category AS cat" +
                 "                         ON" +
@@ -143,7 +143,7 @@ public class SchoolRequestNewRepo {
                 "request_id, request_title, request_explaination, request_display_date, " +
                 "    request_expired_date, school_id," +
                 "    request_category_name, " +
-                "    count(distinct responsed_request_id) AS response_count" +
+                "    count( responsed_request_id) AS response_count" +
                 " FROM efaz_school_tender AS tender INNER JOIN" +
                 "                        efaz_company.efaz_school_request_category AS cat" +
                 "                         ON" +
@@ -204,27 +204,14 @@ public class SchoolRequestNewRepo {
     }
 
 
-    public SchoolRequestNewDtoWitCompany getSingleTenderDetails(int request_id) {
+    public List<SchoolRequestNewDtoWitCompany> getSingleTenderDetails(int request_id) {
 
 
-//        String sql = "SELECT " +
-//                "request_id, request_title, request_explaination, request_display_date, " +
-//                "    request_expired_date, " +
-//                "    count(distinct req.responsed_request_id) AS response_count, res.response_date, res.responsed_cost, " +
-//                "company_name, company_logo_image, company_category_id" +
-//                " FROM (efaz_school_tender AS tender " +
-//                "                         LEFT JOIN efaz_company.efaz_company_response_school_request AS req " +
-//                "                         ON tender.request_id = req.responsed_request_id)" +
-//                "                         LEFT JOIN efaz_company.efaz_company_response_school_request AS res" +
-//                "                         ON tender.request_id = res.responsed_request_id" +
-//                "                         LEFT JOIN efaz_company.efaz_company_profile AS com" +
-//                "                         ON res.responsed_company_id = com.company_id" +
-//                " where request_id =?" +
-//                "                         GROUP BY request_id;";
+//
         String sql = "SELECT " +
                 "request_id, request_title, request_explaination, request_display_date, " +
                 "    request_expired_date, " +
-                "    count(distinct req.responsed_request_id) AS response_count, res.response_date, res.responsed_cost, company_name, company_logo_image, category_name " +
+                "    count( req.responsed_request_id) AS response_count, res.response_date, res.responsed_cost, company_name, company_logo_image, category_name " +
                 " FROM (efaz_school_tender AS tender " +
                 "                         LEFT JOIN efaz_company.efaz_company_response_school_request AS req " +
                 "                         ON tender.request_id = req.responsed_request_id)" +
@@ -235,14 +222,27 @@ public class SchoolRequestNewRepo {
                 "                         INNER JOIN efaz_company.efaz_company_category AS cat " +
                 "                         ON com.company_category_id = cat.category_id " +
                 "where request_id =?" +
-                "                         GROUP BY request_id;";
+                "                         GROUP BY company_name;";
+
+        String sql1 ="SELECT " +
+                "                request_id, request_title, request_explaination, request_display_date, " +
+                "                    request_expired_date, res.response_date, res.responsed_cost, company_name, company_logo_image, category_name" +
+                "                 FROM efaz_school_tender AS tender " +
+                "  LEFT JOIN efaz_company.efaz_company_response_school_request AS res " +
+                "     ON tender.request_id = res.responsed_request_id" +
+                "                  LEFT JOIN efaz_company.efaz_company_profile AS com " +
+                "                                        ON res.responsed_company_id = com.company_id" +
+                " INNER JOIN efaz_company.efaz_company_category AS cat " +
+                " ON com.company_category_id = cat.category_id " +
+                "  where request_id =?;" ;
 
 
-        return jdbcTemplate.queryForObject(sql,
+
+        return jdbcTemplate.query(sql1,
                 new Object[]{request_id}, (resultSet, i) -> new SchoolRequestNewDtoWitCompany(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getString(3), resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(),
-                        resultSet.getInt(6), resultSet.getTimestamp(7).getTime(), resultSet.getDouble(8),
-                        resultSet.getString(9), resultSet.getBytes(10), resultSet.getString(11)));
+                        resultSet.getTimestamp(6).getTime(), resultSet.getDouble(7),
+                        resultSet.getString(8), resultSet.getBytes(9), resultSet.getString(10)));
 
 
     }

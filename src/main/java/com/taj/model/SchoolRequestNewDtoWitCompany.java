@@ -26,8 +26,8 @@ public class SchoolRequestNewDtoWitCompany {
     private long c_request_display_date;
     @NotNull
     private long c_request_expired_date;
-    @NotNull
-    private int c_response_count;
+
+    //private int c_response_count;
 
     //from company response
     @NotNull
@@ -52,7 +52,7 @@ public class SchoolRequestNewDtoWitCompany {
     public SchoolRequestNewDtoWitCompany(int request_id,
                                          @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String request_title,
                                          @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String request_explaination,
-                                         @NotNull long request_display_date, @NotNull long request_expired_date, @NotNull int response_count, long response_date, @NotNull double responsed_cost,
+                                         @NotNull long request_display_date, @NotNull long request_expired_date, long response_date, @NotNull double responsed_cost,
                                          @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String company_name,
                                          @NotNull byte[] company_logo_image, @NotNull String company_category_id) {
         this.c_request_id = request_id;
@@ -60,7 +60,7 @@ public class SchoolRequestNewDtoWitCompany {
         this.c_request_explaination = request_explaination;
         this.c_request_display_date = request_display_date;
         this.c_request_expired_date = request_expired_date;
-        this.c_response_count = response_count;
+        //this.c_response_count = response_count;
         this.c_response_date = response_date;
         this.c_responsed_cost = responsed_cost;
         this.c_company_name = company_name;
@@ -70,14 +70,14 @@ public class SchoolRequestNewDtoWitCompany {
 
     public SchoolRequestNewDtoWitCompany(@NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String request_title,
                                          @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String request_explaination,
-                                         @NotNull long request_display_date, @NotNull long request_expired_date, @NotNull int response_count, @NotNull long response_date, @NotNull double responsed_cost,
+                                         @NotNull long request_display_date, @NotNull long request_expired_date,  @NotNull long response_date, @NotNull double responsed_cost,
                                          @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String company_name,
                                          @NotNull byte[] company_logo_image, @NotNull String company_category_id) {
         this.c_request_title = request_title;
         this.c_request_explaination = request_explaination;
         this.c_request_display_date = request_display_date;
         this.c_request_expired_date = request_expired_date;
-        this.c_response_count = response_count;
+        //this.c_response_count = response_count;
         this.c_response_date = response_date;
         this.c_responsed_cost = responsed_cost;
         this.c_company_name = company_name;
@@ -128,13 +128,7 @@ public class SchoolRequestNewDtoWitCompany {
         this.c_request_expired_date = request_expired_date;
     }
 
-    public int getResponse_count() {
-        return c_response_count;
-    }
 
-    public void setResponse_count(int response_count) {
-        this.c_response_count = response_count;
-    }
 
     public long getResponse_date() {
         return c_response_date;

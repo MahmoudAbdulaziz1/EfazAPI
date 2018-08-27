@@ -29,10 +29,6 @@ public class SchoolProfileModel {
 //    @NotEmpty
 //    @Size(max = 450, min = 1, message="company_name should have at least 1 characters")
     private String school_link_youtube;
-    @NotNull
-    @NotBlank
-    @NotEmpty
-    @Size(max = 450, min = 1, message="website should have at least 1 characters")
     private String school_website_url;
     private float school_lng, school_lat;
     @NotNull

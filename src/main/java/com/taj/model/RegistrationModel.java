@@ -42,10 +42,7 @@ public class RegistrationModel {
     @NotEmpty
     @Size(max = 450, min = 1, message = "address_desc should have at least 1 characters")
     private String registration_address_desc;
-    @NotNull
-    @NotBlank
-    @NotEmpty
-    @Size(max = 450, min = 7, message = "website_url should have at least 11characters")
+
     private String registration_website_url;
     @NotNull
     private int registration_isActive;
