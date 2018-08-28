@@ -55,7 +55,7 @@ public class LoginRepo {
                     , new Object[]{user_email},
                     (resultSet, i) -> new RegistrationModel(resultSet.getInt(1), resultSet.getString(2),
                             resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
-                            resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10)));
+                            resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10), resultSet.getTimestamp(11).getTime()));
             if (bCryptPasswordEncoder.matches(user_password, model.getRegisteration_password())) {
                 //if (user_password.equals(model.getRegisteration_password())){
                 if (is_active == 1) {

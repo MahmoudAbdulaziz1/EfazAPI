@@ -133,7 +133,11 @@ public class SchoolRequestRepo {
 
 
     public List<SchoolRequestHistoryDto> getHistoryRequestsBySchoolId(int id) {
-        String sql = "SELECT request_id, request_title, request_count, request_display_date, request_deliver_date FROM efaz_company.efaz_school_tender WHERE school_id=? AND request_is_available=1;";
+        String sql = "SELECT request_id, request_title, count( s.responsed_request_id) AS request_count, request_display_date, response_date " +
+                "FROM efaz_company.efaz_school_tender AS t " +
+                "LEFT JOIN efaz_company.efaz_company_response_school_request AS s ON t.request_id=s.responsed_request_id " +
+                "WHERE school_id=? AND s.is_aproved=1 " +
+                "Group BY (s.responsed_request_id); ";
         return jdbcTemplate.query(sql,
                 new Object[]{id}, (resultSet, i) -> new SchoolRequestHistoryDto(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3),
                         resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime()));

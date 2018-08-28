@@ -16,10 +16,9 @@ import java.util.List;
 /**
  * Created by User on 7/5/2018.
  */
-@RequestMapping("/evvaz/takataf/category")
+@RequestMapping("/takataf/category")
 @RestController
 @CrossOrigin
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class TakatafCategoryController {
 
     @Autowired
@@ -33,7 +32,6 @@ public class TakatafCategoryController {
      */
 
     @GetMapping("/getAll")
-    @PreAuthorize("hasAuthority('admin') or hasAuthority('company')")
     public List<TakatafCategoryModel> getCategories() {
         return repo.getTakatafCategories();
     }
@@ -44,7 +42,6 @@ public class TakatafCategoryController {
      */
 
     @GetMapping("/get/{id}")
-    @PreAuthorize("hasAuthority('admin') or hasAuthority('company')")
     public TakatafCategoryModel getCategory(@PathVariable int id) {
         return repo.getTakatafCategory(id);
     }
@@ -54,7 +51,6 @@ public class TakatafCategoryController {
      * @param model add company category to database
      */
     @PostMapping("/add")
-    @PreAuthorize("hasAuthority('admin')")
     public ObjectNode addCategory(@Valid  @RequestBody TakatafCategoryModel model, Errors errors) {
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -85,7 +81,6 @@ public class TakatafCategoryController {
      */
 
     @PutMapping("/update")
-    @PreAuthorize("hasAuthority('admin')")
     public ObjectNode updateCategory(@Valid @RequestBody TakatafCategoryModel model, Errors errors) {
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -115,7 +110,6 @@ public class TakatafCategoryController {
      */
 
     @PutMapping("/delete")
-    @PreAuthorize("hasAuthority('admin')")
     public ObjectNode deleteCategory(@Valid @RequestBody TakatafCategoryModel model, Errors errors) {
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();

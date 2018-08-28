@@ -14,10 +14,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Repository;
 
 import javax.mail.internet.MimeMessage;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 
 /**
@@ -49,7 +46,7 @@ public class RegistrationRepo {
 
 
     public RegistrationModel addUser(String email, String password, String userName, String phoneNumber, String companyName
-            , String address, String website, int isActive, String registration_role) {
+            , String address, String website, int isActive, String registration_role, long registeration_date) {
 
 //        return jdbcTemplate.update("INSERT INTO efaz_registration VALUES (?,?,?,?,?,?,?,?,?,?,?)", null, email, password, userName, phoneNumber
 //                , companyName, address, website, isSchool, isActive, registration_role);
@@ -63,7 +60,7 @@ public class RegistrationRepo {
             @Override
             public PreparedStatement createPreparedStatement(Connection connection)
                     throws SQLException {
-                PreparedStatement ps = connection.prepareStatement("INSERT INTO efaz_registration VALUES (?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                PreparedStatement ps = connection.prepareStatement("INSERT INTO efaz_registration VALUES (?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, null);
                 ps.setString(2, email);
                 ps.setString(3, password);
@@ -74,6 +71,7 @@ public class RegistrationRepo {
                 ps.setString(8, website);
                 ps.setInt(9, 0);
                 ps.setString(10, registration_role);
+                ps.setTimestamp(11, new Timestamp(registeration_date));
                 return ps;
             }
         }, holder);
@@ -83,7 +81,7 @@ public class RegistrationRepo {
         return jdbcTemplate.queryForObject("SELECT * From efaz_registration WHERE registration_id=?", new Object[]{id},
                 ((resultSet, i) -> new RegistrationModel(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
-                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10))));
+                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10), resultSet.getTimestamp(11).getTime())));
 
 
 
@@ -98,14 +96,14 @@ public class RegistrationRepo {
         return jdbcTemplate.query("select * from efaz_registration;",
                 (resultSet, i) -> new RegistrationModel(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
-                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10)));
+                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10) , resultSet.getTimestamp(11).getTime()));
     }
 
     public RegistrationModel getUser(int id) {
         return jdbcTemplate.queryForObject("SELECT * From efaz_registration WHERE registration_id=?", new Object[]{id},
                 ((resultSet, i) -> new RegistrationModel(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
-                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10))));
+                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10), resultSet.getTimestamp(11).getTime())));
     }
 
     public int updateUser(int id, String email, String password, String userName, String phoneNumber, String companyName
@@ -133,7 +131,7 @@ public class RegistrationRepo {
         return jdbcTemplate.query("SELECT * FROM efaz_registration WHERE registration_isActive=0;",
                 (resultSet, i) -> new RegistrationModel(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
-                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10)));
+                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10), resultSet.getTimestamp(11).getTime()));
     }
 
     public int activeCompanyAccount(int id) {
@@ -150,7 +148,7 @@ public class RegistrationRepo {
         return jdbcTemplate.query("SELECT * FROM efaz_registration WHERE registration_isActive=1;",
                 (resultSet, i) -> new RegistrationModel(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
-                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10)));
+                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10), resultSet.getTimestamp(11).getTime()));
     }
 
     public int inActiveCompanyAccount(int id) {

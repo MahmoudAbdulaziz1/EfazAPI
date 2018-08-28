@@ -2,13 +2,11 @@ package com.taj.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.taj.model.TakatafSchoolSeeTenderModel;
 import com.taj.model.TakatafSinfleSchoolRequestDTO;
+import com.taj.model.TakatafSinfleSchoolRequestDTO2;
 import com.taj.model.TakatafTenderRequestModel;
-import com.taj.repository.TakatafSchoolSeeTenderRepo;
 import com.taj.repository.TakatafTenderRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,9 +27,9 @@ public class TakatafTenderRequestController {
     ObjectMapper mapper;
 
     @PostMapping("/add")
-    public ObjectNode addTenderRequest(@Valid @RequestBody TakatafTenderRequestModel model, Errors errors){
+    public ObjectNode addTenderRequest(@Valid @RequestBody TakatafTenderRequestModel model, Errors errors) {
 
-        if (errors.hasErrors()){
+        if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
@@ -39,7 +37,7 @@ public class TakatafTenderRequestController {
             return objectNode;
         }
         int res = repo.add$Request(model.getRequest_school_id(), model.getRequest_tender_id(), model.getIs_aproved(), model.getDate(), model.getCategory());
-        if (res == 1){
+        if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
             //objectNode.put("request_id", model.getRequest_id());
             objectNode.put("request_school_id", model.getRequest_school_id());
@@ -48,16 +46,22 @@ public class TakatafTenderRequestController {
             objectNode.put("date", model.getDate());
 
             return objectNode;
-        }else {
+        } else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "not success");
 
             return objectNode;
         }
     }
+
     @GetMapping("/")
-    public List<TakatafSinfleSchoolRequestDTO> getAllRequestsWithNAme(){
+    public List<TakatafSinfleSchoolRequestDTO> getAllRequestsWithNAme() {
         return repo.getAllRequestsWithNAme();
+    }
+
+    @GetMapping("/{id}")
+    public List<TakatafSinfleSchoolRequestDTO> getAllRequestsWithNameById(@PathVariable int id) {
+        return repo.getAllRequestsWithNameByTender(id);
     }
 
 //    @GetMapping("/getAll")

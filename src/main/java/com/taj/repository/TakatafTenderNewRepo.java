@@ -75,7 +75,7 @@ public class TakatafTenderNewRepo {
                 " efaz_company.tkatf_tender_catgory_request AS ten ON t.tender_id = ten.t_tender_id " +
                 "LEFT JOIN " +
                 " efaz_company.takatf_request_tender AS req ON t.tender_id = req.request_tender_id) " +
-                "GROUP BY " +
+                " GROUP BY " +
                 " t.tender_id;";
         return jdbcTemplate.query(sql,
                 (resultSet, i) -> new com.taj.model.TakatafMyTenderPageDTO(resultSet.getInt(1),

@@ -13,6 +13,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -75,7 +76,7 @@ public class RegistrationController {
                     registrationModel.getRegisteration_username(), registrationModel.getRegisteration_phone_number(),
                     registrationModel.getRegistration_organization_name(), registrationModel.getRegistration_address_desc(),
                     registrationModel.getRegistration_website_url(),
-                    registrationModel.getRegistration_isActive(), registrationModel.getRegistration_role());
+                    registrationModel.getRegistration_isActive(), registrationModel.getRegistration_role(), new Timestamp(System.currentTimeMillis()).getTime());
             if (model != null) {
                 ObjectNode objectNode = mapper.createObjectNode();
                 objectNode.put("states", 201);
@@ -88,6 +89,7 @@ public class RegistrationController {
                 objectNode.put("registration_website_url", registrationModel.getRegistration_website_url());
                 objectNode.put("registration_isActive", registrationModel.getRegistration_isActive());
                 objectNode.put("registration_role", registrationModel.getRegistration_role());
+                objectNode.put("registration_date", new Timestamp(System.currentTimeMillis()).getTime());
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);
             } else {
                 ObjectNode objectNode = mapper.createObjectNode();

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.RequstResponsePOJO;
 import com.taj.model.SchoolRequestNewDto;
 import com.taj.model.SchoolRequestsDTO;
+import com.taj.model.getSchoolCustomRequestById;
 import com.taj.repository.SchoolRequestNewRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -84,6 +85,12 @@ public class SchoolRequestNewController {
     //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     public List<SchoolRequestNewDto> getSchoolRequestsBySchool(@PathVariable int id) {
         return repo.getRequestsBySchoolID(id);
+    }
+
+    @GetMapping("/request/school/{id}")
+    public List<getSchoolCustomRequestById> getRequestOfSchoolByID(@PathVariable int id) {
+        return repo.getRequestOfSchoolByID(id);
+
     }
 
     @GetMapping("/cat/{id}")

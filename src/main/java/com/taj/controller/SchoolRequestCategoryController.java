@@ -3,6 +3,7 @@ package com.taj.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.SchoolRequestCategoryModel;
+import com.taj.model.schoolCategoriesToWEBSITE;
 import com.taj.repository.SchoolRequestCategoryRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,7 +38,10 @@ public class SchoolRequestCategoryController {
     public List<SchoolRequestCategoryModel> getCategories() {
         return repo.getSchoolRequestCategories();
     }
-
+    @GetMapping("/getCat")
+    public List<schoolCategoriesToWEBSITE> getSchoolRequestCategoriesForWeb() {
+        return  repo.getSchoolRequestCategoriesForWeb();
+    }
     /**
      * @param id
      * @return category by id

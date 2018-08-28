@@ -52,10 +52,12 @@ public class RegistrationModel {
     @Size(max = 450, min = 1, message = "role should have at least 1 characters")
     private String registration_role;//for confirmation
 
+    private long registeration_date;
+
 
     public RegistrationModel(int registration_id, String registeration_email, String registeration_password, String registeration_username,
                              String registeration_phone_number, String registration_organization_name, String registration_address_desc, String registration_website_url,
-                             int registration_isActive, String registration_role) {
+                             int registration_isActive, String registration_role, long registeration_date) {
 
         this.registration_id = registration_id;
         this.registeration_email = registeration_email;
@@ -67,12 +69,13 @@ public class RegistrationModel {
         this.registration_website_url = registration_website_url;
         this.registration_isActive = registration_isActive;
         this.registration_role = registration_role;
+        this.registeration_date = registeration_date;
     }
 
     public RegistrationModel(String registeration_email, String registeration_password, String registeration_username,
                              String registeration_phone_number, String registration_organization_name,
                              String registration_address_desc, String registration_website_url,
-                             int registration_isActive, String registration_role) {
+                             int registration_isActive, String registration_role, long registeration_date) {
         this.registeration_email = registeration_email;
         this.registeration_password = registeration_password;
         this.registeration_username = registeration_username;
@@ -82,9 +85,18 @@ public class RegistrationModel {
         this.registration_website_url = registration_website_url;
         this.registration_isActive = registration_isActive;
         this.registration_role = registration_role;
+        this.registeration_date = registeration_date;
     }
 
     public RegistrationModel() {
+    }
+
+    public long getRegisteration_date() {
+        return registeration_date;
+    }
+
+    public void setRegisteration_date(long registeration_date) {
+        this.registeration_date = registeration_date;
     }
 
     public int getRegistration_id() {
