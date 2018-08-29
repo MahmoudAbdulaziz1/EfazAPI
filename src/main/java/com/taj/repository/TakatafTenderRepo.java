@@ -105,4 +105,9 @@ public class TakatafTenderRepo {
     }
 
 
+    public int deleteTenderRequest(int id) {
+        return jdbcTemplate.update("DELETE FROM efaz_company.tkatf_tender_catgory_request WHERE id=?", id);
+    }
+
+
 }

@@ -117,6 +117,7 @@ public class SchoolRequestNewRepo {
                 "                request_id, request_title, request_explaination, request_display_date, " +
                 "                    request_expired_date, school_id, " +
                 "                    request_category_name,  " +
+               // " req.responsed_company_id, " +
                 "                    count( responsed_request_id) AS response_count, company_name, company_logo_image, company_category_id" +
                 "                 ,responsed_cost, response_date " +
                 "                 FROM efaz_school_tender AS tender INNER JOIN " +
@@ -127,7 +128,8 @@ public class SchoolRequestNewRepo {
                 "                                        ON tender.request_id = req.responsed_request_id " +
                 "                                        Left JOIN efaz_company.efaz_company_profile AS p ON req.responsed_company_id = p.company_id " +
                 "                                       WHERE  tender.school_id=?  " +
-                "                  GROUP BY tender.request_id;";
+                "                  GROUP BY request_id,request_title, request_explaination, request_display_date,request_expired_date, school_id, " +
+                " request_category_name,company_name, company_logo_image, company_category_id,responsed_cost, response_date;";
 
 
         return jdbcTemplate.query(sql,
@@ -140,25 +142,49 @@ public class SchoolRequestNewRepo {
 
 
         String sql = "SELECT  " +
-                "request_id, request_title, request_explaination, request_display_date, " +
+                "                request_id, request_title, request_explaination, request_display_date, " +
                 "request_expired_date, school_id, " +
-                "request_category_name,  " +
-                "count( responsed_request_id) AS response_count, company_name, company_logo_image, category_name " +
-                " ,responsed_cost, response_date  " +
-                " FROM efaz_school_tender AS tender  " +
-                " LEFT JOIN efaz_company.efaz_company_response_school_request AS req " +
-                "ON tender.request_id = req.responsed_request_id " +
-                "Left JOIN efaz_company.efaz_company_profile as cp ON req.responsed_company_id = cp.company_id " +
-                "INNER JOIN " +
-                "efaz_company.efaz_school_request_category AS cat " +
-                " ON " +
-                " tender.requests_category_id = cat.request_category_id " +
-                "  INNER JOIN " +
-                "efaz_company.efaz_company_category AS cc " +
-                " ON " +
-                " cp.company_category_id = cc.category_id " +
-                "WHERE  tender.request_id=? " +
-                "  GROUP BY request_id;";
+                "                request_category_name,  " +
+                "                count( responsed_request_id) AS response_count, ifnull(company_name,0) as company_name, ifnull(company_logo_image,0)as company_name," +
+                "                ifnull(category_name,0) as category_name" +
+                "                 ,ifnull(responsed_cost,0)as responsed_cost, ifnull(response_date,0) as  response_date" +
+                "                 FROM efaz_school_tender AS tender  " +
+                "                 LEFT JOIN efaz_company.efaz_company_response_school_request AS req " +
+                "                ON tender.request_id = req.responsed_request_id " +
+                "                Left JOIN efaz_company.efaz_company_profile as cp ON req.responsed_company_id = cp.company_id " +
+                "                Left JOIN " +
+                "                efaz_company.efaz_school_request_category AS cat" +
+                "                 ON " +
+                "                 tender.requests_category_id = cat.request_category_id " +
+                "                  Left JOIN " +
+                "                efaz_company.efaz_company_category AS cc \n" +
+                "                 ON " +
+                "                 cp.company_category_id = cc.category_id " +
+                "                WHERE  request_id=?" +
+                "                  GROUP BY request_id, request_title, request_explaination, request_display_date,request_expired_date, school_id," +
+                "                 request_category_name,company_name, company_logo_image, category_name,responsed_cost, response_date;";
+
+        String sql1 = "SELECT  " +
+                "                request_id, request_title, request_explaination, request_display_date, " +
+                " request_expired_date, school_id, " +
+                "                request_category_name,  " +
+                "                count( responsed_request_id) AS response_count, company_name, company_logo_image, category_name " +
+                "                 ,responsed_cost, response_date  " +
+                "                 FROM efaz_school_tender AS tender  " +
+                "                 LEFT JOIN efaz_company.efaz_company_response_school_request AS req " +
+                "                ON tender.request_id = req.responsed_request_id " +
+                "                Left JOIN efaz_company.efaz_company_profile as cp ON req.responsed_company_id = cp.company_id " +
+                "                Left JOIN " +
+                "                efaz_company.efaz_school_request_category AS cat " +
+                "                 ON " +
+                "                 tender.requests_category_id = cat.request_category_id " +
+                "                  Left JOIN " +
+                "                efaz_company.efaz_company_category AS cc " +
+                "                 ON " +
+                "                 cp.company_category_id = cc.category_id " +
+                "                WHERE  request_id=?" +
+                "                  GROUP BY request_id, request_title, request_explaination, request_display_date,request_expired_date, school_id," +
+                "                 request_category_name,company_name, company_logo_image, category_name,responsed_cost, response_date;";
 
 
         return jdbcTemplate.query(sql,

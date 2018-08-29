@@ -1,12 +1,16 @@
 package com.taj.repository;
 
-import com.taj.model.*;
+import com.taj.model.TakatafMyTenderPageDTO;
+import com.taj.model.TakatafTenderPOJO;
+import com.taj.model.TakatfTenderCategoryPOJO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.List;
 
 /**
@@ -22,18 +26,43 @@ public class TakatafTenderNewRepo {
                          long tender_company_display_date, long tender_company_expired_date, List<TakatfTenderCategoryPOJO> cats) {
 
 
-        int a = jdbcTemplate.update("INSERT INTO takatf_tender VALUES (?,?,?,?,?,?,?,?,?,?)", null, tender_logo, tender_title, tender_explain,
-                new Timestamp(tender_display_date), new Timestamp(tender_expire_date), 0, 1, new Timestamp(tender_company_display_date),
-                new Timestamp(tender_company_expired_date));
-        for (int i=0 ; i< cats.size(); i++){
+        KeyHolder key = new GeneratedKeyHolder();
+        jdbcTemplate.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                final PreparedStatement ps = connection.prepareStatement("INSERT INTO takatf_tender VALUES (?,?,?,?,?,?,?,?,?,?)",
+                        Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, null);
+                ps.setBytes(2, tender_logo);
+                ps.setString(3, tender_title);
+                ps.setString(4, tender_explain);/////////
+                ps.setTimestamp(5, new Timestamp(tender_display_date));
+                ps.setTimestamp(6, new Timestamp(tender_expire_date));
+                ps.setInt(7, 0);
+                ps.setInt(8, 1);
+                ps.setTimestamp(9, new Timestamp(tender_company_display_date));
+                ps.setTimestamp(10, new Timestamp(tender_company_expired_date));
+                return ps;
+            }
+
+        }, key);
+        //int log_id = jdbcTemplate.update("INSERT INTO efaz_login VALUES (?,?,?,?,?)", null, user_email,
+        //        encodedPassword, is_active, login_type);
+        int tend_id = key.getKey().intValue();
+
+
+//        int a = jdbcTemplate.update("INSERT INTO takatf_tender VALUES (?,?,?,?,?,?,?,?,?,?)", null, tender_logo, tender_title, tender_explain,
+//                new Timestamp(tender_display_date), new Timestamp(tender_expire_date), 0, 1, new Timestamp(tender_company_display_date),
+//                new Timestamp(tender_company_expired_date));
+        for (int i = 0; i < cats.size(); i++) {
             int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
                     Integer.class, "%" + cats.get(i).getCategory_name().trim() + "%");
 
-            jdbcTemplate.update("INSERT INTO efaz_company.tkatf_tender_catgory_request VALUES  (?,?,?)", null, 3, categorys);
+            jdbcTemplate.update("INSERT INTO efaz_company.tkatf_tender_catgory_request VALUES  (?,?,?)", null, tend_id, categorys);
         }
 
 
-        return  a;
+        return tend_id;
     }
 
 
@@ -66,7 +95,7 @@ public class TakatafTenderNewRepo {
 
     public List<TakatafMyTenderPageDTO> getAdminTenders() {
         String sql = "SELECT " +
-                " tender_id, tender_title, tender_explain, tender_display_date, tender_expire_date , " +
+                " tender_id, tender_title, tender_explain, tender_display_date, tender_expire_date , tender_company_display_date, tender_company_expired_date," +
                 " count(DISTINCT ten.t_category_id) AS cat_count," +
                 " count(distinct request_id) AS response_count " +
                 "FROM " +
@@ -80,8 +109,9 @@ public class TakatafTenderNewRepo {
         return jdbcTemplate.query(sql,
                 (resultSet, i) -> new com.taj.model.TakatafMyTenderPageDTO(resultSet.getInt(1),
                         resultSet.getString(2), resultSet.getString(3),
-                        resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(),
-                        resultSet.getInt(6), resultSet.getInt(7)));
+                        resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(), resultSet.getTimestamp(6).getTime()
+                        , resultSet.getTimestamp(7).getTime(),
+                        resultSet.getInt(8), resultSet.getInt(9)));
     }
 
 //    public TakatafTenderWithCompanies getSingleTenderDetails(int id) {

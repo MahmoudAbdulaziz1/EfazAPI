@@ -37,11 +37,11 @@ public class TakatafTenderNewController {
             objectNode.put("details", errors.getAllErrors().toString());
             return objectNode;
         }
-        int res = repo.addTender(model.getTender_logo(), model.getTender_title(), model.getTender_explain(),
+        int res = repo.addTender( model.getTender_logo(), model.getTender_title(), model.getTender_explain(),
                 model.getTender_display_date(), model.getTender_expire_date(), model.getTender_company_display_date(),
                 model.getTender_company_expired_date(), model.getCats());
 
-        if (res == 1) {
+        if (res >0) {
             ObjectNode objectNode = mapper.createObjectNode();
             //objectNode.put("tender_id", model.getTender_id());
             objectNode.put("tender_logo", model.getTender_logo());

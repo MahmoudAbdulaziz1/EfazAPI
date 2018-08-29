@@ -16,10 +16,9 @@ import java.util.List;
 /**
  * Created by User on 7/5/2018.
  */
-@RequestMapping("/evvaz/takataf/tender")
+@RequestMapping("/takataf/tender")
 @RestController
 @CrossOrigin
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class TakatafTenderController {
 
     @Autowired
@@ -161,10 +160,25 @@ public class TakatafTenderController {
         }
     }
 
-    @PutMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
+    @DeleteMapping("/delete/{id}")
     public ObjectNode deleteTender(@PathVariable int id){
         int res = repo.deleteTender(id);
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "success");
+
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
+    }
+
+    @DeleteMapping("/delete/category/{id}")
+    public ObjectNode deleteTenderRequest(@PathVariable int id){
+        int res = repo.deleteTenderRequest(id);
         if (res == 1){
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "success");

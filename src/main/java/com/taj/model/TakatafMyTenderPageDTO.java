@@ -21,6 +21,10 @@ public class TakatafMyTenderPageDTO {
     @Size(max = 450, min = 1, message = "explain should have at least 1 characters")
     private String tender_explain;
 
+    private @NotNull long tender_company_display_date;
+    @NotNull
+    private long tender_company_expired_date;
+
     private @NotNull long tender_display_date;
     @NotNull
     private long tender_expire_date;
@@ -31,7 +35,8 @@ public class TakatafMyTenderPageDTO {
     public TakatafMyTenderPageDTO(int tender_id,
                                   @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String tender_title,
                                   @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String tender_explain,
-                                  @NotNull long tender_display_date, @NotNull long tender_expire_date, int response_count, int cat_num) {
+                                  @NotNull long tender_display_date, @NotNull long tender_expire_date, long tender_company_display_date, long tender_company_expired_date,
+                                  int response_count, int cat_num) {
         this.tender_id = tender_id;
         this.tender_title = tender_title;
         this.tender_explain = tender_explain;
@@ -39,12 +44,15 @@ public class TakatafMyTenderPageDTO {
         this.tender_expire_date = tender_expire_date;
         this.response_count = response_count;
         this.cat_num = cat_num;
+        this.tender_company_display_date = tender_company_display_date;
+        this.tender_company_expired_date = tender_company_expired_date;
     }
 
     public TakatafMyTenderPageDTO(
-                                  @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String tender_title,
-                                  @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String tender_explain,
-                                  @NotNull long tender_display_date, @NotNull long tender_expire_date, int response_count, int cat_num) {
+            @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String tender_title,
+            @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String tender_explain,
+            @NotNull long tender_display_date, @NotNull long tender_expire_date, long tender_company_display_date, long tender_company_expired_date,
+            int response_count, int cat_num) {
 
         this.tender_title = tender_title;
         this.tender_explain = tender_explain;
@@ -52,6 +60,8 @@ public class TakatafMyTenderPageDTO {
         this.tender_expire_date = tender_expire_date;
         this.response_count = response_count;
         this.cat_num = cat_num;
+        this.tender_company_display_date = tender_company_display_date;
+        this.tender_company_expired_date = tender_company_expired_date;
     }
 
     public TakatafMyTenderPageDTO() {
@@ -64,7 +74,6 @@ public class TakatafMyTenderPageDTO {
     public void setTender_id(int tender_id) {
         this.tender_id = tender_id;
     }
-
 
 
     public String getTender_title() {
@@ -113,5 +122,21 @@ public class TakatafMyTenderPageDTO {
 
     public void setCat_num(int cat_num) {
         this.cat_num = cat_num;
+    }
+
+    public long getTender_company_display_date() {
+        return tender_company_display_date;
+    }
+
+    public void setTender_company_display_date(long tender_company_display_date) {
+        this.tender_company_display_date = tender_company_display_date;
+    }
+
+    public long getTender_company_expired_date() {
+        return tender_company_expired_date;
+    }
+
+    public void setTender_company_expired_date(long tender_company_expired_date) {
+        this.tender_company_expired_date = tender_company_expired_date;
     }
 }

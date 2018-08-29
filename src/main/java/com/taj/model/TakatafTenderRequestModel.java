@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class TakatafTenderRequestModel {
 
-    @Min(1)
+
     private int request_id;
     @Min(1)
     private int request_school_id;

@@ -100,6 +100,7 @@ public class SchoolRequestRepo {
     }
 
     public List<SchoolRequestsModel> filterByExplain(String explain) {
+
         String sql = "SELECT * FROM efaz_school_tender WHERE  request_explaination LIKE ?;";
         return jdbcTemplate.query(sql, new String[]{"%" + explain + "%"}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getInt(3),
                 resultSet.getString(4), resultSet.getString(5), resultSet.getLong(6), resultSet.getLong(7), resultSet.getLong(8),
@@ -108,7 +109,9 @@ public class SchoolRequestRepo {
     }
 
     public List<SchoolRequestsModel> filterByCategory(int cat) {
-        return jdbcTemplate.query("SELECT * FROM efaz_school_tender WHERE  request_category_id=?;",
+//        int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
+//                Integer.class, "%" + cat + "%");
+        return jdbcTemplate.query("SELECT * FROM efaz_school_tender WHERE  requests_category_id=?;",
                 new Object[]{cat}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getInt(3),
                         resultSet.getString(4), resultSet.getString(5), resultSet.getLong(6), resultSet.getLong(7), resultSet.getLong(8),
                         resultSet.getInt(9), resultSet.getInt(10), resultSet.getLong(11), resultSet.getInt(12), resultSet.getInt(13),

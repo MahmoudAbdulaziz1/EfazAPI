@@ -133,7 +133,7 @@ public class SchoolRequestController {
         }
     }
 
-    @PutMapping("/deleteRequest/{id}")
+    @DeleteMapping("/delete/{id}")
     //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     public ObjectNode deleteSchoolRequest(@PathVariable int id) {
         int res = repo.deleteSchoolRequest(id);

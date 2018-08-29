@@ -2,15 +2,14 @@ package com.taj.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.taj.model.TakatafSinfleSchoolRequestDTO;
-import com.taj.model.TakatafSinfleSchoolRequestDTO2;
-import com.taj.model.TakatafTenderRequestModel;
+import com.taj.model.*;
 import com.taj.repository.TakatafTenderRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -60,8 +59,57 @@ public class TakatafTenderRequestController {
     }
 
     @GetMapping("/{id}")
-    public List<TakatafSinfleSchoolRequestDTO> getAllRequestsWithNameById(@PathVariable int id) {
-        return repo.getAllRequestsWithNameByTender(id);
+    public GetSingCollectiveTenderById getAllRequestsWithNameById(@PathVariable int id) {
+        List<TakatafSinfleSchoolRequestDTO> tenderList = repo.getAllRequestsWithNameByTender(id);
+
+        GetSingleCollectiveByIdPartOneDTO data = new GetSingleCollectiveByIdPartOneDTO(tenderList.get(0).getTender_id(), tenderList.get(0).getTender_title(),
+                tenderList.get(0).getTender_explain(), tenderList.get(0).getTender_display_date(),
+                tenderList.get(0).getTender_expire_date(), tenderList.get(0).getResponse_count());
+        List<GetSingleCollectiveByIdPartTwoDTO> schools = new ArrayList<>();
+        List<TenderCollectiveByIdPart3DTO> categories = new ArrayList<>();
+        if (tenderList.get(0).getResponse_count() > 0) {
+
+
+            TenderCollectiveByIdPart3DTO category = new TenderCollectiveByIdPart3DTO(tenderList.get(0).getId(),
+                    tenderList.get(0).getCategory_name(), tenderList.get(0).getCount());
+            categories.add(category);
+            int i=1;
+            while (i<tenderList.size()){
+                if (tenderList.get(i).getTender_id() == tenderList.get(i-1).getTender_id()){
+                    TenderCollectiveByIdPart3DTO categorys = new TenderCollectiveByIdPart3DTO(tenderList.get(i).getId(),
+                            tenderList.get(i).getCategory_name(), tenderList.get(i).getCount());
+                }else {
+                    GetSingleCollectiveByIdPartTwoDTO school = new GetSingleCollectiveByIdPartTwoDTO
+                            (tenderList.get(i).getSchool_name(), tenderList.get(i).getSchool_logo_image(), categories);
+                }
+                i++;
+            }
+
+
+
+
+        }
+
+
+        GetSingCollectiveTenderById tener = new GetSingCollectiveTenderById(data, schools);
+        return tener;
+    }
+
+    @GetMapping("/get/{id}")
+    public GetTakatafTenderForScoolRequestDTO getRequestWithNameById(@PathVariable int id) {
+        List<TakatafSingleSchoolRequestByIDDTO> tenderList = repo.getAllRequestsWithNameByIdzs(id);
+
+        GetSingleCollectiveByIdPartOneDTO data = new GetSingleCollectiveByIdPartOneDTO(tenderList.get(0).getTender_id(), tenderList.get(0).getTender_title(),
+                tenderList.get(0).getTender_explain(), tenderList.get(0).getTender_display_date(),
+                tenderList.get(0).getTender_expire_date(), tenderList.get(0).getResponse_count());
+        List<GetGetTakatafTenderSchollPrt2DTO> categories = new ArrayList<>();
+
+        for (TakatafSingleSchoolRequestByIDDTO obj : tenderList) {
+            GetGetTakatafTenderSchollPrt2DTO category = new GetGetTakatafTenderSchollPrt2DTO(obj.getId(), obj.getCategory_name());
+            categories.add(category);
+        }
+        GetTakatafTenderForScoolRequestDTO tener = new GetTakatafTenderForScoolRequestDTO(data, categories);
+        return tener;
     }
 
 //    @GetMapping("/getAll")

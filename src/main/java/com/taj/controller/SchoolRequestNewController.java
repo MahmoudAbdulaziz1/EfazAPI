@@ -3,10 +3,7 @@ package com.taj.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.taj.model.RequstResponsePOJO;
-import com.taj.model.SchoolRequestNewDto;
-import com.taj.model.SchoolRequestsDTO;
-import com.taj.model.getSchoolCustomRequestById;
+import com.taj.model.*;
 import com.taj.repository.SchoolRequestNewRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +12,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -88,8 +86,26 @@ public class SchoolRequestNewController {
     }
 
     @GetMapping("/request/school/{id}")
-    public List<getSchoolCustomRequestById> getRequestOfSchoolByID(@PathVariable int id) {
-        return repo.getRequestOfSchoolByID(id);
+    public GetCollectiveTenders getRequestOfSchoolByID(@PathVariable int id) {
+        List<getSchoolCustomRequestById> obj =  repo.getRequestOfSchoolByID(id);
+        GetCollectiveTenderPartOneDTO tender = new GetCollectiveTenderPartOneDTO(obj.get(0).getRequest_id(),obj.get(0).getRequest_title(), obj.get(0).getRequest_explaination(),
+                obj.get(0).getRequest_display_date(), obj.get(0).getRequest_expired_date(), obj.get(0).getSchool_id(), obj.get(0).getResponse_count());
+
+
+        List<GetCollectiveTenderPartYTwoDTO> companies = new ArrayList<>();
+        if (obj.get(0).getResponse_count()>0){
+            for (getSchoolCustomRequestById one:obj) {
+                //if( one.getRequest_category_name().equals(null) )
+                GetCollectiveTenderPartYTwoDTO part2 = new GetCollectiveTenderPartYTwoDTO(one.getRequest_category_name()+"", one.getCompany_name()+"",
+                        one.getCompany_logo_image(), one.getCategory_name()+"", one.getResponsed_cost(), one.getResponse_date());
+                companies.add(part2);
+            }
+        }
+
+
+        GetCollectiveTenders tenders = new GetCollectiveTenders(tender, companies);
+        return  tenders;
+
 
     }
 
