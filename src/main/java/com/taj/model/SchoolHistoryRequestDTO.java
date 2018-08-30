@@ -1,29 +1,25 @@
 package com.taj.model;
 
 /**
- * Created by User on 8/8/2018.
+ * Created by User on 8/30/2018.
  */
-public class SchoolRequestHistoryDto {
+public class SchoolHistoryRequestDTO {
 
     private int request_id;
     private String request_title;
     private int request_count;
     private long request_date;
     private long response_date;
-    private double responsed_cost;
-    private int responsed_company_id;
-    private int response_id;
 
-    public SchoolRequestHistoryDto(int request_id, String request_title, int request_count, long request_date,
-                                   long response_date, double responsed_cost, int responsed_company_id, int response_id) {
+    public SchoolHistoryRequestDTO(int request_id, String request_title, int request_count, long request_date, long response_date) {
         this.request_id = request_id;
         this.request_title = request_title;
         this.request_count = request_count;
         this.request_date = request_date;
         this.response_date = response_date;
-        this.responsed_cost = responsed_cost;
-        this.responsed_company_id = responsed_company_id;
-        this.response_id = response_id;
+    }
+
+    public SchoolHistoryRequestDTO() {
     }
 
     public int getRequest_id() {
@@ -64,29 +60,5 @@ public class SchoolRequestHistoryDto {
 
     public void setResponse_date(long response_date) {
         this.response_date = response_date;
-    }
-
-    public double getResponsed_cost() {
-        return responsed_cost;
-    }
-
-    public void setResponsed_cost(double responsed_cost) {
-        this.responsed_cost = responsed_cost;
-    }
-
-    public int getResponsed_company_id() {
-        return responsed_company_id;
-    }
-
-    public void setResponsed_company_id(int responsed_company_id) {
-        this.responsed_company_id = responsed_company_id;
-    }
-
-    public int getResponse_id() {
-        return response_id;
-    }
-
-    public void setResponse_id(int response_id) {
-        this.response_id = response_id;
     }
 }

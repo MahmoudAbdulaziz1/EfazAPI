@@ -42,6 +42,11 @@ public class SchoolRequestCategoryController {
     public List<schoolCategoriesToWEBSITE> getSchoolRequestCategoriesForWeb() {
         return  repo.getSchoolRequestCategoriesForWeb();
     }
+
+    @GetMapping("/getCat/{id}")
+    public List<schoolCategoriesToWEBSITE> getSchoolRequestCategoriesForWebByID(@PathVariable int id) {
+        return  repo.getSchoolRequestCategoriesForWebById(id);
+    }
     /**
      * @param id
      * @return category by id

@@ -21,7 +21,6 @@ import java.util.List;
 @RequestMapping("/response/school/request")
 @RestController
 @CrossOrigin
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class CompanyResponseSchoolRequestController {
 
     @Autowired
@@ -154,7 +153,7 @@ public class CompanyResponseSchoolRequestController {
         }
     }
 
-    @PutMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ObjectNode deleteCompanyResponseSchoolRequest(@PathVariable int id) {
         int res =  repo.deleteResponseSchoolRequest(id);
 

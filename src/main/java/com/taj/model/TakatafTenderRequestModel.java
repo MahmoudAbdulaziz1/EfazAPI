@@ -1,6 +1,9 @@
 package com.taj.model;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -17,6 +20,8 @@ public class TakatafTenderRequestModel {
     @Min(0)
     private int is_aproved;
     private long date;
+    @Valid
+    @NotNull
     private List<Takataf_schoolApplayCollectiveTender> category;
 
     public TakatafTenderRequestModel() {

@@ -34,11 +34,14 @@ public class getSchoolCustomRequestById {
     private String category_name;
     private double responsed_cost;
     private long response_date;
+    private int response_id;
+    private int responsed_company_id;
 
     public getSchoolCustomRequestById(int request_id,
                                       @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String request_title,
                                       @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String request_explaination, @NotNull long request_display_date, @NotNull long request_expired_date, int school_id, @NotNull String request_category_name,
-                                      int response_count, String company_name, byte[] company_logo_image, String category_name, double responsed_cost, long response_date) {
+                                      int response_count, String company_name, byte[] company_logo_image, String category_name, double responsed_cost,
+                                      long response_date, int response_id, int responsed_company_id) {
         this.request_id = request_id;
         this.request_title = request_title;
         this.request_explaination = request_explaination;
@@ -52,12 +55,14 @@ public class getSchoolCustomRequestById {
         this.category_name = category_name;
         this.responsed_cost = responsed_cost;
         this.response_date = response_date;
+        this.response_id = response_id;
+        this.responsed_company_id = responsed_company_id;
     }
 
     public getSchoolCustomRequestById(@NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String request_title,
                                       @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String request_explaination, @NotNull long request_display_date, @NotNull long request_expired_date, int school_id,
                                       @NotNull String request_category_name, int response_count, String company_name, byte[] company_logo_image, String category_name,
-                                      double responsed_cost, long response_date) {
+                                      double responsed_cost, long response_date, int response_id, int responsed_company_id) {
         this.request_title = request_title;
         this.request_explaination = request_explaination;
         this.request_display_date = request_display_date;
@@ -70,6 +75,8 @@ public class getSchoolCustomRequestById {
         this.category_name = category_name;
         this.responsed_cost = responsed_cost;
         this.response_date = response_date;
+        this.response_id = response_id;
+        this.responsed_company_id = responsed_company_id;
     }
 
     public getSchoolCustomRequestById() {
@@ -177,5 +184,21 @@ public class getSchoolCustomRequestById {
 
     public void setResponse_date(long response_date) {
         this.response_date = response_date;
+    }
+
+    public int getResponse_id() {
+        return response_id;
+    }
+
+    public void setResponse_id(int response_id) {
+        this.response_id = response_id;
+    }
+
+    public int getResponsed_company_id() {
+        return responsed_company_id;
+    }
+
+    public void setResponsed_company_id(int responsed_company_id) {
+        this.responsed_company_id = responsed_company_id;
     }
 }

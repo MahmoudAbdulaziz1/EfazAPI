@@ -7,7 +7,7 @@ import javax.validation.constraints.Min;
  */
 public class CompanySeeRequestModel {
 
-    @Min(1)
+
     private int seen_id;
     @Min(1)
     private int request_id;

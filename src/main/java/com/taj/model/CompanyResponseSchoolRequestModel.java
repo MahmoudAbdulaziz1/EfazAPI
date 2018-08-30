@@ -7,17 +7,13 @@ import javax.validation.constraints.Min;
  */
 public class CompanyResponseSchoolRequestModel {
 
-    @Min(1)
     private int response_id;
     @Min(1)
     private int  responsed_company_id;
     @Min(1)
     private int  responsed_request_id;
-    @Min(1)
     private int  responsed_from;
-    @Min(1)
     private int  responsed_to;
-    @Min(0)
     private int  is_aproved;
     @Min(1)
     private double responsed_cost;

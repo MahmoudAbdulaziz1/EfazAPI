@@ -6,7 +6,6 @@ import com.taj.model.CompanySeeRequestModel;
 import com.taj.repository.CompanySeeRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,10 +15,9 @@ import java.util.List;
 /**
  * Created by User on 7/3/2018.
  */
-@RequestMapping("/evvaz/seen")
+@RequestMapping("/seen")
 @RestController
 @CrossOrigin
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class CompanySeeRequestController {
 
 
@@ -28,31 +26,55 @@ public class CompanySeeRequestController {
     @Autowired
     ObjectMapper mapper;
 
-    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PostMapping("/add")
     public ObjectNode addCompanySeeRequest(@Valid @RequestBody CompanySeeRequestModel model, Errors errors) {
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
-            objectNode.put("details", errors.getAllErrors().toString());
             return objectNode;
         }
+        if (repo.isExist(model.getRequest_company_id())) {
 
-        int res = repo.addCompanySeeRequest(model.getRequest_id(), model.getRequest_company_id());
-
-        if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("request_id", model.getRequest_id());
-            objectNode.put("request_company_id", model.getRequest_company_id());
-
+            objectNode.put("state", 400);
+            objectNode.put("message", "Already is Exist");
             return objectNode;
+
         } else {
-            ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "not success");
+            if (repo.isExistCompany(model.getRequest_company_id())) {
+                if (repo.isExistRequest(model.getRequest_id())) {
+                    int res = repo.addCompanySeeRequest(model.getRequest_id(), model.getRequest_company_id());
 
-            return objectNode;
+                    if (res == 1) {
+                        ObjectNode objectNode = mapper.createObjectNode();
+                        objectNode.put("request_id", model.getRequest_id());
+                        objectNode.put("request_company_id", model.getRequest_company_id());
+
+                        return objectNode;
+                    } else {
+                        ObjectNode objectNode = mapper.createObjectNode();
+                        objectNode.put("value", "not success");
+
+                        return objectNode;
+                    }
+                } else {
+                    ObjectNode objectNode = mapper.createObjectNode();
+                    objectNode.put("state", 400);
+                    objectNode.put("message", "request id not found");
+                    return objectNode;
+                }
+            } else {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("state", 400);
+                objectNode.put("message", "company id not found");
+                return objectNode;
+            }
+
+
         }
+
+
     }
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
@@ -103,19 +125,19 @@ public class CompanySeeRequestController {
 
         int res = repo.updateCompanySeeRequest(model.getSeen_id(), model.getRequest_company_id(), model.getRequest_id());
 
-        if (res == 0){
+        if (res == 0) {
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "not success"+res);
+            objectNode.put("value", "not success" + res);
 
             return objectNode;
 
-        }else {
-        ObjectNode objectNode = mapper.createObjectNode();
-        objectNode.put("seen_id", model.getSeen_id());
-        objectNode.put("request_id", model.getRequest_id());
-        objectNode.put("request_company_id", model.getRequest_company_id());
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("seen_id", model.getSeen_id());
+            objectNode.put("request_id", model.getRequest_id());
+            objectNode.put("request_company_id", model.getRequest_company_id());
 
-        return objectNode;
+            return objectNode;
         }
 
     }
@@ -136,12 +158,12 @@ public class CompanySeeRequestController {
         }
         int res = repo.deleteCompanySeeRequest(model.getSeen_id());
 
-        if (res == 1){
+        if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "success");
 
             return objectNode;
-        }else {
+        } else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "not success");
 
@@ -149,4 +171,5 @@ public class CompanySeeRequestController {
         }
 
     }
+
 }

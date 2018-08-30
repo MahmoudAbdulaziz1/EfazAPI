@@ -64,7 +64,7 @@ public class SchoolRequestNewController {
 
     @GetMapping("/{id}")
     //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
-    public ResponseEntity<SchoolRequestNewDto> getSchoolSingleRequest(@PathVariable int id) {
+    public ResponseEntity<SchoolRequestNewDtoById> getSchoolSingleRequest(@PathVariable int id) {
         if (repo.isExist(id)) {
             return ResponseEntity.status(HttpStatus.OK).body(repo.getRequestByID(id));
         } else {
@@ -88,8 +88,9 @@ public class SchoolRequestNewController {
     @GetMapping("/request/school/{id}")
     public GetCollectiveTenders getRequestOfSchoolByID(@PathVariable int id) {
         List<getSchoolCustomRequestById> obj =  repo.getRequestOfSchoolByID(id);
-        GetCollectiveTenderPartOneDTO tender = new GetCollectiveTenderPartOneDTO(obj.get(0).getRequest_id(),obj.get(0).getRequest_title(), obj.get(0).getRequest_explaination(),
-                obj.get(0).getRequest_display_date(), obj.get(0).getRequest_expired_date(), obj.get(0).getSchool_id(), obj.get(0).getResponse_count());
+        GetCollectiveTenderPartOneDTO tender = new GetCollectiveTenderPartOneDTO(obj.get(0).getRequest_id(),obj.get(0).getRequest_title(),
+                obj.get(0).getRequest_explaination(), obj.get(0).getRequest_display_date(), obj.get(0).getRequest_expired_date(),
+                obj.get(0).getSchool_id(), obj.get(0).getResponse_count());
 
 
         List<GetCollectiveTenderPartYTwoDTO> companies = new ArrayList<>();
@@ -97,14 +98,21 @@ public class SchoolRequestNewController {
             for (getSchoolCustomRequestById one:obj) {
                 //if( one.getRequest_category_name().equals(null) )
                 GetCollectiveTenderPartYTwoDTO part2 = new GetCollectiveTenderPartYTwoDTO(one.getRequest_category_name()+"", one.getCompany_name()+"",
-                        one.getCompany_logo_image(), one.getCategory_name()+"", one.getResponsed_cost(), one.getResponse_date());
+                        one.getCompany_logo_image(), one.getCategory_name()+"", one.getResponsed_cost(), one.getResponse_date(),
+                        one.getResponse_id(), one.getResponsed_company_id());
                 companies.add(part2);
             }
         }
 
+        if (obj.get(0).getResponse_count()==0){
+            GetCollectiveTenders tenders = new GetCollectiveTenders(tender, null);
+            return  tenders;
+        }else {
+            GetCollectiveTenders tenders = new GetCollectiveTenders(tender, companies);
+            return  tenders;
+        }
 
-        GetCollectiveTenders tenders = new GetCollectiveTenders(tender, companies);
-        return  tenders;
+
 
 
     }

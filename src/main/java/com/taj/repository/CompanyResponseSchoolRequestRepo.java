@@ -22,7 +22,7 @@ public class CompanyResponseSchoolRequestRepo {
     public int addResponseSchoolRequest( int responsed_company_id, int responsed_request_id, int responsed_from, int responsed_to, double responsed_cost, int is_aproved) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         return jdbcTemplate.update("INSERT INTO efaz_company_response_school_request VALUES (?,?,?,?,?,?,?,?)", null, responsed_company_id, responsed_request_id,
-                responsed_from, responsed_to, responsed_cost, is_aproved, timestamp);
+                responsed_from, responsed_to, responsed_cost, 0, timestamp);
     }
 
     public List<CompanyResponseSchoolRequestModel> getResponseSchoolRequest() {

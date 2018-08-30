@@ -3,9 +3,7 @@ package com.taj.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.taj.model.SchoolRequestDto;
-import com.taj.model.SchoolRequestHistoryDto;
-import com.taj.model.SchoolRequestsModel;
+import com.taj.model.*;
 import com.taj.repository.SchoolRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,6 +12,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -177,7 +176,7 @@ public class SchoolRequestController {
 
     @GetMapping("/filterCat/{cat}")
     //@PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
-    public List<SchoolRequestsModel> filterByCategory(@PathVariable int cat) {
+    public List<SchoolRequestsByIdModel> filterByCategory(@PathVariable int cat) {
         return repo.filterByCategory(cat);
     }
 
@@ -197,6 +196,44 @@ public class SchoolRequestController {
     //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     public List<SchoolRequestHistoryDto> getSchoolHistoryRequestBySchoolId(@PathVariable int id) {
         return repo.getHistoryRequestsBySchoolId(id);
+    }
+
+    @GetMapping("/get/histories/{id}")
+    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+    public SchoolHistoryAllDto getSchoolHistoryRequestBySchoolIdMulti(@PathVariable int id) {
+        List<SchoolRequestHistoryDto> dto = repo.getHistoryRequestsBySchoolId(id);
+        SchoolHistoryRequestDTO request = new SchoolHistoryRequestDTO(dto.get(0).getRequest_id(), dto.get(0).getRequest_title(),
+                dto.get(0).getRequest_count(), dto.get(0).getRequest_date(), dto.get(0).getResponse_date());
+        List<SchoolHistoryResponseDTO> response = new ArrayList<>();
+        for (SchoolRequestHistoryDto dtos :dto){
+            SchoolHistoryResponseDTO obj = new SchoolHistoryResponseDTO(dtos.getResponsed_cost(),
+                    dtos.getResponsed_company_id(), dtos.getResponse_id());
+            response.add(obj);
+        }
+        SchoolHistoryAllDto reesult = new SchoolHistoryAllDto(request, response);
+        return  reesult;
+    }
+
+    @GetMapping("/get/order/{id}")
+    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+    public List<SchoolRequestHistoryDto> getSchoolOrderRequestBySchoolId(@PathVariable int id) {
+        return repo.getOrderRequestsBySchoolId(id);
+    }
+
+    @GetMapping("/get/orders/{id}")
+    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+    public SchoolHistoryAllDto getSchoolOrderRequestBySchoolIdMulti(@PathVariable int id) {
+        List<SchoolRequestHistoryDto> dto = repo.getOrderRequestsBySchoolId(id);
+        SchoolHistoryRequestDTO request = new SchoolHistoryRequestDTO(dto.get(0).getRequest_id(), dto.get(0).getRequest_title(),
+                dto.get(0).getRequest_count(), dto.get(0).getRequest_date(), dto.get(0).getResponse_date());
+        List<SchoolHistoryResponseDTO> response = new ArrayList<>();
+        for (SchoolRequestHistoryDto dtos :dto){
+            SchoolHistoryResponseDTO obj = new SchoolHistoryResponseDTO(dtos.getResponsed_cost(),
+                    dtos.getResponsed_company_id(), dtos.getResponse_id());
+            response.add(obj);
+        }
+        SchoolHistoryAllDto reesult = new SchoolHistoryAllDto(request, response);
+        return  reesult;
     }
 
 

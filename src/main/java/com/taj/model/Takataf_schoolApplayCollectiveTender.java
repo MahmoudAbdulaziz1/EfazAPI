@@ -1,19 +1,25 @@
 package com.taj.model;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * Created by User on 8/27/2018.
  */
+@NotNull
 public class Takataf_schoolApplayCollectiveTender {
-
+    @NotNull
     private String cat_name;
+    @Min(1)
     private int count;
 
-    public Takataf_schoolApplayCollectiveTender(String cat_name, int count) {
-        this.cat_name = cat_name;
-        this.count = count;
+    public Takataf_schoolApplayCollectiveTender() {
     }
 
-    public Takataf_schoolApplayCollectiveTender() {
+    public Takataf_schoolApplayCollectiveTender(@NotNull String cat_name, @NotNull @Min(1) int count) {
+        this.cat_name = cat_name;
+        this.count = count;
     }
 
     public String getCat_name() {

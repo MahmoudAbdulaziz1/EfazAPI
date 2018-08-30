@@ -59,5 +59,25 @@ public class CompanySeeRequestRepo {
         return res;
     }
 
+    public boolean isExist(int companyId) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_company.efaz_company_see_request WHERE request_company_id=? ;",
+                Integer.class, companyId);
+        return cnt != null && cnt > 0;
+    }
+
+    public boolean isExistCompany(int companyId) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_company.efaz_company_profile WHERE company_id=? ;",
+                Integer.class, companyId);
+        return cnt != null && cnt > 0;
+    }
+    public boolean isExistRequest(int requestId) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_company.efaz_school_tender WHERE request_id=? ;",
+                Integer.class, requestId);
+        return cnt != null && cnt > 0;
+    }
+
 
 }
