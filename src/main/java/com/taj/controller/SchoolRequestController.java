@@ -176,7 +176,7 @@ public class SchoolRequestController {
 
     @GetMapping("/filterCat/{cat}")
     //@PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
-    public List<SchoolRequestsByIdModel> filterByCategory(@PathVariable int cat) {
+    public List<GetSingleSchoolRequestByCategory> filterByCategory(@PathVariable int cat) {
         return repo.filterByCategory(cat);
     }
 

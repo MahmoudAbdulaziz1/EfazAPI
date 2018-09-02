@@ -1,6 +1,8 @@
 package com.taj.repository;
 
-import com.taj.model.*;
+import com.taj.model.TakatafSinfleSchoolRequestDTO;
+import com.taj.model.TakatafSingleSchoolRequestByIDDTO;
+import com.taj.model.Takataf_schoolApplayCollectiveTender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -18,18 +20,33 @@ public class TakatafTenderRequestRepo {
 
 
     public int add$Request(int request_school_id, int request_tender_id, int is_aproved, long date, List<Takataf_schoolApplayCollectiveTender> category) {
-        int res = jdbcTemplate.update("INSERT INTO takatf_request_tender VALUES (?,?,?,?,?)", null, request_school_id, request_tender_id, is_aproved, new Timestamp(date));
-        for (int i=0; i< category.size(); i++){
-            int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
-                    Integer.class, "%" + category.get(i).getCat_name().trim() + "%");
-            jdbcTemplate.update("INSERT INTO takataf_request_cat_count VALUES (?,?,?,?,?)", null, categorys, request_school_id,
-                    request_tender_id, category.get(i).getCount());
+        if (!isExistApp(request_school_id, request_tender_id)){
+            int res = jdbcTemplate.update("INSERT INTO takatf_request_tender VALUES (?,?,?,?,?)", null, request_school_id, request_tender_id, is_aproved, new Timestamp(date));
+            for (int i = 0; i < category.size(); i++) {
+                int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
+                        Integer.class, "%" + category.get(i).getCat_name().trim() + "%");
+                jdbcTemplate.update("INSERT INTO takataf_request_cat_count VALUES (?,?,?,?,?)", null, categorys, request_school_id,
+                        request_tender_id, category.get(i).getCount());
+            }
+
+            return res;
+        }else{
+            return -1;
         }
 
-        return res;
     }
 
-    public List<TakatafSinfleSchoolRequestDTO> getAllRequestsWithNAme(){
+    public boolean isExistApp(int school_id, int tender_id) {
+
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_company.takatf_request_tender WHERE request_school_id=? AND request_tender_id=?;",
+                Integer.class, school_id, tender_id);
+        return cnt != null && cnt > 0;
+
+
+    }
+
+    public List<TakatafSinfleSchoolRequestDTO> getAllRequestsWithNAme() {
         String sql = "SELECT tender_id, tender_title, tender_explain, tender_display_date, tender_expire_date , " +
                 "                                 count(distinct request_id) AS response_count, id, category_name, count ,school_name,school_logo_image" +
                 "                                                FROM takatf_tender AS t  " +
@@ -49,8 +66,7 @@ public class TakatafTenderRequestRepo {
     }
 
 
-
-    public List<TakatafSinfleSchoolRequestDTO> getAllRequestsWithNameByTender(int tend_id){
+    public List<TakatafSinfleSchoolRequestDTO> getAllRequestsWithNameByTender(int tend_id) {
         String sql = " SELECT " +
                 " tender_id, tender_title, tender_explain, tender_display_date, tender_expire_date ,  " +
                 " count(distinct request_id) AS response_count, ifnull(id,0) AS id, ifnull(category_name,0) AS  category_name " +
@@ -70,25 +86,34 @@ public class TakatafTenderRequestRepo {
                 " GROUP BY " +
                 " tr.id;";
 
-        String sql2 = "SELECT tender_id, tender_title, tender_explain, tender_display_date, tender_expire_date , " +
-                "                                                                 count(distinct request_id) AS response_count," +
-                "                                                                  (SELECT id from efaz_company.takataf_request_cat_count where tend_id=?) AS id," +
-                "(SELECT category_name from efaz_company.takataf_request_cat_count INNER JOIN efaz_company.efaz_company_category" +
-                "                AS c ON cat_id = c.category_id where tend_id=?) AS category_name," +
-                "                (SELECT count from efaz_company.takataf_request_cat_count where tend_id=?) AS count," +
-                "               " +
-                "                (SELECT school_name from efaz_company.takataf_request_cat_count INNER JOIN efaz_company.efaz_school_profile" +
-                "                AS p ON scool_id = p.school_id where tend_id=?) AS school_name," +
-                "                (SELECT school_logo_image from efaz_company.takataf_request_cat_count INNER JOIN efaz_company.efaz_school_profile" +
-                "                AS p ON scool_id = p.school_id where tend_id=?) AS school_logo_image" +
-                "                " +
-                " FROM takatf_tender AS t  " +
-                "                                                                              LEFT JOIN efaz_company.takatf_request_tender AS req ON t.tender_id = req.request_tender_id" +
-                "                 " +
-                "                                                                                where t.tender_id=? " +
-                "                                                                                GROUP BY t.tender_id;";
+        String sql2 = "SELECT\n" +
+                "\ttender_id,\n" +
+                "\ttender_title,\n" +
+                "\ttender_explain,\n" +
+                "\ttender_display_date,\n" +
+                "\ttender_expire_date,\n" +
+                "\tcount( DISTINCT request_id ) AS response_count,\n" +
+                "\tifnull( id, 0 ) AS id,\n" +
+                "\tifnull( category_name, 0 ) AS category_name,\n" +
+                "\tifnull( count, 0 ) AS count,\n" +
+                "\tifnull( school_name, 0 ) AS school_name,\n" +
+                "\tifnull( school_logo_image, 0 ) AS school_logo_image \n" +
+                "FROM\n" +
+                "\ttakatf_tender AS t\n" +
+                "\tLEFT JOIN efaz_company.takatf_request_tender AS req ON t.tender_id = req.request_tender_id\n" +
+                "\tLEFT JOIN efaz_company.takataf_request_cat_count AS tr ON t.tender_id = tr.tend_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_profile sp ON tr.scool_id = sp.school_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_category AS ca ON tr.cat_id = category_id \n" +
+                "WHERE\n" +
+                "\tt.tender_id =? \n" +
+                "GROUP BY\n" +
+                "\ttr.id, tender_id,\n" +
+                "\ttender_title,\n" +
+                "\ttender_explain,\n" +
+                "\ttender_display_date,\n" +
+                "\ttender_expire_date;";
 
-        return jdbcTemplate.query(sql,new Object[]{tend_id},
+        return jdbcTemplate.query(sql2, new Object[]{tend_id},
                 (resultSet, i) -> new TakatafSinfleSchoolRequestDTO(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),
                         resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(), resultSet.getInt(6),
                         resultSet.getInt(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10), resultSet.getBytes(11)));
@@ -96,7 +121,7 @@ public class TakatafTenderRequestRepo {
     }
 
 
-    public List<TakatafSingleSchoolRequestByIDDTO> getAllRequestsWithNameByIdzs(int id){
+    public List<TakatafSingleSchoolRequestByIDDTO> getAllRequestsWithNameByIdzs(int id) {
         String sql = "SELECT tender_id, tender_title, tender_explain, tender_display_date, tender_expire_date , " +
                 "                                                                count(distinct request_id) AS response_count, ifnull(id,0) as id, ifnull(category_name, 0)as category_name" +
                 "                                                                                FROM takatf_tender AS t  " +
@@ -113,9 +138,6 @@ public class TakatafTenderRequestRepo {
                         resultSet.getInt(7), resultSet.getString(8)));
 
     }
-
-
-
 
 
 //    public List<TakatafTenderRequestModel> getTenderRequests(){

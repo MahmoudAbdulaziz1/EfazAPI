@@ -38,11 +38,12 @@ public class CompanyProfileModel {
     @NotNull
     private byte[] company_cover_image;
     private String company_phone_number;
+    private String company_desc;
 
 
     public CompanyProfileModel(int company_id, String company_name, byte[] company_logo_image, String company_address,
                                String company_category_id, String company_link_youtube, String company_website_url, float company_lng,
-                               float company_lat, byte[] company_cover_image, String company_phone_number) {
+                               float company_lat, byte[] company_cover_image, String company_phone_number, String company_desc) {
         this.company_id = company_id;
         this.company_name = company_name;
         this.company_logo_image = company_logo_image;
@@ -54,12 +55,13 @@ public class CompanyProfileModel {
         this.company_lat = company_lat;
         this.company_cover_image = company_cover_image;
         this.company_phone_number = company_phone_number;
+        this.company_desc = company_desc;
 
     }
 
     public CompanyProfileModel(String company_name, byte[] company_logo_image, String company_address,
                                String company_category_id, String company_link_youtube, String company_website_url,
-                               float company_lng, float company_lat, byte[] company_cover_image, String company_phone_number) {
+                               float company_lng, float company_lat, byte[] company_cover_image, String company_phone_number, String company_desc) {
         this.company_name = company_name;
         this.company_logo_image = company_logo_image;
         this.company_address = company_address;
@@ -70,6 +72,7 @@ public class CompanyProfileModel {
         this.company_lat = company_lat;
         this.company_cover_image = company_cover_image;
         this.company_phone_number = company_phone_number;
+        this.company_desc = company_desc;
 
     }
 
@@ -164,7 +167,13 @@ public class CompanyProfileModel {
         this.company_phone_number = company_phone_number;
     }
 
+    public String getCompany_desc() {
+        return company_desc;
+    }
 
+    public void setCompany_desc(String company_desc) {
+        this.company_desc = company_desc;
+    }
 }
 
 

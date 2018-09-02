@@ -41,6 +41,7 @@ public class CompantProfileDto {
 
     private int follower_count;
     private int offer_count;
+    private String company_desc;
 
     public CompantProfileDto() {
     }
@@ -48,7 +49,7 @@ public class CompantProfileDto {
     public CompantProfileDto(int company_id, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String company_name, @NotNull byte[] company_logo_image,
                              @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "address should have at least 1 characters") String company_address,
                              @NotNull @Min(1) String company_category_id, String company_link_youtube, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "website should have at least 1 characters") String company_website_url,
-                             float company_lng, float company_lat, @NotNull byte[] company_cover_image, String company_phone_number, int follower_count, int offer_count) {
+                             float company_lng, float company_lat, @NotNull byte[] company_cover_image, String company_phone_number, int follower_count, int offer_count, String company_desc) {
         this.company_id = company_id;
         this.company_name = company_name;
         this.company_logo_image = company_logo_image;
@@ -62,10 +63,11 @@ public class CompantProfileDto {
         this.company_phone_number = company_phone_number;
         this.follower_count = follower_count;
         this.offer_count = offer_count;
+        this.company_desc = company_desc;
     }
 
     public CompantProfileDto(@NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String company_name, @NotNull byte[] company_logo_image, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "address should have at least 1 characters") String company_address, @NotNull @Min(1) String company_category_id, String company_link_youtube, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "website should have at least 1 characters") String company_website_url,
-                             float company_lng, float company_lat, @NotNull byte[] company_cover_image, String company_phone_number, int follower_count, int offer_count) {
+                             float company_lng, float company_lat, @NotNull byte[] company_cover_image, String company_phone_number, int follower_count, int offer_count, String company_desc) {
         this.company_name = company_name;
         this.company_logo_image = company_logo_image;
         this.company_address = company_address;
@@ -78,6 +80,7 @@ public class CompantProfileDto {
         this.company_phone_number = company_phone_number;
         this.follower_count = follower_count;
         this.offer_count = offer_count;
+        this.company_desc = company_desc;
     }
 
     public int getCompany_id() {
@@ -182,5 +185,13 @@ public class CompantProfileDto {
 
     public void setOffer_count(int offer_count) {
         this.offer_count = offer_count;
+    }
+
+    public String getCompany_desc() {
+        return company_desc;
+    }
+
+    public void setCompany_desc(String company_desc) {
+        this.company_desc = company_desc;
     }
 }

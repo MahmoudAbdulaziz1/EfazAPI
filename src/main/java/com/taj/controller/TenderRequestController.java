@@ -36,6 +36,9 @@ public class TenderRequestController {
             long schoolId = (long) map.get("school_id");
             String schoolName = (String) map.get("school_name");
             byte[] schoolLogo = (byte[]) map.get("school_logo_image");
+            Timestamp date = (Timestamp) map.get("t_date");
+            long t_date = date.getTime();
+            //System.out.println(map.get("t_date")+" +++ "+ date+" ++++++ "+ date.getTime()+ " ++++ "+ new Timestamp(0));
 
             long categoryId = (long) map.get("id");
             String categoryName = (String) map.get("category_name");
@@ -49,6 +52,7 @@ public class TenderRequestController {
             model.setSchool_id(schoolId);
             model.setSchool_name(schoolName);
             model.setSchool_logo_image(Base64.getEncoder().encodeToString(schoolLogo));
+            model.setT_date(t_date);
             //String encodedString = Base64.getEncoder().encodeToString(schoolLogo);
             schools.add(model);
 

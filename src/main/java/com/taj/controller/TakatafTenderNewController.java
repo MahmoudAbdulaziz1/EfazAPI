@@ -1,14 +1,15 @@
 package com.taj.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.taj.model.*;
+import com.taj.model.TakatafMyTenderPageDTO;
+import com.taj.model.TakatafTenderNewModel;
+import com.taj.model.TakatafTenderPOJO;
+import com.taj.model.TakatafTenderUpdatePOJO;
 import com.taj.repository.TakatafTenderNewRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,11 +38,11 @@ public class TakatafTenderNewController {
             objectNode.put("details", errors.getAllErrors().toString());
             return objectNode;
         }
-        int res = repo.addTender( model.getTender_logo(), model.getTender_title(), model.getTender_explain(),
+        int res = repo.addTender(model.getTender_logo(), model.getTender_title(), model.getTender_explain(),
                 model.getTender_display_date(), model.getTender_expire_date(), model.getTender_company_display_date(),
                 model.getTender_company_expired_date(), model.getCats());
 
-        if (res >0) {
+        if (res > 0) {
             ObjectNode objectNode = mapper.createObjectNode();
             //objectNode.put("tender_id", model.getTender_id());
             objectNode.put("tender_logo", model.getTender_logo());
@@ -71,9 +72,9 @@ public class TakatafTenderNewController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TakatafTenderPOJO> getTender(@PathVariable int id) {
-        if (repo.isExist(id)){
+        if (repo.isExist(id)) {
             return ResponseEntity.status(HttpStatus.OK).body(repo.getTender(id));
-        }else {
+        } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(repo.getTender(id));
         }
 
@@ -84,6 +85,17 @@ public class TakatafTenderNewController {
     public List<TakatafMyTenderPageDTO> getAdminTenders() {
         return repo.getAdminTenders();
 
+    }
+
+    @PutMapping("/")
+    public int updateTender(@RequestBody TakatafTenderUpdatePOJO pojo) {
+        return  repo.updateTender(pojo.getTender_id(), pojo.getTender_logo(), pojo.getTender_title(), pojo.getTender_explain(), pojo.getTender_display_date(),
+                pojo.getTender_expire_date(), pojo.getTender_is_confirmed(), pojo.getTender_is_available(), pojo.getTender_company_display_date(),
+                pojo.getTender_company_expired_date(), pojo.getCats());
+    }
+    @DeleteMapping("/{id}")
+    public int deleteTenderWithItsResponse(@PathVariable int id){
+        return repo.deleteTenderWithItsResponse(id);
     }
 
 

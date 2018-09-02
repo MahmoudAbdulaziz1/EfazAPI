@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 public class Takataf_schoolApplayCollectiveTender {
     @NotNull
     private String cat_name;
-    @Min(1)
+
     private int count;
 
     public Takataf_schoolApplayCollectiveTender() {

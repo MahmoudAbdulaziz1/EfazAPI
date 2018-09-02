@@ -34,12 +34,13 @@ public class ComapnyDashBoradProfileModel {
     @NotNull
     private byte[] company_cover_image;
     private String company_phone_number;
-
+    private String company_desc;
     public ComapnyDashBoradProfileModel() {
     }
 
     public ComapnyDashBoradProfileModel(int company_id, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String company_name, @NotNull byte[] company_logo_image, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "address should have at least 1 characters") String company_address, String company_link_youtube,
-                                        @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "website should have at least 1 characters") String company_website_url, @NotNull byte[] company_cover_image, String company_phone_number) {
+                                        @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "website should have at least 1 characters") String company_website_url,
+                                        @NotNull byte[] company_cover_image, String company_phone_number ,String company_desc) {
         this.company_id = company_id;
         this.company_name = company_name;
         this.company_logo_image = company_logo_image;
@@ -48,10 +49,11 @@ public class ComapnyDashBoradProfileModel {
         this.company_website_url = company_website_url;
         this.company_cover_image = company_cover_image;
         this.company_phone_number = company_phone_number;
+        this.company_desc = company_desc;
     }
 
     public ComapnyDashBoradProfileModel(@NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String company_name, @NotNull byte[] company_logo_image, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "address should have at least 1 characters") String company_address, String company_link_youtube, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "website should have at least 1 characters") String company_website_url,
-                                        @NotNull byte[] company_cover_image, String company_phone_number) {
+                                        @NotNull byte[] company_cover_image, String company_phone_number,  String company_desc) {
         this.company_name = company_name;
         this.company_logo_image = company_logo_image;
         this.company_address = company_address;
@@ -59,6 +61,7 @@ public class ComapnyDashBoradProfileModel {
         this.company_website_url = company_website_url;
         this.company_cover_image = company_cover_image;
         this.company_phone_number = company_phone_number;
+        this.company_desc = company_desc;
     }
 
     public int getCompany_id() {
@@ -123,5 +126,13 @@ public class ComapnyDashBoradProfileModel {
 
     public void setCompany_phone_number(String company_phone_number) {
         this.company_phone_number = company_phone_number;
+    }
+
+    public String getCompany_desc() {
+        return company_desc;
+    }
+
+    public void setCompany_desc(String company_desc) {
+        this.company_desc = company_desc;
     }
 }

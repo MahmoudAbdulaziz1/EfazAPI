@@ -96,8 +96,8 @@ public class TakatafTenderNewRepo {
     public List<TakatafMyTenderPageDTO> getAdminTenders() {
         String sql = "SELECT " +
                 " tender_id, tender_title, tender_explain, tender_display_date, tender_expire_date , tender_company_display_date, tender_company_expired_date," +
-                " count(DISTINCT ten.t_category_id) AS cat_count," +
-                " count(distinct request_id) AS response_count " +
+                " count(distinct request_id) AS response_count, " +
+                " count(DISTINCT ten.t_category_id) AS cat_count " +
                 "FROM " +
                 " (takatf_tender AS t  " +
                 "LEFT JOIN " +
@@ -112,6 +112,63 @@ public class TakatafTenderNewRepo {
                         resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(), resultSet.getTimestamp(6).getTime()
                         , resultSet.getTimestamp(7).getTime(),
                         resultSet.getInt(8), resultSet.getInt(9)));
+    }
+
+
+    public int updateTender(int tender_id, byte[] tender_logo,
+                            String tender_title,
+                            String tender_explain,
+                            long tender_display_date, long tender_expire_date, int tender_is_confirmed, int tender_is_available,
+                            long tender_company_display_date, long tender_company_expired_date,
+                            List<TakatfTenderCategoryPOJO> cats) {
+
+        int ten = jdbcTemplate.update("UPDATE efaz_company.takatf_tender SET tender_logo=?, tender_title=?, tender_explain=?," +
+                        " tender_display_date=?, tender_expire_date=?, tender_is_confirmed=?, tender_is_available=?, tender_company_expired_date=?," +
+                        " tender_company_display_date=? WHERE tender_id=?", tender_logo, tender_title, tender_explain,
+                new Timestamp(tender_display_date), new Timestamp(tender_expire_date), tender_is_confirmed, tender_is_available,
+                new Timestamp(tender_company_display_date), new Timestamp(tender_company_expired_date), tender_id);
+        System.out.println(cats.size());
+        if (isExistTenders(tender_id)) {
+            int x = delete(tender_id);
+        }
+
+
+        if (cats != null) {
+
+
+            for (int i = 0; i < cats.size(); i++) {
+                int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
+                        Integer.class, "%" + cats.get(i).getCategory_name().trim() + "%");
+                System.out.println(categorys);
+
+                jdbcTemplate.update("INSERT INTO efaz_company.tkatf_tender_catgory_request VALUES  (?,?,?)", null, tender_id, categorys);
+            }
+        }
+
+
+        return ten;
+
+    }
+
+    public int delete(int tender_id) {
+        return jdbcTemplate.update("Delete from efaz_company.tkatf_tender_catgory_request where t_tender_id = ?;", tender_id);
+    }
+
+    public boolean isExistTenders(int id) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_company.tkatf_tender_catgory_request WHERE t_tender_id=?;",
+                Integer.class, id);
+        return cnt != null && cnt > 0;
+    }
+
+    public int deleteTenderWithItsResponse(int id){
+        jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=0;");
+        jdbcTemplate.update("DELETE FROM efaz_company.takatf_tender WHERE tender_id = ?;", id);
+        int x = delete(id);
+        jdbcTemplate.update("Delete FROM efaz_company.takataf_request_cat_count WHERE tend_id=?;", id);
+        jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=1;");
+
+        return 0;
     }
 
 //    public TakatafTenderWithCompanies getSingleTenderDetails(int id) {

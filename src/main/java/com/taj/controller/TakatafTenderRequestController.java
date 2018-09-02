@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.*;
 import com.taj.repository.TakatafTenderRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,14 +28,14 @@ public class TakatafTenderRequestController {
     ObjectMapper mapper;
 
     @PostMapping("/add")
-    public ObjectNode addTenderRequest(@Valid @RequestBody TakatafTenderRequestModel model, Errors errors) {
+    public ResponseEntity<ObjectNode> addTenderRequest(@Valid @RequestBody TakatafTenderRequestModel model, Errors errors) {
 
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
             objectNode.put("details", errors.getAllErrors().toString());
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
         int res = repo.add$Request(model.getRequest_school_id(), model.getRequest_tender_id(), model.getIs_aproved(), model.getDate(), model.getCategory());
         if (res == 1) {
@@ -44,12 +46,17 @@ public class TakatafTenderRequestController {
             objectNode.put("is_aproved", model.getIs_aproved());
             objectNode.put("date", model.getDate());
 
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+        } else if (res == -1) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("message", "you already request this");
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         } else {
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "not success");
+            objectNode.put("message", "not success");
 
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
     }
 
@@ -73,19 +80,17 @@ public class TakatafTenderRequestController {
             TenderCollectiveByIdPart3DTO category = new TenderCollectiveByIdPart3DTO(tenderList.get(0).getId(),
                     tenderList.get(0).getCategory_name(), tenderList.get(0).getCount());
             categories.add(category);
-            int i=1;
-            while (i<tenderList.size()){
-                if (tenderList.get(i).getTender_id() == tenderList.get(i-1).getTender_id()){
+            int i = 1;
+            while (i < tenderList.size()) {
+                if (tenderList.get(i).getTender_id() == tenderList.get(i - 1).getTender_id()) {
                     TenderCollectiveByIdPart3DTO categorys = new TenderCollectiveByIdPart3DTO(tenderList.get(i).getId(),
                             tenderList.get(i).getCategory_name(), tenderList.get(i).getCount());
-                }else {
+                } else {
                     GetSingleCollectiveByIdPartTwoDTO school = new GetSingleCollectiveByIdPartTwoDTO
                             (tenderList.get(i).getSchool_name(), tenderList.get(i).getSchool_logo_image(), categories);
                 }
                 i++;
             }
-
-
 
 
         }

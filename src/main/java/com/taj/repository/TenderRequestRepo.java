@@ -27,7 +27,7 @@ public class TenderRequestRepo {
                 "    IFNULL(id, 0) AS id, " +
                 "    IFNULL(category_name, 0) AS category_name, " +
                 "    IFNULL(count, 0) AS count, " +
-                "    IFNULL(school_id, 0) AS school_id, " +
+                "    IFNULL(school_id, 0) AS school_id, t_date," +
                 "    IFNULL(school_name, 0) AS school_name, " +
                 "    IFNULL(school_logo_image, 0) AS school_logo_image " +
                 " FROM " +
@@ -42,7 +42,8 @@ public class TenderRequestRepo {
                 "    efaz_company.efaz_company_category AS ca ON tr.cat_id = category_id " +
                 " WHERE " +
                 "    t.tender_id = ? " +
-                " GROUP BY tr.id";
+                " GROUP BY tr.id, tender_id,tender_title,tender_explain,tender_display_date,tender_expire_date," +
+                "id, category_name,school_id,t_date,school_name,school_logo_image";
 
 
         return  jdbcTemplate.queryForList(sql, new Object[]{id});

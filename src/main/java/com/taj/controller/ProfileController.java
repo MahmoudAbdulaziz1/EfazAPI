@@ -51,7 +51,8 @@ public class ProfileController {
         } else {
             int res = profileRepo.addProfile(model.getCompany_id(), model.getCompany_name(), model.getCompany_logo_image(),
                     model.getCompany_address(), model.getCompany_category_id(), model.getCompany_link_youtube(),
-                    model.getCompany_website_url(), model.getCompany_lng(), model.getCompany_lat(), model.getCompany_cover_image(), model.getCompany_phone_number());
+                    model.getCompany_website_url(), model.getCompany_lng(), model.getCompany_lat(),
+                    model.getCompany_cover_image(), model.getCompany_phone_number(), model.getCompany_desc());
 
             if (res == 1) {
                 ObjectNode objectNode = mapper.createObjectNode();
@@ -67,6 +68,7 @@ public class ProfileController {
                 objectNode.put("company_lat", model.getCompany_lat());
                 objectNode.put("company_cover_image", model.getCompany_cover_image());
                 objectNode.put("company_phone_number", model.getCompany_phone_number());
+                objectNode.put("company_desc", model.getCompany_desc());
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);
             } else {
                 ObjectNode objectNode = mapper.createObjectNode();
@@ -137,7 +139,8 @@ public class ProfileController {
         if (profileRepo.isExist(model.getCompany_id())) {
             int res = profileRepo.updateProfile(model.getCompany_id(), model.getCompany_name(), model.getCompany_logo_image(),
                     model.getCompany_address(), model.getCompany_category_id(), model.getCompany_link_youtube(),
-                    model.getCompany_website_url(), model.getCompany_lng(), model.getCompany_lat(), model.getCompany_cover_image(), model.getCompany_phone_number());
+                    model.getCompany_website_url(), model.getCompany_lng(), model.getCompany_lat(), model.getCompany_cover_image(),
+                    model.getCompany_phone_number(), model.getCompany_desc());
             if (res == 1) {
                 ObjectNode objectNode = mapper.createObjectNode();
                 objectNode.put("company_id", model.getCompany_id());
@@ -151,6 +154,7 @@ public class ProfileController {
                 objectNode.put("company_lat", model.getCompany_lat());
                 objectNode.put("company_cover_image", model.getCompany_cover_image());
                 objectNode.put("company_phone_number", model.getCompany_phone_number());
+                objectNode.put("company_desc", model.getCompany_desc());
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);
             } else {
                 ObjectNode objectNode = mapper.createObjectNode();
@@ -192,7 +196,7 @@ public class ProfileController {
         if (profileRepo.isExist(model.getCompany_id())) {
             int res = profileRepo.updateProfileForAdmin(model.getCompany_id(), model.getCompany_name(), model.getCompany_logo_image(),
                     model.getCompany_address(),  model.getCompany_link_youtube(),
-                    model.getCompany_website_url(), model.getCompany_cover_image(), model.getCompany_phone_number());
+                    model.getCompany_website_url(), model.getCompany_cover_image(), model.getCompany_phone_number(), model.getCompany_desc());
             if (res == 1) {
                 ObjectNode objectNode = mapper.createObjectNode();
                 objectNode.put("company_id", model.getCompany_id());
@@ -203,6 +207,7 @@ public class ProfileController {
                 objectNode.put("company_website_url", model.getCompany_website_url());
                 objectNode.put("company_cover_image", model.getCompany_cover_image());
                 objectNode.put("company_phone_number", model.getCompany_phone_number());
+                objectNode.put("company_desc", model.getCompany_desc());
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);
             } else {
                 ObjectNode objectNode = mapper.createObjectNode();

@@ -10,12 +10,14 @@ public class TenderRequestSchoolModel {
     private long school_id;
     private String school_name;
     private String school_logo_image;
+    private long t_date;
     private List<TenderRequestCategoriesModel> categories;
 
-    public TenderRequestSchoolModel(int school_id, String school_name, String school_logo_image, List<TenderRequestCategoriesModel> categories) {
+    public TenderRequestSchoolModel(int school_id, String school_name, String school_logo_image, long t_date , List<TenderRequestCategoriesModel> categories) {
         this.school_id = school_id;
         this.school_name = school_name;
         this.school_logo_image = school_logo_image;
+        this.t_date = t_date;
         this.categories = categories;
     }
 
@@ -54,6 +56,14 @@ public class TenderRequestSchoolModel {
         this.categories = categories;
     }
 
+    public long getT_date() {
+        return t_date;
+    }
+
+    public void setT_date(long t_date) {
+        this.t_date = t_date;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -62,25 +72,28 @@ public class TenderRequestSchoolModel {
         TenderRequestSchoolModel that = (TenderRequestSchoolModel) o;
 
         if (school_id != that.school_id) return false;
-        if (!school_name.equals(that.school_name)) return false;
-        return school_logo_image.equals(that.school_logo_image);
+        if (t_date != that.t_date) return false;
+        if (school_name != null ? !school_name.equals(that.school_name) : that.school_name != null) return false;
+        return !(school_logo_image != null ? !school_logo_image.equals(that.school_logo_image) : that.school_logo_image != null);
 
     }
 
     @Override
     public int hashCode() {
         int result = (int) (school_id ^ (school_id >>> 32));
-        result = 31 * result + school_name.hashCode();
-        result = 31 * result + school_logo_image.hashCode();
+        result = 31 * result + (school_name != null ? school_name.hashCode() : 0);
+        result = 31 * result + (school_logo_image != null ? school_logo_image.hashCode() : 0);
+        result = 31 * result + (int) (t_date ^ (t_date >>> 32));
         return result;
     }
 
     @Override
     public String toString() {
-        return "{" +
+        return "TenderRequestSchoolModel{" +
                 "school_id=" + school_id +
                 ", school_name='" + school_name + '\'' +
                 ", school_logo_image='" + school_logo_image + '\'' +
+                ", t_date=" + t_date +
                 '}';
     }
 }

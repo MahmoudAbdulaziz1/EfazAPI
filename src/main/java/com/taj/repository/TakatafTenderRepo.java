@@ -1,10 +1,15 @@
 package com.taj.repository;
 
 import com.taj.model.TakatafTenderModel;
+import com.taj.model.Takataf_schoolApplayCollectiveTender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -89,14 +94,27 @@ public class TakatafTenderRepo {
                         resultSet.getInt(12), resultSet.getInt(13), resultSet.getInt(14)));
     }
 
-    public int updateTender(int tender_id, byte[] tender_logo, String tender_title, String tender_explain, Timestamp tender_display_date, Timestamp tender_expire_date,
-                            Timestamp tender_deliver_date, int tender_company_id, int tender_is_confirmed, int tender_is_available, int tender_f_id, int tender_s_id,
-                            int tender_t_id, int tender_cat_id) {
-        return jdbcTemplate.update("UPDATE takatf_tender SET tender_logo=?, tender_title=?, tender_explain=?," +
-                        " tender_display_date=?, tender_expire_date=?, tender_deliver_date=?, tender_company_id=?, tender_is_confirmed=?," +
-                        " tender_is_available=?, tender_f_id=?, tender_s_id=?, tender_t_id=?, tender_cat_id=? WHERE tender_id=?", tender_logo, tender_title, tender_explain,
-                tender_display_date, tender_expire_date, tender_deliver_date, tender_company_id, tender_is_confirmed, tender_is_available, tender_f_id, tender_s_id,
-                tender_t_id, tender_cat_id, tender_id);
+    public int updateTender(int tender_id, byte[] tender_logo,
+                            String tender_title,
+                             String tender_explain,
+                            long tender_display_date, long tender_expire_date, int tender_is_confirmed, int tender_is_available,
+                             long tender_company_display_date,  long tender_company_expired_date,
+                            List<Takataf_schoolApplayCollectiveTender> category) {
+        int ten =  jdbcTemplate.update("UPDATE efaz_company.takatf_tender SET tender_logo=?, tender_title=?, tender_explain=?," +
+                        " tender_display_date=?, tender_expire_date=?, tender_is_confirmed=?, tender_is_available=?, tender_company_expired_date=?," +
+                        " tender_company_display_date=? ", tender_logo, tender_title, tender_explain,
+                tender_display_date, tender_expire_date, tender_is_confirmed, tender_is_available, tender_company_display_date,tender_company_expired_date , tender_id);
+        int del = jdbcTemplate.update("Delete from efaz_company.tkatf_tender_catgory_request where t_tender_id = ?;", tender_id);
+
+        for (int i = 0; i < category.size(); i++) {
+            int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
+                    Integer.class, "%" + category.get(i).getCat_name().trim() + "%");
+
+            jdbcTemplate.update("INSERT INTO efaz_company.tkatf_tender_catgory_request VALUES  (?,?,?)", null, tender_id, categorys);
+        }
+
+        return ten;
+
     }
 
 
