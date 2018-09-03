@@ -37,7 +37,13 @@ public class TenderRequestController {
             String schoolName = (String) map.get("school_name");
             byte[] schoolLogo = (byte[]) map.get("school_logo_image");
             Timestamp date = (Timestamp) map.get("t_date");
-            long t_date = date.getTime();
+            long t_date = 0;
+            if (date == null){
+                t_date = 0;
+            }else {
+                t_date = date.getTime();
+            }
+
             //System.out.println(map.get("t_date")+" +++ "+ date+" ++++++ "+ date.getTime()+ " ++++ "+ new Timestamp(0));
 
             long categoryId = (long) map.get("id");

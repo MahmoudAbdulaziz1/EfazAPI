@@ -57,6 +57,7 @@ public class CompanyResponseSchoolRequestRepo {
     }
 
     public int acceptResponseSchoolRequest(int response_id) {
+        jdbcTemplate.update("UPDATE efaz_company_response_school_request SET is_aproved=1 WHERE response_id=?", response_id);
         return jdbcTemplate.update("UPDATE efaz_company_response_school_request SET is_aproved=1 WHERE response_id=?", response_id);
     }
 
