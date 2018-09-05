@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.mail.internet.MimeMessage;
 import java.security.SecureRandom;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 
 /**
@@ -64,7 +61,7 @@ public class LoginRepo {
                     jdbcTemplate.update(new PreparedStatementCreator() {
                         @Override
                         public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                            final PreparedStatement ps = connection.prepareStatement("INSERT INTO efaz_login VALUES (?,?,?,?,?,?)",
+                            final PreparedStatement ps = connection.prepareStatement("INSERT INTO efaz_login VALUES (?,?,?,?,?,?,?)",
                                     Statement.RETURN_GENERATED_KEYS);
                             ps.setString(1, null);
                             ps.setString(2, user_email);
@@ -72,6 +69,7 @@ public class LoginRepo {
                             ps.setInt(4, is_active);
                             ps.setString(5, login_role);
                             ps.setString(6, login_token);
+                            ps.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
                             return ps;
                         }
 
@@ -129,6 +127,8 @@ public class LoginRepo {
                     boolean check = cnt != null && cnt > 0;
 
                     if (check) {
+                        String token = "Token="+ generator.generate(model);
+                        jdbcTemplate.update("UPDATE efaz_company.efaz_login SET login_token = ? WHERE login_id = ?", token, model.getLogin_id());
                         ObjectNode objectNode = mapper.createObjectNode();
                         objectNode.put("state", 201);
                         objectNode.put("login_id", model.getLogin_id());
@@ -136,7 +136,7 @@ public class LoginRepo {
                         objectNode.put("user_password", model.getUser_password());
                         objectNode.put("is_active", model.getIs_active());
                         objectNode.put("login_role", model.getLogin_role());
-                        objectNode.put("login_token", model.getLogin_token());
+                        objectNode.put("login_token", token);
                         return objectNode;
                     } else {
                         ObjectNode objectNode = mapper.createObjectNode();
@@ -233,7 +233,7 @@ public class LoginRepo {
 
     public int activeLogin(int id) {
         RegistrationModel models = new RegistrationModel();
-        return jdbcTemplate.update("update efaz_login set is_active=1, login_token=?  WHERE login_id=?", "Token="+ generator.generate(models), id);
+        return jdbcTemplate.update("update efaz_login set is_active=1, login_token=?  WHERE login_id=?", "Token=", id);
     }
 
     public int inActiveLogin(int id) {

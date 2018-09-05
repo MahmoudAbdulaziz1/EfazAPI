@@ -1,8 +1,7 @@
 package com.taj.controller;
 
-import com.taj.model.RegistrationModel;
+import com.taj.model.LoginModel;
 import com.taj.security.JwtGenerator;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +18,8 @@ public class TokenController {
         this.jwtGenerator = jwtGenerator;
     }
 
-    @PostMapping
-    public String generate(@RequestBody final RegistrationModel jwtUser) {
+    @PostMapping("/")
+    public String generate(@RequestBody final LoginModel jwtUser) {
 
         return jwtGenerator.generate(jwtUser);
 

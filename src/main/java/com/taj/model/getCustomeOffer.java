@@ -6,9 +6,9 @@ package com.taj.model;
 public class getCustomeOffer {
 
     private String status;
-    private  CustomCompanyOfferModel model;
+    private  CustomCompanyModelWithView model;
 
-    public getCustomeOffer(String status, CustomCompanyOfferModel model) {
+    public getCustomeOffer(String status, CustomCompanyModelWithView model) {
         this.status = status;
         this.model = model;
     }
@@ -24,11 +24,11 @@ public class getCustomeOffer {
         this.status = status;
     }
 
-    public CustomCompanyOfferModel getModel() {
+    public CustomCompanyModelWithView getModel() {
         return model;
     }
 
-    public void setModel(CustomCompanyOfferModel model) {
+    public void setModel(CustomCompanyModelWithView model) {
         this.model = model;
     }
 }

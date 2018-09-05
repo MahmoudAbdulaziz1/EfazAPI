@@ -1,11 +1,14 @@
 package com.taj.model;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
- * Created by User on 8/8/2018.
+ * Created by User on 9/4/2018.
  */
-public class CompantProfileDto {
+public class MultiCategoryProfileGetAllDTO {
 
     private int company_id;
     @NotNull
@@ -39,16 +42,11 @@ public class CompantProfileDto {
     private String company_phone_number;
 
     private int follower_count;
-    private int offer_count;
+    private int order_count;
     private String company_desc;
+    private int category_num;
 
-    public CompantProfileDto() {
-    }
-
-    public CompantProfileDto(int company_id, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String company_name, @NotNull byte[] company_logo_image,
-                             @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "address should have at least 1 characters") String company_address,
-                             @NotNull @Min(1) String company_category_id, String company_link_youtube, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "website should have at least 1 characters") String company_website_url,
-                             float company_lng, float company_lat, @NotNull byte[] company_cover_image, String company_phone_number, int follower_count, int offer_count, String company_desc) {
+    public MultiCategoryProfileGetAllDTO(int company_id, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String company_name, @NotNull byte[] company_logo_image, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "address should have at least 1 characters") String company_address, String company_category_id, String company_link_youtube, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "website should have at least 1 characters") String company_website_url, float company_lng, float company_lat, @NotNull byte[] company_cover_image, String company_phone_number, int follower_count, int order_count, String company_desc, int category_num) {
         this.company_id = company_id;
         this.company_name = company_name;
         this.company_logo_image = company_logo_image;
@@ -61,12 +59,12 @@ public class CompantProfileDto {
         this.company_cover_image = company_cover_image;
         this.company_phone_number = company_phone_number;
         this.follower_count = follower_count;
-        this.offer_count = offer_count;
+        this.order_count = order_count;
         this.company_desc = company_desc;
+        this.category_num = category_num;
     }
 
-    public CompantProfileDto(@NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String company_name, @NotNull byte[] company_logo_image, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "address should have at least 1 characters") String company_address, @NotNull @Min(1) String company_category_id, String company_link_youtube, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "website should have at least 1 characters") String company_website_url,
-                             float company_lng, float company_lat, @NotNull byte[] company_cover_image, String company_phone_number, int follower_count, int offer_count, String company_desc) {
+    public MultiCategoryProfileGetAllDTO(@NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String company_name, @NotNull byte[] company_logo_image, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "address should have at least 1 characters") String company_address, String company_category_id, String company_link_youtube, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "website should have at least 1 characters") String company_website_url, float company_lng, float company_lat, @NotNull byte[] company_cover_image, String company_phone_number, int follower_count, int order_count, String company_desc, int category_num) {
         this.company_name = company_name;
         this.company_logo_image = company_logo_image;
         this.company_address = company_address;
@@ -78,8 +76,12 @@ public class CompantProfileDto {
         this.company_cover_image = company_cover_image;
         this.company_phone_number = company_phone_number;
         this.follower_count = follower_count;
-        this.offer_count = offer_count;
+        this.order_count = order_count;
         this.company_desc = company_desc;
+        this.category_num = category_num;
+    }
+
+    public MultiCategoryProfileGetAllDTO() {
     }
 
     public int getCompany_id() {
@@ -178,12 +180,12 @@ public class CompantProfileDto {
         this.follower_count = follower_count;
     }
 
-    public int getOffer_count() {
-        return offer_count;
+    public int getOrder_count() {
+        return order_count;
     }
 
-    public void setOffer_count(int offer_count) {
-        this.offer_count = offer_count;
+    public void setOrder_count(int order_count) {
+        this.order_count = order_count;
     }
 
     public String getCompany_desc() {
@@ -192,5 +194,13 @@ public class CompantProfileDto {
 
     public void setCompany_desc(String company_desc) {
         this.company_desc = company_desc;
+    }
+
+    public int getCategory_num() {
+        return category_num;
+    }
+
+    public void setCategory_num(int category_num) {
+        this.category_num = category_num;
     }
 }

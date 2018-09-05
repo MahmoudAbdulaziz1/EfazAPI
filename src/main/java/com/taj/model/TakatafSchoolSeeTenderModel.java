@@ -8,7 +8,7 @@ import javax.validation.constraints.Min;
 public class TakatafSchoolSeeTenderModel {
 
 
-    @Min(1)
+
     private int seen_id;
     @Min(1)
     private int  seen_tender_id;

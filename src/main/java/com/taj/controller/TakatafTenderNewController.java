@@ -1,6 +1,7 @@
 package com.taj.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.TakatafMyTenderPageDTO;
 import com.taj.model.TakatafTenderNewModel;
@@ -30,13 +31,13 @@ public class TakatafTenderNewController {
     ObjectMapper mapper;
 
     @PostMapping("/")
-    public ObjectNode addTender(@RequestBody @Valid TakatafTenderNewModel model, Errors errors) {
+    public ResponseEntity<ObjectNode> addTender(@RequestBody @Valid TakatafTenderNewModel model, Errors errors) {
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
             objectNode.put("details", errors.getAllErrors().toString());
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
         int res = repo.addTender(model.getTender_logo(), model.getTender_title(), model.getTender_explain(),
                 model.getTender_display_date(), model.getTender_expire_date(), model.getTender_company_display_date(),
@@ -54,12 +55,23 @@ public class TakatafTenderNewController {
             objectNode.put("tender_company_expire_date", model.getTender_company_expired_date());
 
 
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+        } else if (res == -100) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            ArrayNode nodes = mapper.createArrayNode();
+            for (int i = 0; i < model.getCats().size(); i++) {
+                int categorys = repo.getCategoryId(model.getCats().get(i).getCategory_name());
+                if (categorys > 0) {
+                    nodes.add(model.getCats().get(i).getCategory_name());
+                }
+            }
+            objectNode.set("cats", nodes);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         } else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "not success");
 
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
 
     }
@@ -88,13 +100,51 @@ public class TakatafTenderNewController {
     }
 
     @PutMapping("/")
-    public int updateTender(@RequestBody TakatafTenderUpdatePOJO pojo) {
-        return  repo.updateTender(pojo.getTender_id(), pojo.getTender_logo(), pojo.getTender_title(), pojo.getTender_explain(), pojo.getTender_display_date(),
-                pojo.getTender_expire_date(), pojo.getTender_is_confirmed(), pojo.getTender_is_available(), pojo.getTender_company_display_date(),
-                pojo.getTender_company_expired_date(), pojo.getCats());
+    public ResponseEntity<ObjectNode> updateTender(@RequestBody TakatafTenderUpdatePOJO model, Errors errors) {
+        if (errors.hasErrors()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+        int res = repo.addTender(model.getTender_logo(), model.getTender_title(), model.getTender_explain(),
+                model.getTender_display_date(), model.getTender_expire_date(), model.getTender_company_display_date(),
+                model.getTender_company_expired_date(), model.getCats());
+
+        if (res > 0) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            //objectNode.put("tender_id", model.getTender_id());
+            objectNode.put("tender_logo", model.getTender_logo());
+            objectNode.put("tender_title", model.getTender_title());
+            objectNode.put("tender_explain", model.getTender_explain());
+            objectNode.put("tender_display_date", model.getTender_display_date());
+            objectNode.put("tender_expire_date", model.getTender_expire_date());
+            objectNode.put("tender_company_display_date", model.getTender_company_display_date());
+            objectNode.put("tender_company_expire_date", model.getTender_company_expired_date());
+
+
+            return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+        } else if (res == -100) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            ArrayNode nodes = mapper.createArrayNode();
+            for (int i = 0; i < model.getCats().size(); i++) {
+                int categorys = repo.getCategoryId(model.getCats().get(i).getCategory_name());
+                if (categorys > 0) {
+                    nodes.add(model.getCats().get(i).getCategory_name());
+                }
+            }
+            objectNode.set("cats", nodes);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
     }
+
     @DeleteMapping("/{id}")
-    public int deleteTenderWithItsResponse(@PathVariable int id){
+    public int deleteTenderWithItsResponse(@PathVariable int id) {
         return repo.deleteTenderWithItsResponse(id);
     }
 

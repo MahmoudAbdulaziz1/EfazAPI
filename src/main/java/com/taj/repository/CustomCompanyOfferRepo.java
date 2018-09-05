@@ -1,6 +1,8 @@
 package com.taj.repository;
 
+import com.taj.model.CompanyOfferByRequestAndViewModel;
 import com.taj.model.CompanyOfferModel;
+import com.taj.model.CustomCompanyModelWithView;
 import com.taj.model.CustomCompanyOfferModel;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,11 +104,32 @@ public class CustomCompanyOfferRepo {
     }
 
 
-    public CustomCompanyOfferModel getCompanyOffer(int id) {
-        CompanyOfferModel data = jdbcTemplate.queryForObject("SELECT * FROM efaz_company_offer WHERE offer_id=?;", new Object[]{id},
-                (resultSet, i) -> new CompanyOfferModel(resultSet.getInt(1), resultSet.getInt(2), resultSet.getString(3)
+    public CustomCompanyModelWithView getCompanyOffer(int id) {
+        String sql = "SELECT\n" +
+                "\toffer_id,\n" +
+                "\toffer_image_id,\n" +
+                "\toffer_title,\n" +
+                "\toffer_explaination,\n" +
+                "\toffer_cost,\n" +
+                "\toffer_display_date,\n" +
+                "\toffer_expired_date,\n" +
+                "\toffer_deliver_date,\n" +
+                "\toffer_company_id,\n" +
+                "\toffer_count,\n" +
+                "\tcount( request_id ) AS request_count,\n" +
+                "\tCOUNT( seen_id ) AS view_count \n" +
+                "FROM\n" +
+                "\tefaz_company_offer AS offer\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_request_offer AS req ON offer.offer_id = req.requsted_offer_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_see_offer AS see ON offer.offer_id = see.seen_offer_id \n" +
+                "WHERE\n" +
+                "\toffer_id = ? \n" +
+                "GROUP BY\n" +
+                "\toffer.offer_id;";
+        CompanyOfferByRequestAndViewModel data = jdbcTemplate.queryForObject(sql, new Object[]{id},
+                (resultSet, i) -> new CompanyOfferByRequestAndViewModel(resultSet.getInt(1), resultSet.getInt(2), resultSet.getString(3)
                         , resultSet.getString(4), resultSet.getDouble(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
-                        resultSet.getTimestamp(8), resultSet.getInt(9), resultSet.getInt(10)));
+                        resultSet.getTimestamp(8), resultSet.getInt(9), resultSet.getInt(10), resultSet.getInt(11), resultSet.getInt(12)));
 
         int offer_id = data.getOffer_id();
         byte[] image_one = imgeRepo.getCompanyOfferOneImage(data.getOffer_images_id());
@@ -122,8 +145,8 @@ public class CustomCompanyOfferRepo {
         int company_id = data.getCompany_id();
         int count = data.getOffer_count();
 
-        CustomCompanyOfferModel test = new CustomCompanyOfferModel(offer_id, image_one, image_two, image_three, image_four, offer_title, offer_explain,
-                offer_cost, display, expired, deliver, company_id, count);
+        CustomCompanyModelWithView test = new CustomCompanyModelWithView(offer_id, image_one, image_two, image_three, image_four, offer_title, offer_explain,
+                offer_cost, display, expired, deliver, company_id, count, data.getRequest_count(), data.getView_count());
 
         return test;
 

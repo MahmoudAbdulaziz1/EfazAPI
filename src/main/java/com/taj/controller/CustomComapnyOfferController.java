@@ -78,7 +78,7 @@ public class CustomComapnyOfferController {
     @GetMapping("/{id}")
     public ResponseEntity<getCustomeOffer> getCompanyOffer(@PathVariable int id) {
         if (repo.checkIfExist(id)){
-            CustomCompanyOfferModel model = repo.getCompanyOffer(id);
+            CustomCompanyModelWithView model = repo.getCompanyOffer(id);
 
             return ResponseEntity.status(HttpStatus.OK).body(new getCustomeOffer("200", model));
 

@@ -25,6 +25,22 @@ public class TakatafTenderNewRepo {
     public int addTender(byte[] tender_logo, String tender_title, String tender_explain, long tender_display_date, long tender_expire_date,
                          long tender_company_display_date, long tender_company_expired_date, List<TakatfTenderCategoryPOJO> cats) {
 
+        for (int i=0 ; i< cats.size(); i++){
+            int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
+                    Integer.class, "%" + cats.get(i).getCategory_name().trim() + "%");
+            String sql = "SELECT\n" +
+                    "\tcount( * ) \n" +
+                    "FROM\n" +
+                    "\tefaz_company.takatf_tender AS tend\n" +
+                    "\tINNER JOIN efaz_company.tkatf_tender_catgory_request AS cat ON tend.tender_id = cat.t_tender_id \n" +
+                    "WHERE\n" +
+                    "\ttend.tender_expire_date >= now( ) \n" +
+                    "\tAND cat.t_category_id = ?;";
+            int num = jdbcTemplate.queryForObject(sql, Integer.class, categorys);
+            if (num>0){
+                return -100;
+            }
+        }
 
         KeyHolder key = new GeneratedKeyHolder();
         jdbcTemplate.update(new PreparedStatementCreator() {
@@ -122,14 +138,25 @@ public class TakatafTenderNewRepo {
                             long tender_company_display_date, long tender_company_expired_date,
                             List<TakatfTenderCategoryPOJO> cats) {
 
-        int ten = jdbcTemplate.update("UPDATE efaz_company.takatf_tender SET tender_logo=?, tender_title=?, tender_explain=?," +
-                        " tender_display_date=?, tender_expire_date=?, tender_is_confirmed=?, tender_is_available=?, tender_company_expired_date=?," +
-                        " tender_company_display_date=? WHERE tender_id=?", tender_logo, tender_title, tender_explain,
-                new Timestamp(tender_display_date), new Timestamp(tender_expire_date), tender_is_confirmed, tender_is_available,
-                new Timestamp(tender_company_display_date), new Timestamp(tender_company_expired_date), tender_id);
-        System.out.println(cats.size());
         if (isExistTenders(tender_id)) {
             int x = delete(tender_id);
+        }
+
+        for (int i=0 ; i< cats.size(); i++){
+            int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
+                    Integer.class, "%" + cats.get(i).getCategory_name().trim() + "%");
+            String sql = "SELECT\n" +
+                    "\tcount( * ) \n" +
+                    "FROM\n" +
+                    "\tefaz_company.takatf_tender AS tend\n" +
+                    "\tINNER JOIN efaz_company.tkatf_tender_catgory_request AS cat ON tend.tender_id = cat.t_tender_id \n" +
+                    "WHERE\n" +
+                    " tend.tender_expire_date >= now( ) " +
+                    "\tAND cat.t_category_id = ?;";
+            int num = jdbcTemplate.queryForObject(sql, Integer.class, categorys);
+            if (num>0){
+                return -100;
+            }
         }
 
 
@@ -144,6 +171,14 @@ public class TakatafTenderNewRepo {
                 jdbcTemplate.update("INSERT INTO efaz_company.tkatf_tender_catgory_request VALUES  (?,?,?)", null, tender_id, categorys);
             }
         }
+
+        int ten = jdbcTemplate.update("UPDATE efaz_company.takatf_tender SET tender_logo=?, tender_title=?, tender_explain=?," +
+                        " tender_display_date=?, tender_expire_date=?, tender_is_confirmed=?, tender_is_available=?, tender_company_expired_date=?," +
+                        " tender_company_display_date=? WHERE tender_id=?", tender_logo, tender_title, tender_explain,
+                new Timestamp(tender_display_date), new Timestamp(tender_expire_date), tender_is_confirmed, tender_is_available,
+                new Timestamp(tender_company_display_date), new Timestamp(tender_company_expired_date), tender_id);
+        System.out.println(cats.size());
+
 
 
         return ten;
@@ -169,6 +204,12 @@ public class TakatafTenderNewRepo {
         jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=1;");
 
         return 0;
+    }
+
+    public int getCategoryId(String name){
+        int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
+                Integer.class, "%" + name.trim() + "%");
+        return categorys;
     }
 
 //    public TakatafTenderWithCompanies getSingleTenderDetails(int id) {

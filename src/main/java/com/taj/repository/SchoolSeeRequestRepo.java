@@ -40,6 +40,13 @@ public class SchoolSeeRequestRepo {
         return cnt != null && cnt > 0;
     }
 
+    public boolean isExistOrganizationAndOffer(int offer_id, int school_id) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_company.efaz_school_see_offer WHERE seen_offer_school_id=? AND seen_offer_id=?;",
+                Integer.class, school_id, offer_id);
+        return cnt != null && cnt > 0;
+    }
+
 
     public int addSeen(int seen_offer_id, int seen_offer_school_id) {
         return jdbcTemplate.update("INSERT INTO efaz_school_see_offer VALUES (?,?,?)", null, seen_offer_id, seen_offer_school_id);

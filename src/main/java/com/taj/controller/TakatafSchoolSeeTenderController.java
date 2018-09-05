@@ -16,10 +16,10 @@ import java.util.List;
 /**
  * Created by User on 7/8/2018.
  */
-@RequestMapping("/evvaz/tender/seen")
+@RequestMapping("/tender/seen")
 @RestController
 @CrossOrigin
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class TakatafSchoolSeeTenderController {
 
     @Autowired
@@ -28,7 +28,7 @@ public class TakatafSchoolSeeTenderController {
     @Autowired
     ObjectMapper mapper;
 
-    @PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
+    //@PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
     @PostMapping("/add")
     public ObjectNode addTenderSeen(@Valid @RequestBody TakatafSchoolSeeTenderModel model, Errors errors){
         if (errors.hasErrors()) {
@@ -38,21 +38,29 @@ public class TakatafSchoolSeeTenderController {
             objectNode.put("details", errors.getAllErrors().toString());
             return objectNode;
         }
-        int res = repo.addSeen(model.getSeen_tender_id(), model.getSeen_school_id());
+        if (!repo.checkIfExist(model.getSeen_tender_id(), model.getSeen_school_id())){
+            int res = repo.addSeen(model.getSeen_tender_id(), model.getSeen_school_id());
 
-        if (res == 1) {
-            ObjectNode objectNode = mapper.createObjectNode();
-            //objectNode.put("seen_id", model.getSeen_id());
-            objectNode.put("seen_school_id", model.getSeen_school_id());
-            objectNode.put("seen_tender_id", model.getSeen_tender_id());
+            if (res == 1) {
+                ObjectNode objectNode = mapper.createObjectNode();
+                //objectNode.put("seen_id", model.getSeen_id());
+                objectNode.put("seen_school_id", model.getSeen_school_id());
+                objectNode.put("seen_tender_id", model.getSeen_tender_id());
 
-            return objectNode;
-        } else {
+                return objectNode;
+            } else {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("message", "not success");
+
+                return objectNode;
+            }
+        }else {
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "not success");
+            objectNode.put("message", "Already Exist");
 
             return objectNode;
         }
+
     }
 
     @GetMapping("/getAll")

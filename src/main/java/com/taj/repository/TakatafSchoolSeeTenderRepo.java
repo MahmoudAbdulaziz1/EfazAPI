@@ -17,6 +17,12 @@ public class TakatafSchoolSeeTenderRepo {
     JdbcTemplate jdbcTemplate;
 
 
+    public boolean checkIfExist(int tenderr_id, int school_id){
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM  efaz_company.takatf_school_see_tender WHERE seen_tender_id=? AND seen_school_id=?;",
+                Integer.class, tenderr_id, school_id);
+        return cnt != null && cnt > 0;
+    }
     public int addSeen(int seen_tender_id, int seen_school_id) {
         return jdbcTemplate.update("INSERT INTO takatf_school_see_tender VALUES (?,?,?)", null, seen_tender_id, seen_school_id);
     }

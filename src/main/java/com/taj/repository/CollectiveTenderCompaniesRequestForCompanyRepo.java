@@ -28,7 +28,7 @@ public class CollectiveTenderCompaniesRequestForCompanyRepo {
                 "FROM\n" +
                 "\tefaz_company.takataf_company_request_tender AS req\n" +
                 "\tLEFT JOIN efaz_company.efaz_company_profile as profile ON req.response_takataf_company_id = profile.company_id\n" +
-                "\tWHERE response_takataf_request_id = ?;";
+                "\tWHERE response_takataf_request_id = ? AND is_aproved=0;";
         return jdbcTemplate.query(sql, new Object[]{id},
                 (resultSet, i) -> new CollectiveTenderCompaniesRequestForCompanyModel(resultSet.getInt(1), resultSet.getDouble(2),
                         resultSet.getInt(3), resultSet.getString(4), resultSet.getString(5), resultSet.getBytes(6), resultSet.getTimestamp(7).getTime()));

@@ -7,6 +7,7 @@ import com.taj.security.JwtSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -15,6 +16,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.Collections;
 
@@ -29,6 +33,7 @@ public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtAuthenticationEntryPoint entryPoint;
 
+
     @Bean
     public AuthenticationManager authenticationManager() {
         return new ProviderManager(Collections.singletonList(authenticationProvider));
@@ -41,12 +46,28 @@ public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
         filter.setAuthenticationSuccessHandler(new JwtSuccessHandler());
         return filter;
     }
+    @Bean
+    public CorsFilter corsFilter(){
+        org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("*");  // TODO: lock down before deploying
+        config.addAllowedHeader("*");
+        config.addExposedHeader(HttpHeaders.AUTHORIZATION);
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
+    }
 
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
         http.csrf().disable()
+                .authorizeRequests().antMatchers("/evvaz/**").authenticated()
+//                .and()
+//                .authorizeRequests().antMatchers("/evvaz/companyOffer/**").authenticated()
+                .and()
                 .authorizeRequests().antMatchers("/evvaz/cat/**").authenticated()
 //                .and()
 //                .authorizeRequests().antMatchers("/evvaz/companyOffer/**").authenticated()
@@ -101,4 +122,6 @@ public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers().cacheControl();
 
     }
+
+
 }

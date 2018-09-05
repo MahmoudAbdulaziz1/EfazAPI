@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,10 +19,10 @@ import java.util.List;
 /**
  * Created by User on 7/9/2018.
  */
-@RequestMapping("/evvaz/offer/seen")
+@RequestMapping("/offer/seen")
 @RestController
 @CrossOrigin
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SchoolSeeRequestController {
 
 
@@ -33,7 +32,7 @@ public class SchoolSeeRequestController {
     ObjectMapper mapper;
 
 
-    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PostMapping("/add")
     public ResponseEntity<ObjectNode> addOfferSeen(@Valid @RequestBody SchoolSeeRequest model, Errors errors) {
         if (errors.hasErrors()) {
@@ -44,28 +43,38 @@ public class SchoolSeeRequestController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
 
-        if (repo.isExistOffer(model.getSeen_offer_id()) && repo.isExistOrganization(model.getSeen_offer_school_id())) {
-            int res = repo.addSeen(model.getSeen_offer_id(), model.getSeen_offer_school_id());
 
-            if (res == 1) {
-                ObjectNode objectNode = mapper.createObjectNode();
-                objectNode.put("status", 200);
-                objectNode.put("seen_offer_id", model.getSeen_offer_id());
-                objectNode.put("seen_offer_school_id", model.getSeen_offer_school_id());
+        if (!(repo.isExistOrganizationAndOffer(model.getSeen_offer_id(), model.getSeen_offer_school_id()))) {
 
-                return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+            if (repo.isExistOffer(model.getSeen_offer_id()) && repo.isExistOrganization(model.getSeen_offer_school_id())) {
+                int res = repo.addSeen(model.getSeen_offer_id(), model.getSeen_offer_school_id());
+
+                if (res == 1) {
+                    ObjectNode objectNode = mapper.createObjectNode();
+                    objectNode.put("status", 200);
+                    objectNode.put("seen_offer_id", model.getSeen_offer_id());
+                    objectNode.put("seen_offer_school_id", model.getSeen_offer_school_id());
+
+                    return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+                } else {
+                    ObjectNode objectNode = mapper.createObjectNode();
+                    objectNode.put("status", 400);
+                    objectNode.put("message", "failed to add");
+
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+                }
             } else {
                 ObjectNode objectNode = mapper.createObjectNode();
                 objectNode.put("status", 400);
-                objectNode.put("message", "failed to add");
+                objectNode.put("message", "school id or offer id not found");
 
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
             }
+
         } else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("status", 400);
-            objectNode.put("message", "school id or offer id not found");
-
+            objectNode.put("message", "school already see offer");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
 
@@ -162,7 +171,7 @@ public class SchoolSeeRequestController {
     @PutMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('company') or hasAuthority('admin')")
     public ResponseEntity<ObjectNode> deleteOffersSeen(@PathVariable int id) {
-        if (repo.isExist(id)){
+        if (repo.isExist(id)) {
             int res = repo.deleteOffersSeen(id);
             if (res == 1) {
                 ObjectNode objectNode = mapper.createObjectNode();
@@ -177,7 +186,7 @@ public class SchoolSeeRequestController {
 
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
             }
-        }else {
+        } else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("status", 400);
             objectNode.put("message", "no item  found bu this id");

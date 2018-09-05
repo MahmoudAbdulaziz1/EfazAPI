@@ -2,6 +2,7 @@ package com.taj.security;
 
 import com.taj.model.JwtAuthenticationToken;
 import com.taj.model.JwtUserDetails;
+import com.taj.model.LoginModel;
 import com.taj.model.RegistrationModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,15 +32,15 @@ public class JwtAuthenticationProvider extends AbstractUserDetailsAuthentication
         JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) usernamePasswordAuthenticationToken;
         String token = jwtAuthenticationToken.getToken();
 
-        RegistrationModel jwtUser = validator.validate(token);
+        LoginModel jwtUser = validator.validate(token);
 
         if (jwtUser == null) {
             throw new RuntimeException("JWT Token is incorrect");
         }
 
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils
-                .commaSeparatedStringToAuthorityList(jwtUser.getRegistration_role());
-        return new JwtUserDetails(jwtUser.getRegisteration_username(), jwtUser.getRegistration_id(),
+                .commaSeparatedStringToAuthorityList(jwtUser.getLogin_role());
+        return new JwtUserDetails(jwtUser.getUser_email(), jwtUser.getLogin_id(),
                 token,
                 grantedAuthorities);
     }
