@@ -24,7 +24,6 @@ public class MultiCategoryProfileModel {
     @NotEmpty
     @Size(max = 450, min = 1, message = "address should have at least 1 characters")
     private String company_address;
-    private String company_category_id;
     //    @NotNull
 //    @NotBlank
 //    @NotEmpty
@@ -47,7 +46,7 @@ public class MultiCategoryProfileModel {
                                      @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String company_name,
                                      @NotNull byte[] company_logo_image,
                                      @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "address should have at least 1 characters") String company_address,
-                                     String company_category_id, String company_link_youtube,
+                                     String company_link_youtube,
                                      @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "website should have at least 1 characters") String company_website_url,
                                      float company_lng, float company_lat, @NotNull byte[] company_cover_image, String company_phone_number, String company_desc,
                                      List<TakatfTenderCategoryPOJO> category) {
@@ -55,7 +54,6 @@ public class MultiCategoryProfileModel {
         this.company_name = company_name;
         this.company_logo_image = company_logo_image;
         this.company_address = company_address;
-        this.company_category_id = company_category_id;
         this.company_link_youtube = company_link_youtube;
         this.company_website_url = company_website_url;
         this.company_lng = company_lng;
@@ -66,11 +64,10 @@ public class MultiCategoryProfileModel {
         this.category = category;
     }
 
-    public MultiCategoryProfileModel(@NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String company_name, @NotNull byte[] company_logo_image, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "address should have at least 1 characters") String company_address, String company_category_id, String company_link_youtube, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "website should have at least 1 characters") String company_website_url, float company_lng, float company_lat, @NotNull byte[] company_cover_image, String company_phone_number, String company_desc, List<TakatfTenderCategoryPOJO> category) {
+    public MultiCategoryProfileModel(@NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "company_name should have at least 1 characters") String company_name, @NotNull byte[] company_logo_image, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "address should have at least 1 characters") String company_address, String company_link_youtube, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "website should have at least 1 characters") String company_website_url, float company_lng, float company_lat, @NotNull byte[] company_cover_image, String company_phone_number, String company_desc, List<TakatfTenderCategoryPOJO> category) {
         this.company_name = company_name;
         this.company_logo_image = company_logo_image;
         this.company_address = company_address;
-        this.company_category_id = company_category_id;
         this.company_link_youtube = company_link_youtube;
         this.company_website_url = company_website_url;
         this.company_lng = company_lng;
@@ -116,13 +113,6 @@ public class MultiCategoryProfileModel {
         this.company_address = company_address;
     }
 
-    public String getCompany_category_id() {
-        return company_category_id;
-    }
-
-    public void setCompany_category_id(String company_category_id) {
-        this.company_category_id = company_category_id;
-    }
 
     public String getCompany_link_youtube() {
         return company_link_youtube;

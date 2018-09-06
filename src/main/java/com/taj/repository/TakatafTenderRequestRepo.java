@@ -1,5 +1,6 @@
 package com.taj.repository;
 
+import com.taj.model.CollectiveTenderBySchoolDto;
 import com.taj.model.TakatafSinfleSchoolRequestDTO;
 import com.taj.model.TakatafSingleSchoolRequestByIDDTO;
 import com.taj.model.Takataf_schoolApplayCollectiveTender;
@@ -136,6 +137,38 @@ public class TakatafTenderRequestRepo {
                         resultSet.getString(3),
                         resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(), resultSet.getInt(6),
                         resultSet.getInt(7), resultSet.getString(8)));
+
+    }
+
+    public List<CollectiveTenderBySchoolDto> getCollectiveTender(int categoryId){
+        String sql ="SELECT\n" +
+                "\ttender_id,\n" +
+                "\ttender_logo,\n" +
+                "\ttender_title,\n" +
+                "\ttender_explain,\n" +
+                "\ttender_display_date,\n" +
+                "\ttender_expire_date,\n" +
+                "\ttender_company_display_date,\n" +
+                "\ttender_company_expired_date,\n" +
+                "\tcount( DISTINCT request_id ) AS response_count,\n" +
+                "\tcount( DISTINCT seen_id ) AS view_count,\n" +
+                "\tcategory_name \n" +
+                "FROM\n" +
+                "\ttakatf_tender AS t\n" +
+                "\tLEFT JOIN efaz_company.takatf_request_tender AS req ON t.tender_id = req.request_tender_id\n" +
+                "\tLEFT JOIN efaz_company.takatf_school_see_tender AS see ON t.tender_id = see.seen_tender_id\n" +
+                "\tLEFT JOIN efaz_company.tkatf_tender_catgory_request AS cat ON t.tender_id = cat.t_tender_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_category AS n ON cat.t_category_id = n.category_id \n" +
+                "WHERE\n" +
+                "\tcat.t_category_id = ? \n" +
+                "GROUP BY\n" +
+                "\ttender_id;";
+
+        return jdbcTemplate.query(sql, new Object[]{categoryId},
+                (resultSet, i) -> new CollectiveTenderBySchoolDto(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getString(3),
+                        resultSet.getString(4), resultSet.getTimestamp(5).getTime(), resultSet.getTimestamp(6).getTime(),
+                        resultSet.getTimestamp(7).getTime(), resultSet.getTimestamp(8).getTime(), resultSet.getInt(9),
+                        resultSet.getInt(10), resultSet.getString(11)));
 
     }
 

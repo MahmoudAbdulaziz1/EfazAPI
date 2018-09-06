@@ -124,12 +124,14 @@ public class SchoolRequestRepo {
         String sql1 = "SELECT tender.request_id,  request_title, request_explaination, request_display_date,\n" +
                 "                 request_expired_date, ifnull(request_is_available,0)AS request_is_available, ifnull(request_is_conformied,0)AS request_is_conformied,\n" +
                 "                 tender.school_id, ifnull(school_name,0)AS school_name, ifnull(school_logo_image,0) AS school_logo_image ,\n" +
-                "                 requests_category_id, request_category_name, ifnull(extended_payment,0) AS extended_payment, ifnull(request_count, 0)AS request_count\n" +
+                "                 requests_category_id, request_category_name, ifnull(extended_payment,0) AS extended_payment," +
+                " count(response_id) AS request_count " +
                 "                 , count(seen_id)AS views_count\n" +
                 "                 FROM efaz_company.efaz_school_tender AS tender\n" +
                 "                 LEFT JOIN efaz_company.efaz_school_profile AS profile ON tender.school_id = profile.school_id\n" +
                 "                 Left JOIN efaz_company.efaz_school_request_category AS cat ON tender.requests_category_id = cat.request_category_id\n" +
-                "                 Left Join efaz_company.efaz_company_see_request AS reqst ON  tender.request_id = reqst.request_id \n" +
+                "                 Left Join efaz_company.efaz_company_see_request AS reqst ON  tender.request_id = reqst.request_id " +
+                " LEFT JOIN efaz_company.efaz_company_response_school_request as req ON tender.request_id=req.responsed_request_id " +
                 "                 Where tender.requests_category_id=?\n" +
                 "                 Group By tender.request_id,  request_title, request_explaination, request_display_date,\n" +
                 "                 request_expired_date, request_is_available, request_is_conformied,tender.school_id, school_name, school_logo_image,\n" +

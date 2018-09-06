@@ -1,9 +1,6 @@
 package com.taj.repository;
 
-import com.taj.model.CompantProfileDto;
-import com.taj.model.MultiCategoryProfileDTOS;
-import com.taj.model.MultiCategoryProfileGetAllDTO;
-import com.taj.model.TakatfTenderCategoryPOJO;
+import com.taj.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -26,7 +23,7 @@ public class MultiCategoryProfileRepo {
     JdbcTemplate jdbcTemplate;
 
     public int addProfileWithCategories(int company_id, String company_name, byte[] company_logo_image, String company_address,
-                                        String company_category_id, String company_link_youtube, String company_website_url, float school_lng,
+                                        String company_link_youtube, String company_website_url, float school_lng,
                                         float school_lat, byte[] company_cover_image, String company_phone_number, String company_desc,
                                         List<TakatfTenderCategoryPOJO> category) {
         jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=0;");
@@ -41,7 +38,7 @@ public class MultiCategoryProfileRepo {
                 ps.setString(2, company_name);
                 ps.setBytes(3, company_logo_image);
                 ps.setString(4, company_address);
-                ps.setString(5, company_category_id);
+                ps.setInt(5, 1);
                 ps.setString(6, company_link_youtube);
                 ps.setString(7, company_website_url);
                 ps.setFloat(8, school_lng);
@@ -80,7 +77,6 @@ public class MultiCategoryProfileRepo {
                 "\tcompany_name,\n" +
                 "\tcompany_logo_image,\n" +
                 "\tcompany_address,\n" +
-                "\tcategory_name,\n" +
                 "\tcompany_link_youtube,\n" +
                 "\tcompany_website_url,\n" +
                 "\tcompany_lng,\n" +
@@ -97,7 +93,6 @@ public class MultiCategoryProfileRepo {
                 "\t\t\t( efaz_company.efaz_company_profile AS PROFILE LEFT JOIN efaz_company.efaz_organization_following AS follow ON PROFILE.company_id = follow.follower_id )\n" +
                 "\t\t\tLEFT JOIN efaz_company_offer AS offer ON PROFILE.company_id = offer.offer_company_id \n" +
                 "\t\t)\n" +
-                "\t\tINNER JOIN efaz_company_category AS cat ON PROFILE.company_category_id = cat.category_id\n" +
                 "\t\tLEFT JOIN efaz_company.efaz_company_profile_cats AS cats ON PROFILE.company_id = cats.company_profile_id \n" +
                 "\t) \n" +
                 "GROUP BY\n" +
@@ -105,10 +100,10 @@ public class MultiCategoryProfileRepo {
 
         return jdbcTemplate.query(sql,
                 (resultSet, i) -> new MultiCategoryProfileGetAllDTO(resultSet.getInt(1), resultSet.getString(2),
-                        resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
-                        resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9),
-                        resultSet.getBytes(10), resultSet.getString(11), resultSet.getInt(12), resultSet.getInt(13),
-                        resultSet.getString(14), resultSet.getInt(15)));
+                        resultSet.getBytes(3), resultSet.getString(4),
+                        resultSet.getString(5), resultSet.getString(6), resultSet.getFloat(7), resultSet.getFloat(8),
+                        resultSet.getBytes(9), resultSet.getString(10), resultSet.getInt(11), resultSet.getInt(12),
+                        resultSet.getString(13), resultSet.getInt(14)));
     }
 
     public List<MultiCategoryProfileDTOS> getProfile(int profile) {
@@ -117,7 +112,6 @@ public class MultiCategoryProfileRepo {
                 "\tcompany_name,\n" +
                 "\tcompany_logo_image,\n" +
                 "\tcompany_address,\n" +
-                "\tcat.category_name,\n" +
                 "\tcompany_link_youtube,\n" +
                 "\tcompany_website_url,\n" +
                 "\tcompany_lng,\n" +
@@ -135,7 +129,6 @@ public class MultiCategoryProfileRepo {
                 "\t\t\t( efaz_company.efaz_company_profile AS PROFILE LEFT JOIN efaz_company.efaz_organization_following AS follow ON PROFILE.company_id = follow.follower_id )\n" +
                 "\t\t\tLEFT JOIN efaz_company_offer AS offer ON PROFILE.company_id = offer.offer_company_id \n" +
                 "\t\t)\n" +
-                "\t\tINNER JOIN efaz_company_category AS cat ON PROFILE.company_category_id = cat.category_id\n" +
                 "\t\tLEFT JOIN efaz_company.efaz_company_profile_cats AS cats ON PROFILE.company_id = cats.company_profile_id\n" +
                 "\t\tINNER JOIN efaz_company_category AS category ON cats.company_cat_id = category.category_id \n" +
                 "\t) \n" +
@@ -145,13 +138,13 @@ public class MultiCategoryProfileRepo {
                 "\tcats.company_cat_id;";
         return jdbcTemplate.query(sql, new Object[]{profile},
                 (resultSet, i) -> new MultiCategoryProfileDTOS(resultSet.getInt(1), resultSet.getString(2), resultSet.getBytes(3),
-                        resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getString(7),
-                        resultSet.getFloat(8), resultSet.getFloat(9), resultSet.getBytes(10), resultSet.getString(11),
-                        resultSet.getInt(12), resultSet.getInt(13), resultSet.getString(14), resultSet.getInt(15), resultSet.getString(16)));
+                        resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
+                        resultSet.getFloat(7), resultSet.getFloat(8), resultSet.getBytes(9), resultSet.getString(10),
+                        resultSet.getInt(11), resultSet.getInt(12), resultSet.getString(13), resultSet.getInt(14), resultSet.getString(15)));
     }
 
     public int updateProfile(int company_id, String company_name, byte[] company_logo_image, String company_address,
-                             String company_category_id, String company_link_youtube, String company_website_url, float school_lng,
+                             String company_link_youtube, String company_website_url, float school_lng,
                              float school_lat, byte[] company_cover_image, String company_phone_number, String company_desc,
                              List<TakatfTenderCategoryPOJO> category) {
         jdbcTemplate.update("DELETE FROM efaz_company.efaz_company_profile_cats WHERE company_profile_id=?;", company_id);
@@ -163,29 +156,27 @@ public class MultiCategoryProfileRepo {
             jdbcTemplate.update("INSERT INTO efaz_company.efaz_company_profile_cats VALUES  (?,?,?)", null, company_id, categorys);
         }
 
-        int category_ids = jdbcTemplate.queryForObject("SELECT category_id FROM efaz_company_category WHERE  category_name LIKE ?;",
-                Integer.class, "%" + company_category_id + "%");
+
 
 
         return jdbcTemplate.update("update efaz_company_profile set company_name=?," +
                         "company_logo_image=?, company_address=?," +
                         "company_category_id=?, company_link_youtube=?, company_website_url=?, company_lng=?, company_lat=?," +
                         " company_cover_image=?, company_phone_number=?, company_desc=? " +
-                        " where company_id=?;", company_name, company_logo_image, company_address, category_ids
+                        " where company_id=?;", company_name, company_logo_image, company_address, 2
                 , company_link_youtube, company_website_url, school_lng, school_lat, company_cover_image, company_phone_number, company_desc, company_id);
 
 
     }
 
 
-    public List<CompantProfileDto> getProfileByCategory(String id) {
+    public List<CompanyProfileDto> getProfileByCategory(String id) {
 
         String sql = "SELECT\n" +
                 "\tcompany_id,\n" +
                 "\tcompany_name,\n" +
                 "\tcompany_logo_image,\n" +
                 "\tcompany_address,\n" +
-                "\tcategory_name,\n" +
                 "\tcompany_link_youtube,\n" +
                 "\tcompany_website_url,\n" +
                 "\tcompany_lng,\n" +
@@ -202,7 +193,6 @@ public class MultiCategoryProfileRepo {
                 "\t\t\tLEFT JOIN efaz_company_offer AS offer ON PROFILE.company_id = offer.offer_company_id\n" +
                 "\t\t\tLEFT JOIN efaz_company.efaz_company_profile_cats AS cats ON PROFILE.company_id = cats.company_profile_id \n" +
                 "\t\t)\n" +
-                "\t\tINNER JOIN efaz_company_category AS cat ON cats.company_cat_id = cat.category_id \n" +
                 "\t) \n" +
                 "WHERE\n" +
                 "\tcats.company_cat_id = ? \n" +
@@ -211,10 +201,10 @@ public class MultiCategoryProfileRepo {
         int category = jdbcTemplate.queryForObject("SELECT category_id FROM efaz_company_category WHERE  category_name LIKE ?;",
                 Integer.class, "%" + id + "%");
         return jdbcTemplate.query(sql, new Object[]{category},
-                (resultSet, i) -> new CompantProfileDto(resultSet.getInt(1), resultSet.getString(2),
+                (resultSet, i) -> new CompanyProfileDto(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
-                        resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9),
-                        resultSet.getBytes(10), resultSet.getString(11), resultSet.getInt(12), resultSet.getInt(13), resultSet.getString(14)));
+                        resultSet.getString(6), resultSet.getFloat(7), resultSet.getFloat(8),
+                        resultSet.getBytes(9), resultSet.getString(10), resultSet.getInt(11), resultSet.getInt(12), resultSet.getString(13)));
     }
 
 

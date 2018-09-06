@@ -1,9 +1,6 @@
 package com.taj.controller;
 
-import com.taj.model.AdminHistoryOrdersModel;
-import com.taj.model.AdminOrdersModel;
-import com.taj.model.AdminSingleOrderHistoryModel;
-import com.taj.model.AdminSingleOrderModel;
+import com.taj.model.*;
 import com.taj.repository.AdminOrdersRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,5 +36,9 @@ public class AdminOrdersController {
     @GetMapping("/history/{id}")
     public AdminSingleOrderHistoryModel getHistoryOrder(@PathVariable int id){
         return  repo.getHistoryOrder(id);
+    }
+   @PostMapping("/ship")
+    public int addShipping(@RequestBody ShippingDTO dto){
+        return repo.addShipping(dto.getShip(), dto.getShip_company_offer_id());
     }
 }

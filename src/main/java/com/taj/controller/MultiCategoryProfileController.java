@@ -43,7 +43,7 @@ public class MultiCategoryProfileController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         } else {
             int res = repo.addProfileWithCategories(model.getCompany_id(), model.getCompany_name(), model.getCompany_logo_image(),
-                    model.getCompany_address(), model.getCompany_category_id(), model.getCompany_link_youtube(),
+                    model.getCompany_address(),  model.getCompany_link_youtube(),
                     model.getCompany_website_url(), model.getCompany_lng(), model.getCompany_lat(),
                     model.getCompany_cover_image(), model.getCompany_phone_number(), model.getCompany_desc(), model.getCategory());
 
@@ -61,7 +61,7 @@ public class MultiCategoryProfileController {
             objectNode.put("company_name", model.getCompany_name());
             objectNode.put("company_logo_image", model.getCompany_logo_image());
             objectNode.put("company_address", model.getCompany_address());
-            objectNode.put("company_category_id", model.getCompany_category_id());
+            //objectNode.put("company_category_id", model.getCompany_category_id());
             objectNode.put("company_link_youtube", model.getCompany_link_youtube());
             objectNode.put("company_website_url", model.getCompany_website_url());
             objectNode.put("company_lng", model.getCompany_lng());
@@ -90,7 +90,7 @@ public class MultiCategoryProfileController {
             category.add(pojo);
         }
         MultiCategoryProfileDTO result = new MultiCategoryProfileDTO(allData.get(0).getCompany_id(), allData.get(0).getCompany_name(),
-                allData.get(0).getCompany_logo_image(), allData.get(0).getCompany_address(), allData.get(0).getCompany_category_id(),
+                allData.get(0).getCompany_logo_image(), allData.get(0).getCompany_address(),
                 allData.get(0).getCompany_link_youtube(), allData.get(0).getCompany_website_url(), allData.get(0).getCompany_lng(),
                 allData.get(0).getCompany_lat(), allData.get(0).getCompany_cover_image(), allData.get(0).getCompany_phone_number(),
                 allData.get(0).getFollower_count(), allData.get(0).getOffer_count(), allData.get(0).getCompany_desc(), category);
@@ -109,7 +109,7 @@ public class MultiCategoryProfileController {
 
 
             int res = repo.updateProfile(model.getCompany_id(), model.getCompany_name(), model.getCompany_logo_image(), model.getCompany_address(),
-                    model.getCompany_category_id(), model.getCompany_link_youtube(), model.getCompany_website_url(), model.getCompany_lng(),
+                    model.getCompany_link_youtube(), model.getCompany_website_url(), model.getCompany_lng(),
                     model.getCompany_lat(), model.getCompany_cover_image(), model.getCompany_phone_number(), model.getCompany_desc(), model.getCategory());
             if (res == 1) {
                 ArrayNode category = mapper.createArrayNode();
@@ -126,7 +126,6 @@ public class MultiCategoryProfileController {
                 objectNode.put("company_name", model.getCompany_name());
                 objectNode.put("company_logo_image", model.getCompany_logo_image());
                 objectNode.put("company_address", model.getCompany_address());
-                objectNode.put("company_category_id", model.getCompany_category_id());
                 objectNode.put("company_link_youtube", model.getCompany_link_youtube());
                 objectNode.put("company_website_url", model.getCompany_website_url());
                 objectNode.put("company_lng", model.getCompany_lng());
@@ -155,12 +154,12 @@ public class MultiCategoryProfileController {
     }
 
     @GetMapping("/category/{id}")
-    public ResponseEntity<GetCompanyByCategory> getProfileByCategoryAndroid(@PathVariable String id) {
-        List<CompantProfileDto> model = repo.getProfileByCategory(id);
+    public ResponseEntity<GetCompanyByCategoryCompany> getProfileByCategoryAndroid(@PathVariable String id) {
+        List<CompanyProfileDto> model = repo.getProfileByCategory(id);
         if (model.size() > 0) {
-            return ResponseEntity.status(HttpStatus.OK).body(new GetCompanyByCategory("200", model));
+            return ResponseEntity.status(HttpStatus.OK).body(new GetCompanyByCategoryCompany("200", model));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GetCompanyByCategory("400", null));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GetCompanyByCategoryCompany("400", null));
         }
     }
 

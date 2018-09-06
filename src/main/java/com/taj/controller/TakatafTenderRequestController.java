@@ -117,6 +117,11 @@ public class TakatafTenderRequestController {
         return tener;
     }
 
+    @GetMapping("/category/{categoryId}")
+    public List<CollectiveTenderBySchoolDto> getCollectiveTender(@PathVariable int categoryId){
+        return repo.getCollectiveTender(categoryId);
+    }
+
 //    @GetMapping("/getAll")
 //    public List<TakatafTenderRequestModel> getTendersSeen(){
 //        return repo.getTenderRequests();

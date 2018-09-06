@@ -19,10 +19,12 @@ public class AdminSingleOrderHistoryModel {
     private int company_id;
     private double offer_cost;
     private byte[] company_logo_image;
+    private double ship;
 
 
     public AdminSingleOrderHistoryModel(int offer_id, byte[] offer_image, String offer_title, String offer_explaination, long offer_display_date, long offer_expired_date,
-                                        long offer_deliver_date, int request_offer_count, int school_id, byte[] school_logo_image, int company_id, double offer_cost, byte[] company_logo_image) {
+                                        long offer_deliver_date, int request_offer_count, int school_id, byte[] school_logo_image, int company_id,
+                                        double offer_cost, byte[] company_logo_image, double ship) {
         this.offer_id = offer_id;
         this.offer_image = offer_image;
         this.offer_title = offer_title;
@@ -36,11 +38,12 @@ public class AdminSingleOrderHistoryModel {
         this.company_id = company_id;
         this.offer_cost = offer_cost;
         this.company_logo_image = company_logo_image;
+        this.ship = ship;
     }
 
     public AdminSingleOrderHistoryModel(byte[] offer_image, String offer_title, String offer_explaination, long offer_display_date, long offer_expired_date,
                                         long offer_deliver_date, int request_offer_count, int school_id, byte[] school_logo_image, int company_id,
-                                        double offer_cost, byte[] company_logo_image) {
+                                        double offer_cost, byte[] company_logo_image, double ship) {
         this.offer_image = offer_image;
         this.offer_title = offer_title;
         this.offer_explaination = offer_explaination;
@@ -53,6 +56,7 @@ public class AdminSingleOrderHistoryModel {
         this.company_id = company_id;
         this.offer_cost = offer_cost;
         this.company_logo_image = company_logo_image;
+        this.ship = ship;
     }
 
     public AdminSingleOrderHistoryModel() {
@@ -160,5 +164,13 @@ public class AdminSingleOrderHistoryModel {
 
     public void setCompany_logo_image(byte[] company_logo_image) {
         this.company_logo_image = company_logo_image;
+    }
+
+    public double getShip() {
+        return ship;
+    }
+
+    public void setShip(double ship) {
+        this.ship = ship;
     }
 }
