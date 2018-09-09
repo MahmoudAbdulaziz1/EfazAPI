@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import java.util.Collections;
 
@@ -32,6 +33,9 @@ public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAuthenticationProvider authenticationProvider;
     @Autowired
     private JwtAuthenticationEntryPoint entryPoint;
+
+
+
 
 
     @Bean
@@ -70,7 +74,9 @@ public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.csrf().disable()
+        http
+                .cors()
+                .and().csrf().disable()
                 .authorizeRequests().antMatchers("/evvaz/**").authenticated()
 //                .and()
 //                .authorizeRequests().antMatchers("/evvaz/companyOffer/**").authenticated()
@@ -118,6 +124,10 @@ public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers("/evvaz/takataf/tender/**").authenticated()
                 .and()
                 .authorizeRequests().antMatchers("/evvaz/tender/request/**").authenticated()
+                .and()
+                .authorizeRequests().antMatchers("/evvaz/tender/details/company/**").authenticated()
+                .and()
+                .authorizeRequests().antMatchers("/evvaz/follow/**").authenticated()
                 .and()
 //                .authorizeRequests().antMatchers("/token/**").authenticated()
 //                .and()

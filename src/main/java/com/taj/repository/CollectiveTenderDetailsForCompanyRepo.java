@@ -29,10 +29,10 @@ public class CollectiveTenderDetailsForCompanyRepo {
                 " SUM( DISTINCT tr2.count ) AS sum \n" +
                 " FROM\n" +
                 " takatf_tender AS t\n" +
-                " INNER JOIN efaz_company.takatf_request_tender AS req ON t.tender_id = req.request_tender_id\n" +
-                " INNER JOIN efaz_company.takataf_request_cat_count AS tr ON t.tender_id = tr.tend_id\n" +
-                " INNER JOIN efaz_company.efaz_company_category AS ca ON tr.cat_id = category_id\n" +
-                " INNER JOIN efaz_company.takataf_request_cat_count AS tr2 ON tr.cat_id = tr2.cat_id \n" +
+                " LEFT JOIN efaz_company.takatf_request_tender AS req ON t.tender_id = req.request_tender_id\n" +
+                " LEFT JOIN efaz_company.takataf_request_cat_count AS tr ON t.tender_id = tr.tend_id\n" +
+                " LEFT JOIN efaz_company.efaz_company_category AS ca ON tr.cat_id = category_id\n" +
+                " LEFT JOIN efaz_company.takataf_request_cat_count AS tr2 ON tr.cat_id = tr2.cat_id \n" +
                 " AND tr2.tend_id = ? \n" +
                 " WHERE\n" +
                 " t.tender_id = ? \n" +
