@@ -29,12 +29,12 @@ public class TakatafTenderNewRepo {
             int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
                     Integer.class, "%" + cats.get(i).getCategory_name().trim() + "%");
             String sql = "SELECT\n" +
-                    "\tcount( * ) \n" +
+                    "\tcount(*) \n" +
                     "FROM\n" +
                     "\tefaz_company.takatf_tender AS tend\n" +
-                    "\tINNER JOIN efaz_company.tkatf_tender_catgory_request AS cat ON tend.tender_id = cat.t_tender_id \n" +
+                    "\tLEFT JOIN efaz_company.tkatf_tender_catgory_request AS cat ON tend.tender_id = cat.t_tender_id \n" +
                     "WHERE\n" +
-                    "\ttend.tender_expire_date >= now( ) \n" +
+                    "\ttend.tender_company_expired_date >= now( ) \n" +
                     "\tAND cat.t_category_id = ?;";
             int num = jdbcTemplate.queryForObject(sql, Integer.class, categorys);
             if (num>0){

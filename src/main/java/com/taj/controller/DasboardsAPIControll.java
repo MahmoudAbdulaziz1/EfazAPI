@@ -374,7 +374,7 @@ public class DasboardsAPIControll {
         return tener;
     }
 
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('school')")
     @GetMapping("/tender/request/get/{id}")
     public GetTakatafTenderForScoolRequestDTO getRequestWithNameById(@PathVariable int id) {
         List<TakatafSingleSchoolRequestByIDDTO> tenderList = takatafTenderRequestRepo.getAllRequestsWithNameByIdzs(id);
@@ -434,7 +434,7 @@ public class DasboardsAPIControll {
         return adminOrdersRepo.addShipping(dto.getShip(), dto.getShip_company_offer_id());
     }
 
-    @PreAuthorize("hasAuthority('school')")
+    @PreAuthorize("hasAuthority('school')  or hasAuthority('company')")
     @GetMapping("/follow/school/{id}")
     public List<FollowSchoolProfilesDto> getSchoolsWithFollow(@PathVariable int id) {
         return schoolFollowCompanyRepo.getSchoolsWithFollow(id);
@@ -459,7 +459,7 @@ public class DasboardsAPIControll {
         }
     }
 
-    @PreAuthorize("hasAuthority('school')")
+    @PreAuthorize("hasAuthority('school') or hasAuthority('company')")
     @GetMapping("/orders/{id}")
     public ResponseEntity<List<CompanyBackOrderModel>> getOrdersForCompany(@PathVariable int id) {
         return ordersRepo.getOrdersForCompany(id);
@@ -521,7 +521,7 @@ public class DasboardsAPIControll {
 
     }
 
-    @PreAuthorize("hasAuthority('school')")
+    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @GetMapping("/school/profile/get/{id}")
     public CustomSchoolProfileModel getProfileForAdmin(@PathVariable int id) {
         return schoolProfileRepo.getSchoolProfileForAdmin(id);
@@ -945,7 +945,7 @@ public class DasboardsAPIControll {
                     objectNode.put("message", "not success");
 
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
-                } else  {
+                } else {
                     ObjectNode objectNode = mapper.createObjectNode();
                     objectNode.put("status", 400);
                     objectNode.put("message", "is already follow it");
