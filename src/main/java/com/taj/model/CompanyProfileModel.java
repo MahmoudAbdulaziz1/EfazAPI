@@ -22,10 +22,6 @@ public class CompanyProfileModel {
     @Size(max = 450, min = 1, message = "address should have at least 1 characters")
     private String company_address;
     private String company_category_id;
-    //    @NotNull
-//    @NotBlank
-//    @NotEmpty
-//    @Size(max = 450, min = 1, message="youtube should have at least 1 characters")
     private String company_link_youtube;
     @NotNull
     @NotBlank

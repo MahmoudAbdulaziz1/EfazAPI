@@ -176,4 +176,21 @@ public class NewRegisterController {
         return registrationRepo.getInActiveCompaniesBoth();
     }
 
+    @GetMapping("/confirm/{id}")
+    public ObjectNode confirmEmail(@PathVariable int id) {
+        int res = registrationRepo.confirmEmail(id);
+
+        if (res == 1){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put(STATUS,SUCCESS);
+
+            return objectNode;
+        }else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put(STATUS, FAILED);
+
+            return objectNode;
+        }
+    }
+
 }

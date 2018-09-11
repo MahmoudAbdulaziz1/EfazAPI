@@ -7,7 +7,6 @@ import com.taj.repository.ProfileRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -174,15 +173,6 @@ public class ProfileController {
     }
 
 
-
-
-
-
-
-
-
-
-
     @PutMapping("/updates")
     public ResponseEntity<ObjectNode> updateProfileForAdmin(@Valid @RequestBody ComapnyDashBoradProfileModel model, Errors errors) {
 
@@ -195,7 +185,7 @@ public class ProfileController {
         }
         if (profileRepo.isExist(model.getCompany_id())) {
             int res = profileRepo.updateProfileForAdmin(model.getCompany_id(), model.getCompany_name(), model.getCompany_logo_image(),
-                    model.getCompany_address(),  model.getCompany_link_youtube(),
+                    model.getCompany_address(), model.getCompany_link_youtube(),
                     model.getCompany_website_url(), model.getCompany_cover_image(), model.getCompany_phone_number(), model.getCompany_desc());
             if (res == 1) {
                 ObjectNode objectNode = mapper.createObjectNode();
@@ -225,24 +215,6 @@ public class ProfileController {
 
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**
@@ -330,7 +302,6 @@ public class ProfileController {
         }
         //return profileRepo.CheckProfile(id);
     }
-
 
 
 //    @GetMapping("/getAlls")

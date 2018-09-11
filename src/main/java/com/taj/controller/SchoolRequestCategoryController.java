@@ -76,7 +76,6 @@ public class SchoolRequestCategoryController {
 
         if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
-            //objectNode.put("login_id", model.getCategory_id());
             objectNode.put("request_category_name", model.getRequest_category_name());
 
             return objectNode;

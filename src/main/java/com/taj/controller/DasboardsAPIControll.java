@@ -27,6 +27,12 @@ import java.util.*;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class DasboardsAPIControll {
 
+
+    private static final String STATUS = "status";
+    private static final String MESSAGE = "message";
+    private static final String SUCCESS = "success";
+    private static final String FAILED = "failed";
+
     @Autowired
     AdminOrdersRepo adminRepo;
     @Autowired
@@ -35,6 +41,9 @@ public class DasboardsAPIControll {
     CategoryRepo catRepo;
     @Autowired
     RegistrationRepo registrationRepo;
+
+    @Autowired
+    NewRegisterRepo newRegisterRepo;
     @Autowired
     TenderRequestRepo tenderRequestRepo;
     @Autowired
@@ -89,7 +98,6 @@ public class DasboardsAPIControll {
 
         if (res > 0) {
             ObjectNode objectNode = mapper.createObjectNode();
-            //objectNode.put("tender_id", model.getTender_id());
             objectNode.put("tender_logo", model.getTender_logo());
             objectNode.put("tender_title", model.getTender_title());
             objectNode.put("tender_explain", model.getTender_explain());
@@ -205,14 +213,14 @@ public class DasboardsAPIControll {
 
     @PreAuthorize("hasAuthority('admin')")
     @GetMapping("register/getInActive")
-    public List<RegistrationModel> getInActiveCompaines() {
-        return registrationRepo.getInActiveCompanies();
+    public List<NewRegisterModel> getInActiveCompaines() {
+        return newRegisterRepo.getInActiveCompanies();
     }
 
     @PreAuthorize("hasAuthority('admin')")
     @GetMapping("register/confirm/{id}")
     public ObjectNode confirmEmail(@PathVariable int id) {
-        int res = registrationRepo.confirmEmail(id);
+        int res = newRegisterRepo.confirmEmail(id);
 
         if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -229,8 +237,8 @@ public class DasboardsAPIControll {
 
     @PreAuthorize("hasAuthority('admin')")
     @GetMapping("register/get/{id}")
-    public RegistrationModel getUser(@PathVariable int id) {
-        return registrationRepo.getUser(id);
+    public NewRegisterModel getUser(@PathVariable int id) {
+        return newRegisterRepo.getUser(id);
     }
 
     @PreAuthorize("hasAuthority('admin')")
@@ -337,6 +345,82 @@ public class DasboardsAPIControll {
 
 
     }
+
+    @PreAuthorize("hasAuthority('admin')")
+    @PutMapping("/register/Archive/{id}")
+    public ResponseEntity<ObjectNode> archiveCompanyRequest(@PathVariable int id) {
+        int respons = newRegisterRepo.archiveCompanyRequest(id);
+        if (respons == 1) {
+            ObjectNode nodes = mapper.createObjectNode();
+            nodes.put(MESSAGE, SUCCESS);
+            return ResponseEntity.status(HttpStatus.OK).body(nodes);
+        }
+
+        ObjectNode nodes = mapper.createObjectNode();
+        nodes.put(MESSAGE, FAILED);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(nodes);
+    }
+    @PreAuthorize("hasAuthority('admin')")
+    @PutMapping("register/unArchive/{id}")
+    public ResponseEntity<ObjectNode> unArchiveCompanyRequest(@PathVariable int id) {
+        int respons = newRegisterRepo.unArchiveCompanyRequest(id);
+        if (respons == 1) {
+            ObjectNode nodes = mapper.createObjectNode();
+            nodes.put(MESSAGE, SUCCESS);
+            return ResponseEntity.status(HttpStatus.OK).body(nodes);
+        }
+
+        ObjectNode nodes = mapper.createObjectNode();
+        nodes.put(MESSAGE, FAILED);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(nodes);
+    }
+
+    @PreAuthorize("hasAuthority('admin')")
+    @PutMapping("register/consider/{id}")
+    public ResponseEntity<ObjectNode> considrateCompanyRequest(@PathVariable int id) {
+        int respons = newRegisterRepo.considrateCompanyRequest(id);
+        if (respons == 1) {
+            ObjectNode nodes = mapper.createObjectNode();
+            nodes.put(MESSAGE, SUCCESS);
+            return ResponseEntity.status(HttpStatus.OK).body(nodes);
+        }
+
+        ObjectNode nodes = mapper.createObjectNode();
+        nodes.put(MESSAGE, FAILED);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(nodes);
+    }
+
+    @PreAuthorize("hasAuthority('admin')")
+    @PutMapping("register/unconsider/{id}")
+    public ResponseEntity<ObjectNode> unCosidrateCompanyRequest(@PathVariable int id) {
+        int respons = newRegisterRepo.unCosidrateCompanyRequest(id);
+        if (respons == 1) {
+            ObjectNode nodes = mapper.createObjectNode();
+            nodes.put(MESSAGE, SUCCESS);
+            return ResponseEntity.status(HttpStatus.OK).body(nodes);
+        }
+
+        ObjectNode nodes = mapper.createObjectNode();
+        nodes.put(MESSAGE, FAILED);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(nodes);
+    }
+
+    @PreAuthorize("hasAuthority('admin')")
+    @GetMapping("register/getInActive/archived")
+    public List<NewRegisterModel> getInActiveCompaniesArchived() {
+        return newRegisterRepo.getInActiveCompaniesArchived();
+    }
+    @PreAuthorize("hasAuthority('admin')")
+    @GetMapping("register/getInActive/consider")
+    public List<NewRegisterModel> getInActiveCompaniesConsiderate() {
+        return newRegisterRepo.getInActiveCompaniesConsiderate();
+    }
+    @PreAuthorize("hasAuthority('admin')")
+    @GetMapping("register/getInActive/both")
+    public List<NewRegisterModel> getInActiveCompaniesBoth() {
+        return newRegisterRepo.getInActiveCompaniesBoth();
+    }
+
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @GetMapping("/tender/request/{id}")
