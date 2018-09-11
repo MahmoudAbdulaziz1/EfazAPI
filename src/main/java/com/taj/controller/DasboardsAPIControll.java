@@ -211,11 +211,20 @@ public class DasboardsAPIControll {
         return catRepo.getCategories();
     }
 
+
     @PreAuthorize("hasAuthority('admin')")
     @GetMapping("register/getInActive")
-    public List<NewRegisterModel> getInActiveCompaines() {
+    public List<RegistrationModel> getInActiveCompaines() {
+        return registrationRepo.getInActiveCompanies();
+    }
+
+
+    @PreAuthorize("hasAuthority('admin')")
+    @GetMapping("register/getInActives")
+    public List<NewRegisterModel> getInActiveCompainesNew() {
         return newRegisterRepo.getInActiveCompanies();
     }
+
 
     @PreAuthorize("hasAuthority('admin')")
     @GetMapping("register/confirm/{id}")
