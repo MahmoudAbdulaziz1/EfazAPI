@@ -17,7 +17,7 @@ public class TakatafTenderRequestModel {
     private int request_school_id;
     @Min(1)
     private int request_tender_id;
-    @Min(0)
+//    @Min(0)
     private int is_aproved;
     private long date;
     @Valid

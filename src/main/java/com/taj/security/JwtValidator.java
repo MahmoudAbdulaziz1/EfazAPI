@@ -1,6 +1,7 @@
 package com.taj.security;
 
 import com.taj.model.LoginModel;
+import com.taj.model.NewLoginModelDto;
 import com.taj.model.RegistrationModel;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -12,16 +13,16 @@ public class JwtValidator {
 
     private String secret = "youtube";
 
-    public LoginModel validate(String token) {
+    public NewLoginModelDto validate(String token) {
 
-        LoginModel jwtUser = null;
+        NewLoginModelDto jwtUser = null;
         try {
             Claims body = Jwts.parser()
                     .setSigningKey(secret)
                     .parseClaimsJws(token)
                     .getBody();
 
-            jwtUser = new LoginModel();
+            jwtUser = new NewLoginModelDto();
 
             jwtUser.setUser_email(body.getSubject());
             jwtUser.setLogin_id(Integer.parseInt((String) body.get("userId")));

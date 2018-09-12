@@ -3,6 +3,7 @@ package com.taj.repository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.LoginModel;
+import com.taj.model.NewLoginModelDto;
 import com.taj.model.RegistrationModel;
 import com.taj.security.JwtGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,15 +100,34 @@ public class LoginRepo {
     public ObjectNode isLogged(String user_email, String user_passwords, String login_role) {
         //String encodedPassword = bCryptPasswordEncoder.encode(user_password);
 
-        LoginModel model = null;
+        NewLoginModelDto model = null;
 
         if (isExist(user_email, login_role)) {
 
+            String sql = "SELECT\n" +
+                    "login_id,\n" +
+                    "user_email,\n" +
+                    "user_password,\n" +
+                    "is_active,\n" +
+                    "login_role,\n" +
+                    "login_token,\n" +
+                    "login_date,\n" +
+                    "city,\n" +
+                    "area,\n" +
+                    "registration_organization_name\n" +
+                    "FROM\n" +
+                    "\tefaz_login AS log\n" +
+                    "\tLEFT JOIN efaz_company.efaz_registration AS reg ON log.user_email = reg.registeration_email \n" +
+                    "\tAND log.login_role = reg.registration_role \n" +
+                    "\tAND reg.registration_isActive = 1 \n" +
+                    "WHERE\n" +
+                    "\tuser_email = ? \n" +
+                    "\tAND login_role = ?";
             try {
-                model = jdbcTemplate.queryForObject("select * from efaz_login WHERE user_email=? AND login_role=?"
+                model = jdbcTemplate.queryForObject(sql
                         , new Object[]{user_email, login_role},
-                        (resultSet, i) -> new LoginModel(resultSet.getInt(1), resultSet.getString(2),
-                                resultSet.getString(3), resultSet.getInt(4), resultSet.getString(5), resultSet.getString(6)));
+                        (resultSet, i) -> new NewLoginModelDto(resultSet.getInt(1), resultSet.getString(2),
+                                resultSet.getString(3), resultSet.getInt(4), resultSet.getString(5), resultSet.getString(6), resultSet.getString(8)));
             }catch (Exception e){
                 model = null;
             }
@@ -137,6 +157,7 @@ public class LoginRepo {
                         objectNode.put("is_active", model.getIs_active());
                         objectNode.put("login_role", model.getLogin_role());
                         objectNode.put("login_token", token);
+                        objectNode.put("org_name", model.getRegistration_organization_name());
                         return objectNode;
                     } else {
                         ObjectNode objectNode = mapper.createObjectNode();

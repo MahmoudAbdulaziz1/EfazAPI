@@ -166,8 +166,10 @@ public class RegistrationRepo {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return jdbcTemplate.update("INSERT INTO efaz_login VALUES (?,?,?,?,?,?,?)", null, model.getRegisteration_email(),
-                model.getRegisteration_password(), 0, model.getRegistration_role(), "Token=", new Timestamp(System.currentTimeMillis()));
+        return jdbcTemplate.update("INSERT INTO efaz_login VALUES (?,?,?,?,?,?,?,?,?)", null, model.getRegisteration_email(),
+                model.getRegisteration_password(), 0, model.getRegistration_role(), "Token=", new Timestamp(System.currentTimeMillis()),"","");
+
+
 
     }
 

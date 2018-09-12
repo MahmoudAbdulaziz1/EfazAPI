@@ -76,6 +76,8 @@ public class DasboardsAPIControll {
     @Autowired
     private SchoolProfileRepo schoolProfileRepo;
 
+    @Autowired
+
     @PreAuthorize("hasAuthority('admin')")
     @GetMapping("admin/orders/history/")
     public List<AdminHistoryOrdersModel> getAllHistoryOrders() {
@@ -229,7 +231,7 @@ public class DasboardsAPIControll {
     @PreAuthorize("hasAuthority('admin')")
     @GetMapping("register/confirm/{id}")
     public ObjectNode confirmEmail(@PathVariable int id) {
-        int res = newRegisterRepo.confirmEmail(id);
+        int res = registrationRepo.confirmEmail(id);
 
         if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -244,11 +246,42 @@ public class DasboardsAPIControll {
         }
     }
 
+
+//    @PreAuthorize("hasAuthority('admin')")
+//    @GetMapping("register/confirm/{id}")
+//    public ObjectNode confirmEmail(@PathVariable int id) {
+//        int res = newRegisterRepo.confirmEmail(id);
+//
+//        if (res == 1) {
+//            ObjectNode objectNode = mapper.createObjectNode();
+//            objectNode.put("value", "success");
+//
+//            return objectNode;
+//        } else {
+//            ObjectNode objectNode = mapper.createObjectNode();
+//            objectNode.put("value", "not success");
+//
+//            return objectNode;
+//        }
+//    }
+//
+
+
     @PreAuthorize("hasAuthority('admin')")
     @GetMapping("register/get/{id}")
-    public NewRegisterModel getUser(@PathVariable int id) {
-        return newRegisterRepo.getUser(id);
+    public RegistrationModel getUser(@PathVariable int id) {
+        return registrationRepo.getUser(id);
     }
+
+
+//    @PreAuthorize("hasAuthority('admin')")
+//    @GetMapping("register/get/{id}")
+//    public NewRegisterModel getUser(@PathVariable int id) {
+//        return newRegisterRepo.getUser(id);
+//    }
+//
+//
+
 
     @PreAuthorize("hasAuthority('admin')")
     @GetMapping("request/tender/{id}")
@@ -369,6 +402,7 @@ public class DasboardsAPIControll {
         nodes.put(MESSAGE, FAILED);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(nodes);
     }
+
     @PreAuthorize("hasAuthority('admin')")
     @PutMapping("register/unArchive/{id}")
     public ResponseEntity<ObjectNode> unArchiveCompanyRequest(@PathVariable int id) {
@@ -419,11 +453,13 @@ public class DasboardsAPIControll {
     public List<NewRegisterModel> getInActiveCompaniesArchived() {
         return newRegisterRepo.getInActiveCompaniesArchived();
     }
+
     @PreAuthorize("hasAuthority('admin')")
     @GetMapping("register/getInActive/consider")
     public List<NewRegisterModel> getInActiveCompaniesConsiderate() {
         return newRegisterRepo.getInActiveCompaniesConsiderate();
     }
+
     @PreAuthorize("hasAuthority('admin')")
     @GetMapping("register/getInActive/both")
     public List<NewRegisterModel> getInActiveCompaniesBoth() {
@@ -468,20 +504,27 @@ public class DasboardsAPIControll {
     }
 
     @PreAuthorize("hasAuthority('admin') or hasAuthority('school')")
+    @PutMapping("/tender/request/update")
+    public int updateRequest(@RequestBody TakatafTenderRequestModel model) {
+        return  takatafTenderRequestRepo.updateRequest(model.getRequest_school_id(), model.getRequest_tender_id(), model.getCategory());
+    }
+
+
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('school')")
     @GetMapping("/tender/request/get/{id}")
-    public GetTakatafTenderForScoolRequestDTO getRequestWithNameById(@PathVariable int id) {
-        List<TakatafSingleSchoolRequestByIDDTO> tenderList = takatafTenderRequestRepo.getAllRequestsWithNameByIdzs(id);
+    public GetTakatafTenderForScoolRequestDTO2 getRequestWithNameById(@PathVariable int id) {
+        List<TakatafSingleSchoolRequestByIDDTO2> tenderList = takatafTenderRequestRepo.getAllRequestsWithNameByIdzs2(id);
 
         GetSingleCollectiveByIdPartOneDTO data = new GetSingleCollectiveByIdPartOneDTO(tenderList.get(0).getTender_id(), tenderList.get(0).getTender_title(),
                 tenderList.get(0).getTender_explain(), tenderList.get(0).getTender_display_date(),
                 tenderList.get(0).getTender_expire_date(), tenderList.get(0).getResponse_count());
-        List<GetGetTakatafTenderSchollPrt2DTO> categories = new ArrayList<>();
+        List<GetGetTakatafTenderSchollPrt2DTO2> categories = new ArrayList<>();
 
-        for (TakatafSingleSchoolRequestByIDDTO obj : tenderList) {
-            GetGetTakatafTenderSchollPrt2DTO category = new GetGetTakatafTenderSchollPrt2DTO(obj.getId(), obj.getCategory_name());
+        for (TakatafSingleSchoolRequestByIDDTO2 obj : tenderList) {
+            GetGetTakatafTenderSchollPrt2DTO2 category = new GetGetTakatafTenderSchollPrt2DTO2(obj.getId(), obj.getCategory_name(), obj.getCount());
             categories.add(category);
         }
-        GetTakatafTenderForScoolRequestDTO tener = new GetTakatafTenderForScoolRequestDTO(data, categories);
+        GetTakatafTenderForScoolRequestDTO2 tener = new GetTakatafTenderForScoolRequestDTO2(data, categories);
         return tener;
     }
 
@@ -838,6 +881,24 @@ public class DasboardsAPIControll {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("status", 400);
             objectNode.put("message", "failed");
+            return objectNode;
+
+        }
+    }
+
+    @PreAuthorize("hasAuthority('school')")
+    @PutMapping("/response/school/request/refuse/{id}")
+    public JsonNode refuseCompanyResponseSchoolRequest(@PathVariable int id) {
+        int res = companyResponseSchoolRequestRepo.refuseResponseSchoolRequest(id);
+        if (res == 1) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("status", 200);
+            objectNode.put("message", "refuse success");
+            return objectNode;
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("status", 400);
+            objectNode.put("message", "refuse failed");
             return objectNode;
 
         }

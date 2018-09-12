@@ -1,6 +1,7 @@
 package com.taj.security;
 
 import com.taj.model.LoginModel;
+import com.taj.model.NewLoginModelDto;
 import com.taj.model.RegistrationModel;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -13,7 +14,7 @@ import java.sql.Timestamp;
 public class JwtGenerator {
 
 
-    public String generate(LoginModel jwtUser) {
+    public String generate(NewLoginModelDto jwtUser) {
 
 
         Claims claims = Jwts.claims()

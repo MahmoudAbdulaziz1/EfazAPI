@@ -34,8 +34,8 @@ public class TakatafTenderNewRepo {
                     "\tefaz_company.takatf_tender AS tend\n" +
                     "\tLEFT JOIN efaz_company.tkatf_tender_catgory_request AS cat ON tend.tender_id = cat.t_tender_id \n" +
                     "WHERE\n" +
-                    "\ttend.tender_company_expired_date >= now( ) \n" +
-                    "\tAND cat.t_category_id = ?;";
+                    " tend.tender_expire_date >= now() " +
+                    " AND cat.t_category_id = ?;";
             int num = jdbcTemplate.queryForObject(sql, Integer.class, categorys);
             if (num>0){
                 return -100;

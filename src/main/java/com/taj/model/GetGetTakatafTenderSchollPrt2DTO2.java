@@ -1,20 +1,22 @@
 package com.taj.model;
 
 /**
- * Created by User on 8/29/2018.
+ * Created by User on 9/12/2018.
  */
-public class GetGetTakatafTenderSchollPrt2DTO {
+public class GetGetTakatafTenderSchollPrt2DTO2 {
 
     private int id;
     private String category_name;
+    private int count;
 
 
-    public GetGetTakatafTenderSchollPrt2DTO(int id, String category_name) {
+    public GetGetTakatafTenderSchollPrt2DTO2(int id, String category_name,  int count) {
         this.id = id;
         this.category_name = category_name;
+        this.count = count;
     }
 
-    public GetGetTakatafTenderSchollPrt2DTO() {
+    public GetGetTakatafTenderSchollPrt2DTO2() {
     }
 
     public int getId() {
@@ -31,5 +33,13 @@ public class GetGetTakatafTenderSchollPrt2DTO {
 
     public void setCategory_name(String category_name) {
         this.category_name = category_name;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 }

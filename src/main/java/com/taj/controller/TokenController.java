@@ -1,6 +1,6 @@
 package com.taj.controller;
 
-import com.taj.model.LoginModel;
+import com.taj.model.NewLoginModelDto;
 import com.taj.security.JwtGenerator;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +19,7 @@ public class TokenController {
     }
 
     @PostMapping("/")
-    public String generate(@RequestBody final LoginModel jwtUser) {
+    public String generate(@RequestBody final NewLoginModelDto jwtUser) {
 
         return jwtGenerator.generate(jwtUser);
 
