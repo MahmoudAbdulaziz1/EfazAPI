@@ -18,11 +18,23 @@ public class CompanyResponseSchoolRequestRepo {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    public boolean checkIfExist(int responsed_company_id, int responsed_request_id) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM  efaz_company.efaz_company_response_school_request WHERE responsed_company_id=? AND responsed_request_id=?;",
+                Integer.class, responsed_company_id, responsed_request_id);
+        return cnt != null && cnt > 0;
+    }
 
     public int addResponseSchoolRequest( int responsed_company_id, int responsed_request_id, int responsed_from, int responsed_to, double responsed_cost, int is_aproved) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        return jdbcTemplate.update("INSERT INTO efaz_company_response_school_request VALUES (?,?,?,?,?,?,?,?)", null, responsed_company_id, responsed_request_id,
-                responsed_from, responsed_to, responsed_cost, 0, timestamp);
+        if (checkIfExist(responsed_company_id, responsed_request_id)){
+            return jdbcTemplate.update("UPDATE efaz_company.efaz_company_response_school_request set responsed_cost=? " +
+                    " WHERE responsed_company_id=? AND responsed_request_id=?; ", responsed_cost, responsed_company_id, responsed_request_id);
+        }else {
+            return jdbcTemplate.update("INSERT INTO efaz_company_response_school_request VALUES (?,?,?,?,?,?,?,?)", null, responsed_company_id, responsed_request_id,
+                    responsed_cost, responsed_to, responsed_from, 0, timestamp);
+        }
+
     }
 
     public List<CompanyResponseSchoolRequestModel> getResponseSchoolRequest() {

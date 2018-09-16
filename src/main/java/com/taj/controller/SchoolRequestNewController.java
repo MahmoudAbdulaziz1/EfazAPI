@@ -81,7 +81,7 @@ public class SchoolRequestNewController {
 
     @GetMapping("/school/{id}")
     //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
-    public List<SchoolRequestNewDto> getSchoolRequestsBySchool(@PathVariable int id) {
+    public List<SchoolRequestNewDto2> getSchoolRequestsBySchool(@PathVariable int id) {
         return repo.getRequestsBySchoolID(id);
     }
 

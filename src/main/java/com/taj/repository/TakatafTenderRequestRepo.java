@@ -20,7 +20,8 @@ public class TakatafTenderRequestRepo {
     public int add$Request(int request_school_id, int request_tender_id, int is_aproved, long date, List<Takataf_schoolApplayCollectiveTender> category) {
         int res = 0;
         if (!isExistApp(request_school_id, request_tender_id)) {
-            jdbcTemplate.update("INSERT INTO takatf_request_tender VALUES (?,?,?,?,?)", null, request_school_id, request_tender_id, is_aproved, new Timestamp(date));
+            jdbcTemplate.update("INSERT INTO takatf_request_tender VALUES (?,?,?,?,?)", null, request_school_id, request_tender_id, is_aproved
+                    , new Timestamp(System.currentTimeMillis()));
             for (int i = 0; i < category.size(); i++) {
                 int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
                         Integer.class, "%" + category.get(i).getCat_name().trim() + "%");
@@ -48,7 +49,7 @@ public class TakatafTenderRequestRepo {
     public int updateRequest(int request_school_id, int request_tender_id, List<Takataf_schoolApplayCollectiveTender> category) {
         int res = 0;
         if (isExistApp(request_school_id, request_tender_id)) {
-
+            System.out.println(isExistApp(request_school_id, request_tender_id)+" ");
             for (int i = 0; i < category.size(); i++) {
                 int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
                         Integer.class, "%" + category.get(i).getCat_name().trim() + "%");
@@ -58,6 +59,7 @@ public class TakatafTenderRequestRepo {
 
             return res;
         } else {
+            System.out.println(isExistApp(request_school_id, request_tender_id)+" else");
 
             for (int i = 0; i < category.size(); i++) {
                 int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
@@ -202,7 +204,7 @@ public class TakatafTenderRequestRepo {
                 "tender_display_date," +
                 "tender_expire_date," +
                 "category_name," +
-                "count;";
+                " count;";
 
 
         return jdbcTemplate.query(sql, new Object[]{id},

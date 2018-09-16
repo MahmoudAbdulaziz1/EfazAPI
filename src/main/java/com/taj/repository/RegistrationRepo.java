@@ -33,7 +33,8 @@ public class RegistrationRepo {
 
     @Autowired
     JwtGenerator generator;
-//    @Autowired
+    @Autowired
+    LoginRepo loginRepo;
 //    RegistrationModel model;
 
 
@@ -156,18 +157,22 @@ public class RegistrationRepo {
     }
 
     public int  confirmEmail(int id) {
-        jdbcTemplate.update("update efaz_registration set registration_isActive=1 WHERE registration_id=?", id);
+        //jdbcTemplate.update("update efaz_registration set registration_isActive=1 WHERE registration_id=?", id);
         RegistrationModel model = getUser(id);
+        if (loginRepo.isExistILogin(model.getRegisteration_email(), model.getRegistration_role())){
+            return -100;
+        }else {
+            RegistrationModel models = new RegistrationModel();
 
-        RegistrationModel models = new RegistrationModel();
+            try {
+                sendEmail(model.getRegisteration_email(), id);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return jdbcTemplate.update("INSERT INTO efaz_login VALUES (?,?,?,?,?,?,?,?,?)", null, model.getRegisteration_email(),
+                    model.getRegisteration_password(), 0, model.getRegistration_role(), "Token=", new Timestamp(System.currentTimeMillis()),"","");
 
-        try {
-            sendEmail(model.getRegisteration_email(), id);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        return jdbcTemplate.update("INSERT INTO efaz_login VALUES (?,?,?,?,?,?,?,?,?)", null, model.getRegisteration_email(),
-                model.getRegisteration_password(), 0, model.getRegistration_role(), "Token=", new Timestamp(System.currentTimeMillis()),"","");
 
 
 

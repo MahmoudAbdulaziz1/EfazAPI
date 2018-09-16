@@ -238,7 +238,12 @@ public class DasboardsAPIControll {
             objectNode.put("value", "success");
 
             return objectNode;
-        } else {
+        } else if (res == -100){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "email with role already exist");
+
+            return objectNode;
+        }else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "not success");
 
@@ -283,7 +288,7 @@ public class DasboardsAPIControll {
 //
 
 
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('admin') OR hasAuthority('school')")
     @GetMapping("request/tender/{id}")
     public TenderRequestTenderModel getTenderRequestObject(@PathVariable int id) {
         Map<TenderRequestSchoolModel, List<TenderRequestCategoriesModel>> res = new HashMap<>();
@@ -309,9 +314,9 @@ public class DasboardsAPIControll {
 
             //System.out.println(map.get("t_date")+" +++ "+ date+" ++++++ "+ date.getTime()+ " ++++ "+ new Timestamp(0));
 
-            long categoryId = (long) map.get("id");
+            int categoryId = (int) map.get("id");
             String categoryName = (String) map.get("category_name");
-            long count = (long) map.get("count");
+            int count = (int) map.get("count");
 
 
             test2Model.setId(categoryId);
@@ -347,9 +352,9 @@ public class DasboardsAPIControll {
 //                if (res.containsKey(obj)) {
                 if (map.get("school_id").equals(obj.getSchool_id())) {
                     TenderRequestCategoriesModel test2Model = new TenderRequestCategoriesModel();
-                    long categoryId = (long) map.get("id");
+                    int categoryId = (int) map.get("id");
                     String categoryName = (String) map.get("category_name");
-                    long count = (long) map.get("count");
+                    int count = (int) map.get("count");
 
 
                     test2Model.setId(categoryId);
@@ -703,7 +708,7 @@ public class DasboardsAPIControll {
     @PreAuthorize("hasAuthority('school')")
     @GetMapping("/school/tenders/school/{id}")
     //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
-    public List<SchoolRequestNewDto> getSchoolRequestsBySchool(@PathVariable int id) {
+    public List<SchoolRequestNewDto2> getSchoolRequestsBySchool(@PathVariable int id) {
         return schoolRequestNewRepo.getRequestsBySchoolID(id);
     }
 

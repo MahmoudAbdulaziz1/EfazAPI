@@ -24,9 +24,9 @@ public class TenderRequestRepo {
                 "    tender_display_date, " +
                 "    tender_expire_date, " +
                 "    COUNT(DISTINCT request_id) AS response_count, " +
-                "    IFNULL(id, 0) AS id, " +
-                "    IFNULL(category_name, 0) AS category_name, " +
-                "    IFNULL(count, 0) AS count, " +
+                "     id, " +
+                "    category_name, " +
+                "     count, " +
                 "    IFNULL(school_id, 0) AS school_id, t_date," +
                 "    IFNULL(school_name, 0) AS school_name, " +
                 "    IFNULL(school_logo_image, 0) AS school_logo_image " +
@@ -35,7 +35,7 @@ public class TenderRequestRepo {
                 "        LEFT JOIN " +
                 "    efaz_company.takatf_request_tender AS req ON t.tender_id = req.request_tender_id " +
                 "        LEFT JOIN " +
-                "    efaz_company.takataf_request_cat_count AS tr ON t.tender_id = tr.tend_id " +
+                "    efaz_company.takataf_request_cat_count AS tr ON t.tender_id = tr.tend_id AND tr.count!=0" +
                 "        LEFT JOIN " +
                 "    efaz_company.efaz_school_profile sp ON tr.scool_id = sp.school_id " +
                 "        LEFT JOIN " +

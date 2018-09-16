@@ -97,6 +97,13 @@ public class LoginRepo {
         return cnt != null && cnt > 0;
     }
 
+    public boolean isExistILogin(String email, String login_role) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_company.efaz_login WHERE user_email=? AND login_role=?;",
+                Integer.class, email, login_role);
+        return cnt != null && cnt > 0;
+    }
+
     public ObjectNode isLogged(String user_email, String user_passwords, String login_role) {
         //String encodedPassword = bCryptPasswordEncoder.encode(user_password);
 

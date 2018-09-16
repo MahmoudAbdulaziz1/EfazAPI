@@ -96,7 +96,7 @@ public class AdminOrdersRepo {
                 "\tLEFT JOIN efaz_company.efaz_company_offer AS offer ON req.requsted_offer_id = offer.offer_id\n" +
                 "\tLEFT JOIN efaz_company.efaz_company_profile AS cpro ON offer.offer_company_id = cpro.company_id \n" +
                 "WHERE\n" +
-                "\tis_accepted = 1;";
+                "\tis_accepted = 1 OR offer_expired_date< NOW() ;";
         return jdbcTemplate.query(sql,
                 (resultSet, i) -> new AdminHistoryOrdersModel(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3),
                         resultSet.getBytes(4), resultSet.getInt(5), resultSet.getDouble(6), resultSet.getBytes(7),
