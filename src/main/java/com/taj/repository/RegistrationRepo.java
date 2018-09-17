@@ -157,7 +157,6 @@ public class RegistrationRepo {
     }
 
     public int  confirmEmail(int id) {
-        //jdbcTemplate.update("update efaz_registration set registration_isActive=1 WHERE registration_id=?", id);
         RegistrationModel model = getUser(id);
         if (loginRepo.isExistILogin(model.getRegisteration_email(), model.getRegistration_role())){
             return -100;
@@ -169,6 +168,7 @@ public class RegistrationRepo {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            jdbcTemplate.update("update efaz_registration set registration_isActive=1 WHERE registration_id=?", id);
             return jdbcTemplate.update("INSERT INTO efaz_login VALUES (?,?,?,?,?,?,?,?,?)", null, model.getRegisteration_email(),
                     model.getRegisteration_password(), 0, model.getRegistration_role(), "Token=", new Timestamp(System.currentTimeMillis()),"","");
 

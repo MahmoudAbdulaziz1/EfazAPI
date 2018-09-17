@@ -1,9 +1,6 @@
 package com.taj.model;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.List;
 
 /**
@@ -23,7 +20,6 @@ public class TakatafTenderNewModel {
     @NotEmpty
     @Size(max = 450, min = 1, message = "explain should have at least 1 characters")
     private String tender_explain;
-
     private @NotNull long tender_display_date;
     @NotNull
     private long tender_expire_date;
@@ -44,7 +40,6 @@ public class TakatafTenderNewModel {
         this.tender_logo = tender_logo;
         this.tender_title = tender_title;
         this.tender_explain = tender_explain;
-
         this.tender_display_date = tender_display_date;
         this.tender_expire_date = tender_expire_date;
         this.tender_company_display_date = tender_company_display_date;

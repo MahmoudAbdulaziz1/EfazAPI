@@ -132,7 +132,7 @@ public class NewRegisterRepo {
 
     public int archiveCompanyRequest(int id) {
         String sql = "UPDATE efaz_company.complete_register_data  " +
-                " SET archive = 1 " +
+                " SET archive = 1,  consider=0 " +
                 " WHERE " +
                 " id = ?;";
         return jdbcTemplate.update(sql, id);
@@ -149,7 +149,7 @@ public class NewRegisterRepo {
 
     public int considrateCompanyRequest(int id) {
         String sql = "UPDATE efaz_company.complete_register_data  " +
-                " SET consider = 1 " +
+                " SET consider = 1, archive=0 " +
                 " WHERE " +
                 " id = ?;";
         return jdbcTemplate.update(sql, id);

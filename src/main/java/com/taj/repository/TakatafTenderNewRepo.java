@@ -1,5 +1,8 @@
 package com.taj.repository;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.taj.model.CategoriesInUse;
 import com.taj.model.TakatafMyTenderPageDTO;
 import com.taj.model.TakatafTenderPOJO;
 import com.taj.model.TakatfTenderCategoryPOJO;
@@ -22,10 +25,13 @@ public class TakatafTenderNewRepo {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    ObjectMapper mapper;
+
     public int addTender(byte[] tender_logo, String tender_title, String tender_explain, long tender_display_date, long tender_expire_date,
                          long tender_company_display_date, long tender_company_expired_date, List<TakatfTenderCategoryPOJO> cats) {
 
-        for (int i=0 ; i< cats.size(); i++){
+        for (int i = 0; i < cats.size(); i++) {
             int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
                     Integer.class, "%" + cats.get(i).getCategory_name().trim() + "%");
             String sql = "SELECT\n" +
@@ -37,7 +43,8 @@ public class TakatafTenderNewRepo {
                     " tend.tender_expire_date >= now() " +
                     " AND cat.t_category_id = ?;";
             int num = jdbcTemplate.queryForObject(sql, Integer.class, categorys);
-            if (num>0){
+            if (num > 0) {
+
                 return -100;
             }
         }
@@ -81,6 +88,14 @@ public class TakatafTenderNewRepo {
         return tend_id;
     }
 
+
+    public List<CategoriesInUse> getCategoriesInUse(){
+        String sql2 ="SELECT DISTINCT category_name FROM efaz_company.tkatf_tender_catgory_request as re\n" +
+                "LEFT JOIN efaz_company_category as cat ON  re.t_category_id = cat.category_id ;";
+        List<CategoriesInUse> data = jdbcTemplate.query(sql2,
+                (resultSet, i1) -> new CategoriesInUse(resultSet.getString(1)));
+        return data;
+    }
 
     public List<TakatafTenderPOJO> getTenders() {
         String sql = "SELECT tender_id, tender_logo, tender_title, tender_explain, tender_display_date, tender_expire_date , " +
@@ -142,7 +157,7 @@ public class TakatafTenderNewRepo {
             int x = delete(tender_id);
         }
 
-        for (int i=0 ; i< cats.size(); i++){
+        for (int i = 0; i < cats.size(); i++) {
             int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
                     Integer.class, "%" + cats.get(i).getCategory_name().trim() + "%");
             String sql = "SELECT\n" +
@@ -154,7 +169,7 @@ public class TakatafTenderNewRepo {
                     " tend.tender_expire_date >= now( ) " +
                     "\tAND cat.t_category_id = ?;";
             int num = jdbcTemplate.queryForObject(sql, Integer.class, categorys);
-            if (num>0){
+            if (num > 0) {
                 return -100;
             }
         }
@@ -180,7 +195,6 @@ public class TakatafTenderNewRepo {
         System.out.println(cats.size());
 
 
-
         return ten;
 
     }
@@ -196,7 +210,7 @@ public class TakatafTenderNewRepo {
         return cnt != null && cnt > 0;
     }
 
-    public int deleteTenderWithItsResponse(int id){
+    public int deleteTenderWithItsResponse(int id) {
         jdbcTemplate.update("SET FOREIGN_KEY_CHECKS=0;");
         jdbcTemplate.update("DELETE FROM efaz_company.takatf_tender WHERE tender_id = ?;", id);
         int x = delete(id);
@@ -206,7 +220,7 @@ public class TakatafTenderNewRepo {
         return 0;
     }
 
-    public int getCategoryId(String name){
+    public int getCategoryId(String name) {
         int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
                 Integer.class, "%" + name.trim() + "%");
         return categorys;

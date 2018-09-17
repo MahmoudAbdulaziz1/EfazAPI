@@ -36,7 +36,7 @@ public class AdminOrdersRepo {
                 "\tLEFT JOIN efaz_company.efaz_company_offer AS offer ON req.requsted_offer_id = offer.offer_id\n" +
                 "\tLEFT JOIN efaz_company.efaz_company_profile AS cpro ON offer.offer_company_id = cpro.company_id \n" +
                 "WHERE\n" +
-                "\tis_accepted = 0;";
+                "\tis_accepted = 0 AND offer_expired_date>=NOW();";
         return jdbcTemplate.query(sql,
                 (resultSet, i) -> new AdminOrdersModel(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3),
                         resultSet.getBytes(4), resultSet.getInt(5), resultSet.getDouble(6), resultSet.getBytes(7),
@@ -113,8 +113,8 @@ public class AdminOrdersRepo {
                 "\toffer.offer_expired_date,\n" +
                 "\toffer.offer_deliver_date,\n" +
                 "\trequest_offer_count,\n" +
-                "\tschool_id,\n" +
-                "\tschool_logo_image,\n" +
+                "\tIFNULL(school_id, 0)AS school_id,\n" +
+                "\tIFNULL(school_logo_image, 0) AS school_logo_image,\n" +
                 "\toffer_company_id AS company_id,\n" +
                 "\toffer_cost,\n" +
                 "\tcompany_logo_image,\n" +
@@ -127,7 +127,7 @@ public class AdminOrdersRepo {
                 "\tLEFT JOIN efaz_company.company_offer_images AS image ON offer.offer_image_id = image.images_id\n" +
                 "\tLEFT JOIN efaz_company.efaz_company_offer_shipping AS ship ON requsted_offer_id = ship.ship_company_offer_id \n" +
                 "WHERE\n" +
-                "\tis_accepted = 1 \n" +
+                " (is_accepted = 1 OR  offer.offer_expired_date < NOW()) " +
                 "\tAND requsted_offer_id = ?;";
 
         return jdbcTemplate.queryForObject(sql, new Object[]{id},

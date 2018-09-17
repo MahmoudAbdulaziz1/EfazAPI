@@ -91,12 +91,50 @@ public class DasboardsAPIControll {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
-            objectNode.put("details", errors.getAllErrors().toString());
+
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
+        if (model.getTender_display_date() < new Timestamp(System.currentTimeMillis()).getTime()
+                || model.getTender_expire_date() < new Timestamp(System.currentTimeMillis()).getTime()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed school date in past");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+
+        if (model.getTender_display_date() >= model.getTender_expire_date()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed school display date is greater than  expired date");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+
+
+
+
+        if (model.getTender_company_display_date() < new Timestamp(System.currentTimeMillis()).getTime()
+                || model.getTender_company_expired_date() < new Timestamp(System.currentTimeMillis()).getTime()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed company date in past");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+
+        if (model.getTender_company_display_date() >= model.getTender_company_expired_date()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed company display date is greater than  expired date");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+
+
+
+
+
         int res = repo.addTender(model.getTender_logo(), model.getTender_title(), model.getTender_explain(),
                 model.getTender_display_date(), model.getTender_expire_date(), model.getTender_company_display_date(),
                 model.getTender_company_expired_date(), model.getCats());
+
 
         if (res > 0) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -113,10 +151,12 @@ public class DasboardsAPIControll {
         } else if (res == -100) {
             ObjectNode objectNode = mapper.createObjectNode();
             ArrayNode nodes = mapper.createArrayNode();
-            for (int i = 0; i < model.getCats().size(); i++) {
-                int categorys = repo.getCategoryId(model.getCats().get(i).getCategory_name());
+            List<CategoriesInUse> data = repo.getCategoriesInUse();
+            for (int i = 0; i < data.size(); i++) {
+                int categorys = repo.getCategoryId(data.get(i).getCategory_name());
+
                 if (categorys > 0) {
-                    nodes.add(model.getCats().get(i).getCategory_name());
+                    nodes.add(data.get(i).getCategory_name());
                 }
             }
             objectNode.set("cats", nodes);
@@ -238,12 +278,12 @@ public class DasboardsAPIControll {
             objectNode.put("value", "success");
 
             return objectNode;
-        } else if (res == -100){
+        } else if (res == -100) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "email with role already exist");
 
             return objectNode;
-        }else {
+        } else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "not success");
 
@@ -511,14 +551,14 @@ public class DasboardsAPIControll {
     @PreAuthorize("hasAuthority('admin') or hasAuthority('school')")
     @PutMapping("/tender/request/update")
     public int updateRequest(@RequestBody TakatafTenderRequestModel model) {
-        return  takatafTenderRequestRepo.updateRequest(model.getRequest_school_id(), model.getRequest_tender_id(), model.getCategory());
+        return takatafTenderRequestRepo.updateRequest(model.getRequest_school_id(), model.getRequest_tender_id(), model.getCategory());
     }
 
 
     @PreAuthorize("hasAuthority('admin') or hasAuthority('school')")
-    @GetMapping("/tender/request/get/{id}")
-    public GetTakatafTenderForScoolRequestDTO2 getRequestWithNameById(@PathVariable int id) {
-        List<TakatafSingleSchoolRequestByIDDTO2> tenderList = takatafTenderRequestRepo.getAllRequestsWithNameByIdzs2(id);
+    @GetMapping("/tender/request/get/{id}/{school_id}")
+    public GetTakatafTenderForScoolRequestDTO2 getRequestWithNameById(@PathVariable int id, @PathVariable int school_id) {
+        List<TakatafSingleSchoolRequestByIDDTO2> tenderList = takatafTenderRequestRepo.getAllRequestsWithNameByIdzs2(id, school_id);
 
         GetSingleCollectiveByIdPartOneDTO data = new GetSingleCollectiveByIdPartOneDTO(tenderList.get(0).getTender_id(), tenderList.get(0).getTender_title(),
                 tenderList.get(0).getTender_explain(), tenderList.get(0).getTender_display_date(),
@@ -763,6 +803,24 @@ public class DasboardsAPIControll {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
 
+        if (model.getRequest_display_date() < new Timestamp(System.currentTimeMillis()).getTime()
+                || model.getRequest_expired_date() < new Timestamp(System.currentTimeMillis()).getTime()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed offer date in past");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+
+        if (model.getRequest_display_date() >= model.getRequest_expired_date()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed offer display date is greater than  expired date");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+
+
+
+
         int res = schoolRequestNewRepo.addRequest(model.getRequest_title(), model.getRequest_explaination(),
                 model.getRequest_display_date(), model.getRequest_expired_date(), model.getSchool_id(), model.getRequest_category_id());
         if (res == 1) {
@@ -937,6 +995,21 @@ public class DasboardsAPIControll {
             objectNode.put("message", "Validation Failed");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         } else {
+            if (model.getOffer_display_date() < new Timestamp(System.currentTimeMillis()).getTime()
+                    || model.getOffer_expired_date() < new Timestamp(System.currentTimeMillis()).getTime()){
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("state", 400);
+                objectNode.put("message", "Validation Failed offer date in past");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            }
+
+            if (model.getOffer_display_date() >= model.getOffer_expired_date()){
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("state", 400);
+                objectNode.put("message", "Validation Failed offer display date is greater than  expired date");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            }
+
             int res = customCompanyOfferRepo.addOfferEdeited(model.getImage_one(), model.getImage_two(), model.getImage_third(), model.getImage_four(), model.getOffer_title(), model.getOffer_explaination(),
                     model.getOffer_cost(), model.getOffer_display_date(), model.getOffer_expired_date(), model.getOffer_deliver_date(),
                     model.getCompany_id(), model.getOffer_count());
