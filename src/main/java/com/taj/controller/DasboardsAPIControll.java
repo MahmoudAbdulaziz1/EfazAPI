@@ -292,24 +292,24 @@ public class DasboardsAPIControll {
     }
 
 
-//    @PreAuthorize("hasAuthority('admin')")
-//    @GetMapping("register/confirm/{id}")
-//    public ObjectNode confirmEmail(@PathVariable int id) {
-//        int res = newRegisterRepo.confirmEmail(id);
-//
-//        if (res == 1) {
-//            ObjectNode objectNode = mapper.createObjectNode();
-//            objectNode.put("value", "success");
-//
-//            return objectNode;
-//        } else {
-//            ObjectNode objectNode = mapper.createObjectNode();
-//            objectNode.put("value", "not success");
-//
-//            return objectNode;
-//        }
-//    }
-//
+    @PreAuthorize("hasAuthority('admin')")
+    @GetMapping("register/confirms/{id}")
+    public ObjectNode confirmEmailWithCity(@PathVariable int id) {
+        int res = newRegisterRepo.confirmEmail(id);
+
+        if (res == 1) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "success");
+
+            return objectNode;
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return objectNode;
+        }
+    }
+
 
 
     @PreAuthorize("hasAuthority('admin')")
@@ -528,14 +528,19 @@ public class DasboardsAPIControll {
             TenderCollectiveByIdPart3DTO category = new TenderCollectiveByIdPart3DTO(tenderList.get(0).getId(),
                     tenderList.get(0).getCategory_name(), tenderList.get(0).getCount());
             categories.add(category);
+            GetSingleCollectiveByIdPartTwoDTO school0 = new GetSingleCollectiveByIdPartTwoDTO
+                    (tenderList.get(0).getSchool_name(), tenderList.get(0).getSchool_logo_image(), categories);
+            schools.add(school0);
             int i = 1;
             while (i < tenderList.size()) {
                 if (tenderList.get(i).getTender_id() == tenderList.get(i - 1).getTender_id()) {
                     TenderCollectiveByIdPart3DTO categorys = new TenderCollectiveByIdPart3DTO(tenderList.get(i).getId(),
                             tenderList.get(i).getCategory_name(), tenderList.get(i).getCount());
+                    categories.add(categorys);
                 } else {
                     GetSingleCollectiveByIdPartTwoDTO school = new GetSingleCollectiveByIdPartTwoDTO
                             (tenderList.get(i).getSchool_name(), tenderList.get(i).getSchool_logo_image(), categories);
+                    schools.add(school);
                 }
                 i++;
             }
@@ -557,20 +562,43 @@ public class DasboardsAPIControll {
 
     @PreAuthorize("hasAuthority('admin') or hasAuthority('school')")
     @GetMapping("/tender/request/get/{id}/{school_id}")
-    public GetTakatafTenderForScoolRequestDTO2 getRequestWithNameById(@PathVariable int id, @PathVariable int school_id) {
+    public ResponseEntity<ObjectNode> getRequestWithNameById(@PathVariable int id, @PathVariable int school_id) {//GetTakatafTenderForScoolRequestDTO2
         List<TakatafSingleSchoolRequestByIDDTO2> tenderList = takatafTenderRequestRepo.getAllRequestsWithNameByIdzs2(id, school_id);
+        if (tenderList.isEmpty()){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("status", 400);
+            objectNode.put("message", "no data for this tender with this school");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
 
+        ObjectNode dataNode = mapper.createObjectNode();
+        dataNode.put("tender_id", tenderList.get(0).getTender_id());
+        dataNode.put("tender_title", tenderList.get(0).getTender_title());
+        dataNode.put("tender_explain", tenderList.get(0).getTender_explain());
+        dataNode.put("tender_display_date", tenderList.get(0).getTender_display_date());
+        dataNode.put("tender_expire_date", tenderList.get(0).getTender_expire_date());
+        dataNode.put("response_count", tenderList.get(0).getResponse_count());
         GetSingleCollectiveByIdPartOneDTO data = new GetSingleCollectiveByIdPartOneDTO(tenderList.get(0).getTender_id(), tenderList.get(0).getTender_title(),
                 tenderList.get(0).getTender_explain(), tenderList.get(0).getTender_display_date(),
                 tenderList.get(0).getTender_expire_date(), tenderList.get(0).getResponse_count());
         List<GetGetTakatafTenderSchollPrt2DTO2> categories = new ArrayList<>();
-
+        ArrayNode arrNode = mapper.createArrayNode();
         for (TakatafSingleSchoolRequestByIDDTO2 obj : tenderList) {
             GetGetTakatafTenderSchollPrt2DTO2 category = new GetGetTakatafTenderSchollPrt2DTO2(obj.getId(), obj.getCategory_name(), obj.getCount());
             categories.add(category);
+            ObjectNode catData = mapper.createObjectNode();
+            catData.put("id", obj.getId());
+            catData.put("category_name", obj.getCategory_name());
+            catData.put("count", obj.getCount());
+
+            arrNode.add(catData);
         }
+
+        ObjectNode result = mapper.createObjectNode();
+        result.set("data", dataNode);
+        result.set("categories", arrNode);
         GetTakatafTenderForScoolRequestDTO2 tener = new GetTakatafTenderForScoolRequestDTO2(data, categories);
-        return tener;
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @PreAuthorize("hasAuthority('admin')")

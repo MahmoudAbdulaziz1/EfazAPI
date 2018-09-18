@@ -2,14 +2,13 @@ package com.taj.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.taj.model.CustomSchoolProfileModel;
+import com.taj.model.NewCustomSchoolProfileModel;
+import com.taj.model.NewSchoolProfileModel;
 import com.taj.model.SchoolProfileModel;
-import com.taj.repository.SchoolProfileRepo;
+import com.taj.repository.NewSchoolProfileRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,30 +16,21 @@ import javax.validation.Valid;
 import java.util.List;
 
 /**
- * Created by MahmoudAhmed on 6/3/2018.
+ * Created by User on 9/18/2018.
  */
-//@RequestMapping("/evvaz/school/profile")
-@RequestMapping("/school/profile")
+@RequestMapping("/school/profil")
 @RestController
 @CrossOrigin
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SchoolProfileController {
+public class NewSchoolProfileController {
 
 
     @Autowired
     ObjectMapper mapper;
     @Autowired
-    private SchoolProfileRepo repo;
+    private NewSchoolProfileRepo repo;
 
-    /**
-     * add profile data to db
-     *
-     * @param model
-     * @return 1 if added and 0  if not
-     */
-    @PostMapping("/addProfile")
-    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
-    public ResponseEntity<ObjectNode> AddUserProfile(@Valid @RequestBody SchoolProfileModel model, Errors errors) {
+    @PostMapping("/")
+    public ResponseEntity<ObjectNode> AddUserProfile(@RequestBody @Valid SchoolProfileModel model, Errors errors) {
 
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -92,34 +82,45 @@ public class SchoolProfileController {
 
     }
 
-    /**
-     * get all school profiles
-     *
-     * @return list of profiles
-     */
-
-    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
-    @GetMapping("/getProfiles")
-    public List<SchoolProfileModel> getProfiles() {
+    @GetMapping("/")
+    public List<NewSchoolProfileModel> getProfiles() {
         return repo.getSchoolSProfiles();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ObjectNode> getProfile(@PathVariable int id) {
 
-    /**
-     * get single profile using school id
-     *
-     * @param id
-     * @return school profile by id
-     */
-    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
-    @GetMapping("/getProfile/{id}")
-    public SchoolProfileModel getProfile(@PathVariable int id) {
-        return repo.getSchoolProfile(id);
+
+        if (repo.isExist(id)) {
+            NewSchoolProfileModel model = repo.getSchoolProfile(id);
+            ObjectNode node = mapper.createObjectNode();
+            node.put("school_id", model.getSchool_id());
+            node.put("school_name", model.getSchool_name());
+            node.put("school_logo_image", model.getSchool_logo_image());
+            node.put("school_address", model.getSchool_address());
+            node.put("school_service_desc", model.getSchool_service_desc());
+            node.put("school_link_youtube", model.getSchool_link_youtube());
+            node.put("school_website_url", model.getSchool_website_url());
+            node.put("school_lng", model.getSchool_lng());
+            node.put("school_lat", model.getSchool_lat());
+            node.put("school_cover_image", model.getSchool_cover_image());
+            node.put("school_phone_number", model.getSchool_phone_number());
+            node.put("area", model.getArea());
+            node.put("city", model.getCity());
+            return ResponseEntity.status(HttpStatus.OK).body(node);
+
+        } else {
+            ObjectNode node = mapper.createObjectNode();
+            node.put("status", 400);
+            node.put("message", "no profile to this id");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(node);
+
+        }
     }
 
-    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
-    @PutMapping("/updateProfile")
-    public ResponseEntity<ObjectNode> updateProfile(@Valid @RequestBody SchoolProfileModel model, Errors errors) {
+
+    @PutMapping("/")
+    public ResponseEntity<ObjectNode> updateProfile(@Valid @RequestBody NewSchoolProfileModel model, Errors errors) {
 
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -131,7 +132,8 @@ public class SchoolProfileController {
 
         int res = repo.updateProfile(model.getSchool_id(), model.getSchool_name(), model.getSchool_logo_image(),
                 model.getSchool_address(), model.getSchool_service_desc(), model.getSchool_link_youtube(),
-                model.getSchool_website_url(), model.getSchool_lng(), model.getSchool_lat(), model.getSchool_cover_image(), model.getSchool_phone_number());
+                model.getSchool_website_url(), model.getSchool_lng(), model.getSchool_lat(), model.getSchool_cover_image(),
+                model.getSchool_phone_number(), model.getArea(), model.getCity());
 
         if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -145,10 +147,13 @@ public class SchoolProfileController {
             objectNode.put("school_lat", model.getSchool_lat());
             objectNode.put("school_cover_image", model.getSchool_cover_image());
             objectNode.put("school_phone_number", model.getSchool_phone_number());
+            objectNode.put("area", model.getArea());
+            objectNode.put("city", model.getCity());
             return ResponseEntity.status(HttpStatus.OK).body(objectNode);
         } else {
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "not success");
+            objectNode.put("status", 400);
+            objectNode.put("message", "update not completed");
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
@@ -156,14 +161,12 @@ public class SchoolProfileController {
 
     }
 
-    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
-    @GetMapping("/profileExist/{id}")
+    @GetMapping("/exist/{id}")
     public int isExist(@PathVariable int id) {
         return repo.checkSchoolProfile(id);
     }
 
-    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ObjectNode> deleteSchoolProfile(@PathVariable int id) {
         int res = repo.deleteSchoolProfile(id);
         if (res == 1) {
@@ -178,16 +181,38 @@ public class SchoolProfileController {
         }
     }
 
+
     @GetMapping("/get/{id}")
-    public CustomSchoolProfileModel getProfileForAdmin(@PathVariable int id) {
-        return repo.getSchoolProfileForAdmin(id);
+    public ResponseEntity<ObjectNode> getProfileForAdmin(@PathVariable int id) {
+
+        if (repo.isExist(id)) {
+            NewCustomSchoolProfileModel model = repo.getSchoolProfileForAdmin(id);
+            ObjectNode node = mapper.createObjectNode();
+            node.put("school_id", model.getSchool_id());
+            node.put("school_name", model.getSchool_name());
+            node.put("school_logo_image", model.getSchool_logo_image());
+            node.put("school_address", model.getSchool_address());
+            node.put("school_service_desc", model.getSchool_service_desc());
+            node.put("school_link_youtube", model.getSchool_link_youtube());
+            node.put("school_website_url", model.getSchool_website_url());
+            node.put("school_cover_image", model.getSchool_cover_image());
+            node.put("school_phone_number", model.getSchool_phone_number());
+            node.put("area", model.getArea());
+            node.put("city", model.getCity());
+            return ResponseEntity.status(HttpStatus.OK).body(node);
+
+        } else {
+            ObjectNode node = mapper.createObjectNode();
+            node.put("status", 400);
+            node.put("message", "no profile to this id");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(node);
+
+        }
+
     }
 
-
-
-
     @PutMapping("/update")
-    public ResponseEntity<ObjectNode> updateProfileForAdmin(@Valid @RequestBody SchoolProfileModel model, Errors errors) {
+    public ResponseEntity<ObjectNode> updateProfileForAdmin(@Valid @RequestBody NewSchoolProfileModel model, Errors errors) {
 
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -199,7 +224,7 @@ public class SchoolProfileController {
 
         int res = repo.updateProfileForAdmin(model.getSchool_id(), model.getSchool_name(), model.getSchool_logo_image(),
                 model.getSchool_address(), model.getSchool_service_desc(), model.getSchool_link_youtube(),
-                model.getSchool_website_url(), model.getSchool_cover_image(), model.getSchool_phone_number());
+                model.getSchool_website_url(), model.getSchool_cover_image(), model.getSchool_phone_number(), model.getArea(), model.getCity());
 
         if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -211,17 +236,17 @@ public class SchoolProfileController {
             objectNode.put("school_website_url", model.getSchool_website_url());
             objectNode.put("school_cover_image", model.getSchool_cover_image());
             objectNode.put("school_phone_number", model.getSchool_phone_number());
+            objectNode.put("area", model.getArea());
+            objectNode.put("city", model.getCity());
             return ResponseEntity.status(HttpStatus.OK).body(objectNode);
         } else {
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "not success");
-
+            objectNode.put("status", 400);
+            objectNode.put("message", "update not completed");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
 
 
     }
-
-
 
 }

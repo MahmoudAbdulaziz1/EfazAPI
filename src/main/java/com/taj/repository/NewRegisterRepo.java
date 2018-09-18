@@ -302,18 +302,28 @@ public class NewRegisterRepo {
 
 
     public int confirmEmail(int id) {
-        jdbcTemplate.update("update efaz_registration set registration_isActive=1 WHERE registration_id=?", id);
         NewRegisterModel model = getUser(id);
-
-        try {
-            sendEmail(model.getRegisterationEmail(), id);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (isExistILogin(model.getRegisterationEmail(), model.getRegistrationRole())) {
+            return -100;
+        } else {
+            jdbcTemplate.update("update efaz_registration set registration_isActive=1 WHERE registration_id=?", id);
+            try {
+                sendEmail(model.getRegisterationEmail(), id);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return jdbcTemplate.update("INSERT INTO efaz_login VALUES (?,?,?,?,?,?,?,?,?)", null, model.getRegisterationEmail(),
+                    model.getRegisterationPassword(), 0, model.getRegistrationRole(), "Token=", new Timestamp(System.currentTimeMillis())
+                    , model.getCity(), model.getArea());
         }
-        return jdbcTemplate.update("INSERT INTO efaz_login VALUES (?,?,?,?,?,?,?,?,?)", null, model.getRegisterationEmail(),
-                model.getRegisterationPassword(), 0, model.getRegistrationRole(), "Token=", new Timestamp(System.currentTimeMillis())
-                , model.getCity(), model.getArea());
+    }
 
+
+    public boolean isExistILogin(String email, String login_role) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_company.efaz_login WHERE user_email=? AND login_role=?;",
+                Integer.class, email, login_role);
+        return cnt != null && cnt > 0;
     }
 
     /**
