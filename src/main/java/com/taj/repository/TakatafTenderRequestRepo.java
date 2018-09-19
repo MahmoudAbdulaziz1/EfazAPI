@@ -105,7 +105,7 @@ public class TakatafTenderRequestRepo {
     }
 
 
-    public List<TakatafSinfleSchoolRequestDTO> getAllRequestsWithNameByTender(int tend_id) {
+    public List<TakatafSinfleSchoolRequestDTO>  getAllRequestsWithNameByTender(int tend_id) {
         String sql = " SELECT " +
                 " tender_id, tender_title, tender_explain, tender_display_date, tender_expire_date ,  " +
                 " count(distinct request_id) AS response_count, ifnull(id,0) AS id, ifnull(category_name,0) AS  category_name " +
@@ -152,11 +152,25 @@ public class TakatafTenderRequestRepo {
                 "\ttender_display_date,\n" +
                 "\ttender_expire_date;";
 
+
         return jdbcTemplate.query(sql2, new Object[]{tend_id},
                 (resultSet, i) -> new TakatafSinfleSchoolRequestDTO(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),
                         resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(), resultSet.getInt(6),
                         resultSet.getInt(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10), resultSet.getBytes(11)));
 
+    }
+
+    public List<CategoryNameDto> categoryData(int tend_id){
+        String sql = "SELECT\n" +
+                "\tcategory_name \n" +
+                "FROM\n" +
+                "\ttkatf_tender_catgory_request AS t\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_category AS c ON t.t_category_id = c.category_id \n" +
+                "WHERE\n" +
+                "\tt.t_tender_id =?";
+
+        return jdbcTemplate.query(sql, new Object[]{tend_id},
+                ((resultSet, i) -> new CategoryNameDto(resultSet.getString(1))));
     }
 
 
@@ -199,8 +213,35 @@ public class TakatafTenderRequestRepo {
                 "                tender_expire_date,\n" +
                 "                co.cat_id;";
 
+        String sql2 ="SELECT\n" +
+                "\ttender_id,\n" +
+                "\ttender_title,\n" +
+                "\ttender_explain,\n" +
+                "\ttender_display_date,\n" +
+                "\ttender_expire_date,\n" +
+                "\tcount( DISTINCT request_id ) AS response_count,\n" +
+                "\tco.cat_id AS id,\n" +
+                "\tcategory_name,\n" +
+                "\tcount \n" +
+                "FROM\n" +
+                "\ttakatf_tender AS t\n" +
+                "\tLEFT JOIN efaz_company.takatf_request_tender AS req ON t.tender_id = req.request_tender_id\n" +
+                "\tLEFT JOIN efaz_company.takataf_request_cat_count AS co ON t.tender_id = co.tend_id AND co.scool_id=? \n" +
+                "\tLEFT JOIN efaz_company_category AS cat ON co.cat_id = cat.category_id \n" +
+                "WHERE\n" +
+                "\ttender_id = ? \n" +
+                "GROUP BY\n" +
+                "\tid,\n" +
+                "\ttender_id,\n" +
+                "\ttender_title,\n" +
+                "\ttender_explain,\n" +
+                "\ttender_display_date,\n" +
+                "\ttender_expire_date,\n" +
+                "\tcategory_name,\n" +
+                "\tcount;";
 
-        return jdbcTemplate.query(sql, new Object[]{id, school_id},
+
+        return jdbcTemplate.query(sql2, new Object[]{ school_id, id,},
                 (resultSet, i) -> new TakatafSingleSchoolRequestByIDDTO2(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getString(3),
                         resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(), resultSet.getInt(6),

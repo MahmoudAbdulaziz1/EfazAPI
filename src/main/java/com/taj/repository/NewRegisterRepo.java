@@ -1,6 +1,8 @@
 package com.taj.repository;
 
+import com.taj.model.NewModelDto;
 import com.taj.model.NewRegisterModel;
+import com.taj.model.RegistrationModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -93,6 +95,15 @@ public class NewRegisterRepo {
                 Integer.class, email, role);
         return cnt != null && cnt > 0;
     }
+
+
+    public boolean IfEmailExist(int id) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_registration WHERE registration_id=?;",
+                Integer.class, id);
+        return cnt != null && cnt > 0;
+    }
+
 
 
     public List<NewRegisterModel> getInActiveCompanies() {
@@ -197,6 +208,44 @@ public class NewRegisterRepo {
 
 
     }
+
+
+
+    public List<NewModelDto> getUsers() {
+
+
+
+        String sql = " SELECT  " +
+                "\tregistration_id,\n" +
+                "\tregisteration_email,\n" +
+                "\tregisteration_password,\n" +
+                "\tregisteration_username,\n" +
+                "\tregisteration_phone_number,\n" +
+                "\tregistration_organization_name,\n" +
+                "\tregistration_address_desc,\n" +
+                "\tregistration_website_url,\n" +
+                "\tregistration_isActive,\n" +
+                "\tregistration_role,\n" +
+                "\tregisteration_date,\n" +
+                "\tcity,\n" +
+                "\tarea,\n" +
+                "\tarchive,\n" +
+                "\tconsider \n" +
+                "FROM\n" +
+                "\tefaz_registration AS org\n" +
+                "\tLEFT JOIN efaz_company.complete_register_data AS dta ON org.registration_id = dta.id ;";
+
+
+
+        return jdbcTemplate.query(sql,
+                (resultSet, i) -> new NewModelDto(resultSet.getInt(1), resultSet.getString(2),
+                        resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
+                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10) ,
+                        resultSet.getTimestamp(11).getTime(), resultSet.getString(12), resultSet.getString(13)));
+    }
+
+
+
 
     public List<NewRegisterModel> getInActiveCompaniesConsiderate() {
         String sql = "SELECT " +

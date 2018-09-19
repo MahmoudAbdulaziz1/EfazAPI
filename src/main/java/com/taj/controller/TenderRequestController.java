@@ -1,8 +1,10 @@
 package com.taj.controller;
 
+import com.taj.model.CategoryNameDto;
 import com.taj.model.TenderRequestCategoriesModel;
 import com.taj.model.TenderRequestSchoolModel;
 import com.taj.model.TenderRequestTenderModel;
+import com.taj.repository.TakatafTenderRequestRepo;
 import com.taj.repository.TenderRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,8 @@ public class TenderRequestController {
 
     @Autowired
     TenderRequestRepo repo;
+    @Autowired
+    TakatafTenderRequestRepo takatafTenderRequestRepo;
 
     @GetMapping("/{id}")
     public TenderRequestTenderModel getTenderRequestObject(@PathVariable int id) {
@@ -27,10 +31,12 @@ public class TenderRequestController {
         List<Map<String, Object>> list = repo.getTenderRequestObject(id);
         List<TenderRequestSchoolModel> schoolsList = new ArrayList<>();
         Set<TenderRequestSchoolModel> schools = new HashSet<>();
+        List<CategoryNameDto> category = takatafTenderRequestRepo.categoryData(id);
         List<TenderRequestCategoriesModel> test2Models = new ArrayList<>();
         for (Map<String, Object> map : list) {
             TenderRequestSchoolModel model = new TenderRequestSchoolModel();
             TenderRequestCategoriesModel test2Model = new TenderRequestCategoriesModel();
+
 
 
             long schoolId = (long) map.get("school_id");
@@ -108,7 +114,7 @@ public class TenderRequestController {
             TenderRequestTenderModel mainModel = new TenderRequestTenderModel(Long.parseLong(list.get(0).get("tender_id").toString()),
                     (String) list.get(0).get("tender_title"),
                     (String) list.get(0).get("tender_explain"), ((Timestamp) (list.get(0).get("tender_display_date"))).getTime(),
-                    ((Timestamp) list.get(0).get("tender_expire_date")).getTime(), Long.parseLong(list.get(0).get("response_count").toString()), null);
+                    ((Timestamp) list.get(0).get("tender_expire_date")).getTime(), Long.parseLong(list.get(0).get("response_count").toString()), category, null);
 
 
             return mainModel;
@@ -116,7 +122,7 @@ public class TenderRequestController {
             TenderRequestTenderModel mainModel = new TenderRequestTenderModel(Long.parseLong(list.get(0).get("tender_id").toString()),
                     (String) list.get(0).get("tender_title"),
                     (String) list.get(0).get("tender_explain"), ((Timestamp) (list.get(0).get("tender_display_date"))).getTime(),
-                    ((Timestamp) list.get(0).get("tender_expire_date")).getTime(), Long.parseLong(list.get(0).get("response_count").toString()), schoolsList);
+                    ((Timestamp) list.get(0).get("tender_expire_date")).getTime(), Long.parseLong(list.get(0).get("response_count").toString()), category, schoolsList);
 
 
             return mainModel;

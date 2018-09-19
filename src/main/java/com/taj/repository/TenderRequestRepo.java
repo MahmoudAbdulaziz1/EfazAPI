@@ -45,8 +45,63 @@ public class TenderRequestRepo {
                 " GROUP BY tr.id, tender_id,tender_title,tender_explain,tender_display_date,tender_expire_date," +
                 "id, category_name,school_id,t_date,school_name,school_logo_image";
 
+        String sql2 = "SELECT\n" +
+                "\ttender_id,\n" +
+                "\ttender_title,\n" +
+                "\ttender_explain,\n" +
+                "\ttender_display_date,\n" +
+                "\ttender_expire_date,\n" +
+                "\tCOUNT( DISTINCT request_id ) AS response_count,\n" +
+                "\tid,\n" +
+                "\tcategory_name,\n" +
+                "\tcount,\n" +
+                "\tIFNULL( school_id, 0 ) AS school_id,\n" +
+                "\tt_date,\n" +
+                "\tIFNULL( school_name, 0 ) AS school_name,\n" +
+                "\tIFNULL( school_logo_image, 0 ) AS school_logo_image \n" +
+                "FROM\n" +
+                "\ttakatf_tender AS t\n" +
+                "\tLEFT JOIN efaz_company.takatf_request_tender AS req ON t.tender_id = req.request_tender_id\n" +
+                "\tLEFT JOIN efaz_company.takataf_request_cat_count AS tr ON t.tender_id = tr.tend_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_profile sp ON tr.scool_id = sp.school_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_category AS ca ON tr.cat_id = category_id \n" +
+                "WHERE\n" +
+                "\tt.tender_id = ? \n" +
+                "GROUP BY\n" +
+                "\ttr.id, tender_id,\n" +
+                "                tender_title,                tender_explain,\n" +
+                "                tender_display_date,\n" +
+                "                \ttender_expire_date," +
+                " " +
+                "\tcategory_name,\n" +
+                "\tcount,\n" +
+                "\tschool_id,\n" +
+                "\tschool_name,\n" +
+                "\tschool_logo_image;";
+        String sql3 ="SELECT\n" +
+                "\ttender_id,\n" +
+                "\ttender_title,\n" +
+                "\ttender_explain,\n" +
+                "\ttender_display_date,\n" +
+                "\ttender_expire_date,\n" +
+                "\t( SELECT COUNT( DISTINCT request_school_id ) FROM takatf_request_tender ) AS response_count,\n" +
+                "\tid,\n" +
+                "\tcategory_name,\n" +
+                "\tcount,\n" +
+                "\tIFNULL( school_id, 0 ) AS school_id,\n" +
+                "\t( SELECT DISTINCT t_date FROM takatf_request_tender WHERE request_tender_id = tender_id AND request_school_id = school_id ) AS t_date,\n" +
+                "\tIFNULL( school_name, 0 ) AS school_name,\n" +
+                "\tschool_logo_image \n" +
+                "FROM\n" +
+                "\ttakatf_tender AS t\n" +
+                "\tLEFT JOIN efaz_company.takataf_request_cat_count AS tr ON t.tender_id = tr.tend_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_category AS ca ON tr.cat_id = category_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_profile sp ON tr.scool_id = sp.school_id \n" +
+                "WHERE\n" +
+                "\tt.tender_id = ?;";
 
-        return  jdbcTemplate.queryForList(sql, new Object[]{id});
+
+        return  jdbcTemplate.queryForList(sql3, new Object[]{id});
 
     }
 }

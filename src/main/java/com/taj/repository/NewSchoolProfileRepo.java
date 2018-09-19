@@ -2,6 +2,7 @@ package com.taj.repository;
 
 import com.taj.model.NewCustomSchoolProfileModel;
 import com.taj.model.NewSchoolProfileModel;
+import com.taj.model.NewSchoolProfileModel2;
 import com.taj.model.SchoolProfileModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -47,7 +48,7 @@ public class NewSchoolProfileRepo {
                 school_logo_image, school_address, school_service_desc, school_link_youtube, school_website_url, school_lng, school_lat, school_cover_image, school_phone_number);
     }
 
-    public List<NewSchoolProfileModel> getSchoolSProfiles() {
+    public List<NewSchoolProfileModel2> getSchoolSProfiles() {
         String sql = "SELECT\n" +
                 "\tschool_id,\n" +
                 "\tschool_name,\n" +
@@ -65,11 +66,47 @@ public class NewSchoolProfileRepo {
                 "FROM\n" +
                 "\tefaz_school_profile AS pro\n" +
                 "\tLEFT JOIN efaz_company.efaz_login AS login ON pro.school_id = login.login_id;";
-        return jdbcTemplate.query(sql,
-                (resultSet, i) -> new NewSchoolProfileModel(resultSet.getInt(1), resultSet.getString(2),
+
+
+        String sql2 ="SELECT\n" +
+                "\tpro.school_id,\n" +
+                "\tschool_name,\n" +
+                "\tschool_logo_image,\n" +
+                "\tschool_address,\n" +
+                "\tschool_service_desc,\n" +
+                "\tschool_link_youtube,\n" +
+                "\tschool_website_url,\n" +
+                "\tschool_lng,\n" +
+                "\tschool_lat,\n" +
+                "\tschool_cover_image,\n" +
+                "\tschool_phone_number,\n" +
+                "\tcity,\n" +
+                "\tarea,\n" +
+                "\tCOUNT( request_id ) AS request_count \n" +
+                "FROM\n" +
+                "\tefaz_school_profile AS pro\n" +
+                "\tLEFT JOIN efaz_company.efaz_login AS login ON pro.school_id = login.login_id\n" +
+                "\tLEFT JOIN efaz_school_tender AS tend ON pro.school_id = tend.school_id \n" +
+                "GROUP BY\n" +
+                "\tpro.school_id,\n" +
+                "\tschool_name,\n" +
+                "\tschool_logo_image,\n" +
+                "\tschool_address,\n" +
+                "\tschool_service_desc,\n" +
+                "\tschool_link_youtube,\n" +
+                "\tschool_website_url,\n" +
+                "\tschool_lng,\n" +
+                "\tschool_lat,\n" +
+                "\tschool_cover_image,\n" +
+                "\tschool_phone_number,\n" +
+                "\tcity,\n" +
+                "\tarea;";
+
+        return jdbcTemplate.query(sql2,
+                (resultSet, i) -> new NewSchoolProfileModel2(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
                         resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9),
-                        resultSet.getBytes(10), resultSet.getString(11), resultSet.getString(12), resultSet.getString(13)));
+                        resultSet.getBytes(10), resultSet.getString(11), resultSet.getString(12), resultSet.getString(13), resultSet.getInt(14)));
     }
 
 

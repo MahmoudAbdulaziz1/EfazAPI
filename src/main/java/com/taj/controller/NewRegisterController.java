@@ -2,6 +2,7 @@ package com.taj.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.taj.model.NewModelDto;
 import com.taj.model.NewRegisterModel;
 import com.taj.model.UserType;
 import com.taj.repository.NewRegisterRepo;
@@ -180,12 +181,12 @@ public class NewRegisterController {
     public ObjectNode confirmEmail(@PathVariable int id) {
         int res = registrationRepo.confirmEmail(id);
 
-        if (res == 1){
+        if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put(STATUS,SUCCESS);
+            objectNode.put(STATUS, SUCCESS);
 
             return objectNode;
-        }else {
+        } else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put(STATUS, FAILED);
 
@@ -193,4 +194,37 @@ public class NewRegisterController {
         }
     }
 
+    @GetMapping("/")
+    public List<NewModelDto> getUsers() {
+        return registrationRepo.getUsers();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ObjectNode> getUser(@PathVariable int id) {
+
+        if (registrationRepo.IfEmailExist(id)){
+            NewRegisterModel model = registrationRepo.getUser(id);
+            ObjectNode nodes = mapper.createObjectNode();
+            nodes.put("registration_id", model.getRegistrationId());
+            nodes.put("registeration_email", model.getRegisterationEmail());
+            //nodes.put("registeration_password": "$2a$10$ZhaDnjosb19LkCB5qHmpMO4B0DnZX5tpjjaOOULIpOgxKpam4nsH.");
+            nodes.put("registeration_username", model.getRegisterationUsername());
+            nodes.put("registeration_phone_number", model.getRegisterationPhoneNumber());
+            nodes.put("registration_organization_name", model.getRegistrationOrganizationName());
+            nodes.put("registration_address_desc", model.getRegistrationAddressDesc());
+            nodes.put("registration_website_url", model.getRegistrationWebsiteUrl());
+            nodes.put("registration_is_active", model.getRegistrationIsActive());
+            nodes.put("registration_role", model.getRegistrationRole());
+            nodes.put("registeration_date", model.getRegisterationDate());
+            nodes.put("city", model.getCity());
+            nodes.put("area", model.getArea());
+            return ResponseEntity.status(HttpStatus.OK).body(nodes);
+        }else {
+            ObjectNode nodes = mapper.createObjectNode();
+            nodes.put("message", "No data for this id");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(nodes);
+        }
+
+
+    }
 }

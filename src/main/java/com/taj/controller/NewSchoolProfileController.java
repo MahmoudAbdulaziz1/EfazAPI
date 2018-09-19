@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.NewCustomSchoolProfileModel;
 import com.taj.model.NewSchoolProfileModel;
+import com.taj.model.NewSchoolProfileModel2;
 import com.taj.model.SchoolProfileModel;
 import com.taj.repository.NewSchoolProfileRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +84,7 @@ public class NewSchoolProfileController {
     }
 
     @GetMapping("/")
-    public List<NewSchoolProfileModel> getProfiles() {
+    public List<NewSchoolProfileModel2> getProfiles() {
         return repo.getSchoolSProfiles();
     }
 

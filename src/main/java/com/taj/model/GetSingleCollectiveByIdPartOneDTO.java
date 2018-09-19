@@ -1,5 +1,7 @@
 package com.taj.model;
 
+import java.util.List;
+
 /**
  * Created by User on 8/29/2018.
  */
@@ -11,6 +13,7 @@ public class GetSingleCollectiveByIdPartOneDTO {
     private long tender_display_date;
     private long tender_expire_date;
     private int response_count;
+
 
     public GetSingleCollectiveByIdPartOneDTO(int tender_id, String tender_title, String tender_explain,
                                              long tender_display_date, long tender_expire_date, int response_count) {
@@ -72,4 +75,5 @@ public class GetSingleCollectiveByIdPartOneDTO {
     public void setResponse_count(int response_count) {
         this.response_count = response_count;
     }
+
 }
