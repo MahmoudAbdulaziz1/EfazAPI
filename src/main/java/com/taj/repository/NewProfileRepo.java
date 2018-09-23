@@ -16,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by User on 9/11/2018.
@@ -114,6 +115,98 @@ public class NewProfileRepo {
                         resultSet.getBytes(9), resultSet.getString(10), resultSet.getInt(11), resultSet.getInt(12),
                         resultSet.getString(13), resultSet.getInt(14), resultSet.getString(15), resultSet.getString(16)));
     }
+
+
+
+
+    public List<Map<String,Object>> getCompaniesProfilesObject() {
+        String sql = "SELECT\n" +
+                "\tcompany_id,\n" +
+                "\tcompany_name,\n" +
+                "\tcompany_logo_image,\n" +
+                "\tcompany_address,\n" +
+                "\tcompany_link_youtube,\n" +
+                "\tcompany_website_url,\n" +
+                "\tcompany_lng,\n" +
+                "\tcompany_lat,\n" +
+                "\tcompany_cover_image,\n" +
+                "\tcompany_phone_number,\n" +
+                "\tcount( DISTINCT follow_id ) AS follower_count,\n" +
+                "\tcount( DISTINCT offer_id ) AS order_count,\n" +
+                "\tcompany_desc,\n" +
+                "\tCOUNT( DISTINCT id ) AS category_num,\n" +
+                "\tcity,\n" +
+                "\tarea,\n" +
+                "\tcategory_id,\n" +
+                "\tcategory_name \n" +
+                "FROM\n" +
+                "\t(\n" +
+                "\t\t(\n" +
+                "\t\t\t( efaz_company.efaz_company_profile AS PROFILE LEFT JOIN efaz_company.efaz_organization_following AS follow ON PROFILE.company_id = follow.follower_id )\n" +
+                "\t\t\tLEFT JOIN efaz_company_offer AS offer ON PROFILE.company_id = offer.offer_company_id \n" +
+                "\t\t)\n" +
+                "\t\tLEFT JOIN efaz_company.efaz_company_profile_cats AS cats ON PROFILE.company_id = cats.company_profile_id \n" +
+                "\t)\n" +
+                "\tLEFT JOIN efaz_company.efaz_login AS pc ON PROFILE.company_id = pc.login_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_category AS ccat ON cats.company_cat_id = ccat.category_id \n" +
+                "GROUP BY\n" +
+                "\tPROFILE.company_id,\n" +
+                "\tccat.category_id;";
+
+
+        return  jdbcTemplate.queryForList(sql);
+//        List<Map<String,Object>> maps=jdbcTemplate.queryForList(sql, new Object[]{id});//, new Object[]{id}, (resultSet, i) -> new Object());
+
+    }
+
+
+
+    public List<Map<String,Object>> getCompaniesProfilesObjectForAll(int school_id) {
+        String sql = "SELECT\n" +
+                "\n" +
+                "                company_id,\n" +
+                "                company_name,\n" +
+                "                company_logo_image,\n" +
+                "                company_address,\n" +
+                "                company_link_youtube,\n" +
+                "                company_website_url,\n" +
+                "                company_lng,\n" +
+                "                company_lat,\n" +
+                "                company_cover_image,\n" +
+                "                company_phone_number,\n" +
+                "                count( DISTINCT follow.follow_id ) AS follower_count,\n" +
+                "                count( DISTINCT offer_id ) AS order_count,\n" +
+                "                company_desc,\n" +
+                "                COUNT( id ) AS category_num,\n" +
+                "                city,\n" +
+                "                area,\n" +
+                "                 category_id,\n" +
+                "                category_name,\n" +
+                "                IF\n" +
+                "                ( PROFILE.company_id = follow2.organization_id AND follow2.follower_id = ?,  1, 0 ) AS is_follow \n" +
+                "                FROM\n" +
+                "                (\n" +
+                "                (\n" +
+                "                ( efaz_company.efaz_company_profile AS PROFILE LEFT JOIN efaz_company.efaz_organization_following AS follow ON PROFILE.company_id = follow.organization_id )\n" +
+                "                LEFT JOIN efaz_company_offer AS offer ON PROFILE.company_id = offer.offer_company_id \n" +
+                "                )\n" +
+                "                LEFT JOIN efaz_company.efaz_company_profile_cats AS cats ON PROFILE.company_id = cats.company_profile_id \n" +
+                "                )\n" +
+                "                LEFT JOIN efaz_company.efaz_login AS pc ON PROFILE.company_id = pc.login_id\n" +
+                "                LEFT JOIN efaz_company.efaz_company_category AS ccat ON cats.company_cat_id = ccat.category_id\n" +
+                "                LEFT JOIN efaz_company.efaz_organization_following AS follow2 ON PROFILE.company_id = follow2.organization_id \n" +
+                "                AND follow2.follower_id = ? \n" +
+                "                GROUP BY\n" +
+                "                company_id,\n" +
+                "                ccat.category_id,\n" +
+                "                \tfollow2.follower_id;";
+
+
+        return  jdbcTemplate.queryForList(sql, new Object[]{school_id, school_id});
+//        List<Map<String,Object>> maps=jdbcTemplate.queryForList(sql, new Object[]{id});//, new Object[]{id}, (resultSet, i) -> new Object());
+
+    }
+
 
 
     public List<NewProfileDto> getProfile(int profile) {

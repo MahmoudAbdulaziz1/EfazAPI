@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by User on 7/8/2018.
@@ -103,6 +104,45 @@ public class TakatafTenderRequestRepo {
                         resultSet.getInt(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10), resultSet.getBytes(11)));
 
     }
+
+
+    public List<Map<String, Object>> getAllRequestsWithNameByTender2(int tend_id) {
+        String sql = "SELECT\n" +
+                "\ttender_id,\n" +
+                "\ttender_title,\n" +
+                "\ttender_explain,\n" +
+                "\ttender_display_date,\n" +
+                "\ttender_expire_date,\n" +
+                "\tcount( DISTINCT request_id ) AS response_count,\n" +
+                "\tifnull( id, 0 ) AS id,\n" +
+                "\tifnull( category_name, 0 ) AS category_name,\n" +
+                "\tifnull( count, 0 ) AS count,\n" +
+                "\tschool_id,\n" +
+                "\tifnull( school_name, 0 ) AS school_name,\n" +
+                "\tifnull( school_logo_image, 0 ) AS school_logo_image \n" +
+                "FROM\n" +
+                "\ttakatf_tender AS t\n" +
+                "\tLEFT JOIN efaz_company.takatf_request_tender AS req ON t.tender_id = req.request_tender_id\n" +
+                "\tLEFT JOIN efaz_company.takataf_request_cat_count AS tr ON t.tender_id = tr.tend_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_profile sp ON tr.scool_id = sp.school_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_category AS ca ON tr.cat_id = category_id \n" +
+                "WHERE\n" +
+                "\tt.tender_id = ?\n" +
+                "GROUP BY\n" +
+                "\ttr.id,\n" +
+                "\ttender_id,\n" +
+                "\ttender_title,\n" +
+                "\ttender_explain,\n" +
+                "\ttender_display_date,\n" +
+                "\ttender_expire_date,\n" +
+                "\tschool_id;";
+
+        return  jdbcTemplate.queryForList(sql, new Object[]{tend_id});
+    }
+
+
+
+
 
 
     public List<TakatafSinfleSchoolRequestDTO>  getAllRequestsWithNameByTender(int tend_id) {

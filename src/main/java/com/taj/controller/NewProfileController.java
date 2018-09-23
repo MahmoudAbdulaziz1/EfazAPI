@@ -12,8 +12,8 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * Created by User on 9/11/2018.
@@ -113,7 +113,7 @@ public class NewProfileController {
             int res = repo.updateProfile(model.getCompanyId(), model.getCompanyName(), model.getCompanyLogoImage(), model.getCompanyAddress(),
                     model.getCompanyLinkYoutube(), model.getCompanyWebsiteUrl(), model.getCompanyLng(),
                     model.getCompanyLat(), model.getCompanyCoverImage(), model.getCompanyPhoneNumber(), model.getCompanyDesc(),
-                    model.getCity(), model.getArea(),model.getCategory());
+                    model.getCity(), model.getArea(), model.getCategory());
             if (res == 1) {
                 ArrayNode category = mapper.createArrayNode();
 
@@ -166,6 +166,236 @@ public class NewProfileController {
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new NewProfileDto4("400", null));
         }
+    }
+
+
+    @GetMapping("/all/")
+    public CompanyProfileDtoThree getTestObject() {
+
+        Map<CompanyProfileDtoTwo, List<CompanyProfileDtoOne>> res = new HashMap<>();
+        List<Map<String, Object>> list = repo.getCompaniesProfilesObject();
+        List<CompanyProfileDtoTwo> schoolsList = new ArrayList<>();
+        Set<CompanyProfileDtoTwo> schools = new HashSet<>();
+        List<CompanyProfileDtoOne> test2Models = new ArrayList<>();
+        for (Map<String, Object> map : list) {
+            CompanyProfileDtoTwo model = new CompanyProfileDtoTwo();
+            CompanyProfileDtoOne test2Model = new CompanyProfileDtoOne();
+            int companyId = (int) map.get("company_id");
+            String companyName = (String) map.get("company_name");
+            byte[] companyLogoImage = (byte[]) map.get("company_logo_image");
+            String companyAddress = (String)map.get("company_address");
+            String companyLinkYoutube = (String) map.get("company_link_youtube");
+            String companyWebsiteUrl = (String)map.get("company_website_url");
+            float companyLng = (float)map.get("company_lng");
+            float companyLat = (float)map.get("company_lat");
+            byte[] companyCoverImage = (byte[]) map.get("company_cover_image");
+            String companyPhoneNumber = (String) map.get("company_phone_number");
+            long followerCount = (long) map.get("follower_count");
+            long orderCount = (long) map.get("order_count");
+            String companyDesc = (String) map.get("company_desc");
+            long categoryNum = (long) map.get("category_num");
+            String city = (String) map.get("city");
+            String area = (String) map.get("area");
+            List<CompanyProfileDtoOne> categories;
+
+            int categoryId = (int) map.get("category_id");
+            String categoryName = (String) map.get("category_name");
+
+
+            test2Model.setCategory_id(categoryId);
+            test2Model.setCategory_name(categoryName);
+
+            model.setCompanyId(companyId);
+            model.setCompanyName(companyName);
+            model.setCompanyLogoImage(Base64.getEncoder().encodeToString(companyLogoImage));
+            model.setCompanyAddress(companyAddress);
+            model.setCompanyLinkYoutube(companyLinkYoutube);
+            model.setCompanyWebsiteUrl(companyWebsiteUrl);
+            model.setCompanyLng(companyLng);
+            model.setCompanyLat(companyLat);
+            model.setCompanyCoverImage(Base64.getEncoder().encodeToString(companyCoverImage));
+            model.setCompanyPhoneNumber(companyPhoneNumber);
+            model.setFollowerCount(followerCount);
+            model.setOrderCount(orderCount);
+            model.setCompanyDesc(companyDesc);
+            model.setCategoryNum(categoryNum);
+            model.setCity(city);
+            model.setArea(area);
+            //String encodedString = Base64.getEncoder().encodeToString(schoolLogo);
+            schools.add(model);
+
+            test2Models.add(test2Model);
+        }
+        for (CompanyProfileDtoTwo obj : schools) {
+            //System.out.println(obj.toString());
+//            res.put(obj,new ArrayList<Test2Model>());
+//            List<Test2Model>  test2ModelArrayList=new ArrayList<>();
+            List<CompanyProfileDtoOne> test2ModelArrayList = null;
+            test2ModelArrayList = new ArrayList<>();
+
+            int i = 0;
+            for (Map<String, Object> map : list) {
+//                obj.getCategories().add(test2ModelList);
+
+
+                if (res.get(obj) == null) {
+                    res.put(obj, new ArrayList<CompanyProfileDtoOne>());
+
+                }
+//                if (res.containsKey(obj)) {
+                if (map.get("company_id").equals(obj.getCompanyId())) {
+                    CompanyProfileDtoOne test2Model = new CompanyProfileDtoOne();
+                    int categoryId = (int) map.get("category_id");
+                    String categoryName = (String) map.get("category_name");
+
+
+
+                    test2Model.setCategory_id(categoryId);
+                    test2Model.setCategory_name(categoryName);
+
+                    test2ModelArrayList.add(test2Model);
+                    res.get(obj).add(i, test2Model);
+                    i++;
+                }
+
+            }
+
+            obj.setCategories(test2ModelArrayList);
+            schoolsList.add(obj);
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        //res = objectMapper.convertValue(res, Map.class);
+
+        CompanyProfileDtoThree mainModel = new CompanyProfileDtoThree(schoolsList);
+
+
+//        ObjectNode tenderNode = objectMapper.createObjectNode();
+//        tenderNode.put("tender_id", mainModel.getTender_id());
+//        tenderNode.put("tender_title", mainModel.getTender_title());
+//        tenderNode.put("tender_explain", mainModel.getTender_explain());
+//        ArrayNode tenderCategory = objectMapper.createArrayNode();
+
+        return mainModel;
+    }
+
+
+
+    @GetMapping("/all/{id}")
+    public CompanyProfileDtoThree getTestObject2(@PathVariable int id) {
+
+        Map<CompanyProfileDtoTwo, List<CompanyProfileDtoOne>> res = new HashMap<>();
+        List<Map<String, Object>> list = repo.getCompaniesProfilesObjectForAll(id);
+        List<CompanyProfileDtoTwo> schoolsList = new ArrayList<>();
+        Set<CompanyProfileDtoTwo> schools = new HashSet<>();
+        List<CompanyProfileDtoOne> test2Models = new ArrayList<>();
+        for (Map<String, Object> map : list) {
+            CompanyProfileDtoTwo model = new CompanyProfileDtoTwo();
+            CompanyProfileDtoOne test2Model = new CompanyProfileDtoOne();
+            int companyId = (int) map.get("company_id");
+            String companyName = (String) map.get("company_name");
+            byte[] companyLogoImage = (byte[]) map.get("company_logo_image");
+            String companyAddress = (String)map.get("company_address");
+            String companyLinkYoutube = (String) map.get("company_link_youtube");
+            String companyWebsiteUrl = (String)map.get("company_website_url");
+            float companyLng = (float)map.get("company_lng");
+            float companyLat = (float)map.get("company_lat");
+            byte[] companyCoverImage = (byte[]) map.get("company_cover_image");
+            String companyPhoneNumber = (String) map.get("company_phone_number");
+            long followerCount = (long) map.get("follower_count");
+            long orderCount = (long) map.get("order_count");
+            String companyDesc = (String) map.get("company_desc");
+            long categoryNum = (long) map.get("category_num");
+            String city = (String) map.get("city");
+            String area = (String) map.get("area");
+            int isFollow = (int) map.get("is_follow");
+            List<CompanyProfileDtoOne> categories;
+
+            int categoryId = (int) map.get("category_id");
+            String categoryName = (String) map.get("category_name");
+
+
+            test2Model.setCategory_id(categoryId);
+            test2Model.setCategory_name(categoryName);
+
+            model.setCompanyId(companyId);
+            model.setCompanyName(companyName);
+            model.setCompanyLogoImage(Base64.getEncoder().encodeToString(companyLogoImage));
+            model.setCompanyAddress(companyAddress);
+            model.setCompanyLinkYoutube(companyLinkYoutube);
+            model.setCompanyWebsiteUrl(companyWebsiteUrl);
+            model.setCompanyLng(companyLng);
+            model.setCompanyLat(companyLat);
+            model.setCompanyCoverImage(Base64.getEncoder().encodeToString(companyCoverImage));
+            model.setCompanyPhoneNumber(companyPhoneNumber);
+            model.setFollowerCount(followerCount);
+            model.setOrderCount(orderCount);
+            model.setCompanyDesc(companyDesc);
+            model.setCategoryNum(categoryNum);
+            model.setCity(city);
+            model.setArea(area);
+            model.setIs_follow(isFollow);
+            //String encodedString = Base64.getEncoder().encodeToString(schoolLogo);
+            if (schools.contains(model)){
+                continue;
+            }else {
+                schools.add(model);
+                test2Models.add(test2Model);
+                System.out.println("=====> this is the size   "+schools.size());
+            }
+
+        }
+        for (CompanyProfileDtoTwo obj : schools) {
+            //System.out.println(obj.toString());
+//            res.put(obj,new ArrayList<Test2Model>());
+//            List<Test2Model>  test2ModelArrayList=new ArrayList<>();
+            List<CompanyProfileDtoOne> test2ModelArrayList = null;
+            test2ModelArrayList = new ArrayList<>();
+
+            int i = 0;
+            for (Map<String, Object> map : list) {
+//                obj.getCategories().add(test2ModelList);
+
+
+                if (res.get(obj) == null) {
+                    res.put(obj, new ArrayList<CompanyProfileDtoOne>());
+
+                }
+//                if (res.containsKey(obj)) {
+                if (map.get("company_id").equals(obj.getCompanyId())) {
+                    CompanyProfileDtoOne test2Model = new CompanyProfileDtoOne();
+                    int categoryId = (int) map.get("category_id");
+                    String categoryName = (String) map.get("category_name");
+
+
+
+                    test2Model.setCategory_id(categoryId);
+                    test2Model.setCategory_name(categoryName);
+
+                    test2ModelArrayList.add(test2Model);
+                    res.get(obj).add(i, test2Model);
+                    i++;
+                }
+
+            }
+
+            obj.setCategories(test2ModelArrayList);
+            schoolsList.add(obj);
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        //res = objectMapper.convertValue(res, Map.class);
+
+        CompanyProfileDtoThree mainModel = new CompanyProfileDtoThree(schoolsList);
+
+
+//        ObjectNode tenderNode = objectMapper.createObjectNode();
+//        tenderNode.put("tender_id", mainModel.getTender_id());
+//        tenderNode.put("tender_title", mainModel.getTender_title());
+//        tenderNode.put("tender_explain", mainModel.getTender_explain());
+//        ArrayNode tenderCategory = objectMapper.createArrayNode();
+
+        return mainModel;
     }
 
 

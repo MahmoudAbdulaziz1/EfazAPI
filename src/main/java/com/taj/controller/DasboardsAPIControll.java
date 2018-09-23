@@ -522,47 +522,161 @@ public class DasboardsAPIControll {
     }
 
 
+
+
+
+
+
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @GetMapping("/tender/request/{id}")
-    public GetSingCollectiveTenderById2 getAllRequestsWithNameById(@PathVariable int id) {
-        List<TakatafSinfleSchoolRequestDTO> tenderList = takatafTenderRequestRepo.getAllRequestsWithNameByTender(id);
-        List<CategoryNameDto> categorie = takatafTenderRequestRepo.categoryData(id);
+    public TenderRequestTenders getAllRequestsWithNameById2(@PathVariable int id) {
 
-        GetSingleCollectiveByIdPartOneDTO2 data = new GetSingleCollectiveByIdPartOneDTO2(tenderList.get(0).getTender_id(), tenderList.get(0).getTender_title(),
-                tenderList.get(0).getTender_explain(), tenderList.get(0).getTender_display_date(),
-                tenderList.get(0).getTender_expire_date(), tenderList.get(0).getResponse_count(), categorie);
-        List<GetSingleCollectiveByIdPartTwoDTO> schools = new ArrayList<>();
-        List<TenderCollectiveByIdPart3DTO> categories = new ArrayList<>();
-        if (tenderList.get(0).getResponse_count() > 0) {
+        Map<TenderRequestSchools, List<TenderRequestCategories>> res = new HashMap<>();
+        List<Map<String, Object>> list = takatafTenderRequestRepo.getAllRequestsWithNameByTender2(id);
+        List<TenderRequestSchools> schoolsList = new ArrayList<>();
+        Set<TenderRequestSchools> schools = new HashSet<>();
+        List<TenderRequestCategories> test2Models = new ArrayList<>();
+        for (Map<String, Object> map : list) {
+            TenderRequestSchools model = new TenderRequestSchools();
+            TenderRequestCategories test2Model = new TenderRequestCategories();
 
-            TenderCollectiveByIdPart3DTO category = new TenderCollectiveByIdPart3DTO(tenderList.get(0).getId(),
-                    tenderList.get(0).getCategory_name(), tenderList.get(0).getCount());
-            categories.add(category);
-            GetSingleCollectiveByIdPartTwoDTO school0 = new GetSingleCollectiveByIdPartTwoDTO
-                    (tenderList.get(0).getSchool_name(), tenderList.get(0).getSchool_logo_image(), categories);
-            schools.add(school0);
-            int i = 1;
-            while (i < tenderList.size()) {
-                if (tenderList.get(i).getTender_id() == tenderList.get(i - 1).getTender_id()) {
-                    int j = i;
-                    TenderCollectiveByIdPart3DTO categorys = new TenderCollectiveByIdPart3DTO(tenderList.get(i).getId(),
-                            tenderList.get(i).getCategory_name(), tenderList.get(i).getCount());
-                    categories.add(categorys);
-                } else {
-                    GetSingleCollectiveByIdPartTwoDTO school = new GetSingleCollectiveByIdPartTwoDTO
-                            (tenderList.get(i).getSchool_name(), tenderList.get(i).getSchool_logo_image(), categories);
-                    schools.add(school);
+            try {
+                int schoolId = (int) map.get("school_id");
+                String schoolName = (String) map.get("school_name");
+                byte[] schoolLogo = (byte[]) map.get("school_logo_image");
+
+                long categoryId = (long) map.get("id");
+                String categoryName = (String) map.get("category_name");
+                long count = (long) map.get("count");
+
+
+                test2Model.setId(categoryId);
+                test2Model.setCategory_name(categoryName);
+                test2Model.setCount(count);
+
+                model.setSchool_id(schoolId);
+                model.setSchool_name(schoolName);
+                model.setSchool_logo_image(Base64.getEncoder().encodeToString(schoolLogo));
+                //String encodedString = Base64.getEncoder().encodeToString(schoolLogo);
+                schools.add(model);
+
+                test2Models.add(test2Model);
+            }catch (NullPointerException e){
+                schools.clear();
+            }
+        }
+        for (TenderRequestSchools obj : schools) {
+            System.out.println(obj.toString());
+//            res.put(obj,new ArrayList<Test2Model>());
+//            List<Test2Model>  test2ModelArrayList=new ArrayList<>();
+            List<TenderRequestCategories> test2ModelArrayList = null;
+            test2ModelArrayList = new ArrayList<>();
+
+            int i = 0;
+            for (Map<String, Object> map : list) {
+//                obj.getCategories().add(test2ModelList);
+
+
+                if (res.get(obj) == null) {
+                    res.put(obj, new ArrayList<TenderRequestCategories>());
+
                 }
-                i++;
+//                if (res.containsKey(obj)) {
+                if (map.get("school_id").equals(obj.getSchool_id())) {
+                    TenderRequestCategories test2Model = new TenderRequestCategories();
+                    long categoryId = (long) map.get("id");
+                    String categoryName = (String) map.get("category_name");
+                    long count = (long) map.get("count");
+
+
+                    test2Model.setId(categoryId);
+                    test2Model.setCategory_name(categoryName);
+                    test2Model.setCount(count);
+
+                    test2ModelArrayList.add(test2Model);
+                    res.get(obj).add(i, test2Model);
+                    i++;
+                }
+
             }
 
-
+            obj.setCategories(test2ModelArrayList);
+            schoolsList.add(obj);
         }
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        //res = objectMapper.convertValue(res, Map.class);
 
-        GetSingCollectiveTenderById2 tener = new GetSingCollectiveTenderById2(data, schools);
-        return tener;
+        List<CategoryNameDto> categorie = takatafTenderRequestRepo.categoryData(id);
+        TenderRequestTenders mainModel = new TenderRequestTenders(Long.parseLong(list.get(0).get("tender_id").toString()),
+                (String) list.get(0).get("tender_title"),
+                (String) list.get(0).get("tender_explain"), ((Timestamp) (list.get(0).get("tender_display_date"))).getTime(),
+                ((Timestamp) list.get(0).get("tender_expire_date")).getTime(), Long.parseLong(list.get(0).get("response_count").toString()), categorie, schoolsList);
+
+
+//        ObjectNode tenderNode = objectMapper.createObjectNode();
+//        tenderNode.put("tender_id", mainModel.getTender_id());
+//        tenderNode.put("tender_title", mainModel.getTender_title());
+//        tenderNode.put("tender_explain", mainModel.getTender_explain());
+//        ArrayNode tenderCategory = objectMapper.createArrayNode();
+
+        return mainModel;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+//    @GetMapping("/tender/request/{id}")
+//    public GetSingCollectiveTenderById2 getAllRequestsWithNameById(@PathVariable int id) {
+//        List<TakatafSinfleSchoolRequestDTO> tenderList = takatafTenderRequestRepo.getAllRequestsWithNameByTender(id);
+//        List<CategoryNameDto> categorie = takatafTenderRequestRepo.categoryData(id);
+//
+//        GetSingleCollectiveByIdPartOneDTO2 data = new GetSingleCollectiveByIdPartOneDTO2(tenderList.get(0).getTender_id(), tenderList.get(0).getTender_title(),
+//                tenderList.get(0).getTender_explain(), tenderList.get(0).getTender_display_date(),
+//                tenderList.get(0).getTender_expire_date(), tenderList.get(0).getResponse_count(), categorie);
+//        List<GetSingleCollectiveByIdPartTwoDTO> schools = new ArrayList<>();
+//        List<TenderCollectiveByIdPart3DTO> categories = new ArrayList<>();
+//        if (tenderList.get(0).getResponse_count() > 0) {
+//
+//            TenderCollectiveByIdPart3DTO category = new TenderCollectiveByIdPart3DTO(tenderList.get(0).getId(),
+//                    tenderList.get(0).getCategory_name(), tenderList.get(0).getCount());
+//            categories.add(category);
+//            GetSingleCollectiveByIdPartTwoDTO school0 = new GetSingleCollectiveByIdPartTwoDTO
+//                    (tenderList.get(0).getSchool_name(), tenderList.get(0).getSchool_logo_image(), categories);
+//            schools.add(school0);
+//            int i = 1;
+//            while (i < tenderList.size()) {
+//                if (tenderList.get(i).getTender_id() == tenderList.get(i - 1).getTender_id()) {
+//                    int j = i;
+//                    TenderCollectiveByIdPart3DTO categorys = new TenderCollectiveByIdPart3DTO(tenderList.get(i).getId(),
+//                            tenderList.get(i).getCategory_name(), tenderList.get(i).getCount());
+//                    categories.add(categorys);
+//                } else {
+//                    GetSingleCollectiveByIdPartTwoDTO school = new GetSingleCollectiveByIdPartTwoDTO
+//                            (tenderList.get(i).getSchool_name(), tenderList.get(i).getSchool_logo_image(), categories);
+//                    schools.add(school);
+//                }
+//                i++;
+//            }
+//
+//
+//        }
+//
+//
+//        GetSingCollectiveTenderById2 tener = new GetSingCollectiveTenderById2(data, schools);
+//        return tener;
+//    }
 
     @PreAuthorize("hasAuthority('admin') or hasAuthority('school')")
     @PutMapping("/tender/request/update")

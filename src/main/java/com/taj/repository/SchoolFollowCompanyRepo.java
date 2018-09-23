@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +16,8 @@ public class SchoolFollowCompanyRepo {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
+    @Autowired
+    SchoolProfileRepo repo;
 
     public boolean isExist(int id) {
         Integer cnt = jdbcTemplate.queryForObject(
@@ -24,7 +25,6 @@ public class SchoolFollowCompanyRepo {
                 Integer.class, id);
         return cnt != null && cnt > 0;
     }
-
 
     public boolean isRecordExist(int o_id, int f_id) {
         Integer cnt = jdbcTemplate.queryForObject(
@@ -48,13 +48,12 @@ public class SchoolFollowCompanyRepo {
     }
 
     public int addFollower(int organization_id, int follower_id) {
-        if (isRecordExist(organization_id, follower_id)){
+        if (isRecordExist(organization_id, follower_id)) {
             return 2;
-        }else {
+        } else {
 
             return jdbcTemplate.update("INSERT INTO efaz_organization_following VALUES (?,?,?)", null, organization_id, follower_id);
         }
-
 
 
     }
@@ -69,14 +68,10 @@ public class SchoolFollowCompanyRepo {
                 ((resultSet, i) -> new SchoolFollowCompany(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3))));
     }
 
-
     public List<SchoolFollowCompany> getAllSchoolFollowing(int follower_id) {
         return jdbcTemplate.query("SELECT * FROM efaz_organization_following WHERE follower_id=?;", new Object[]{follower_id},
                 ((resultSet, i) -> new SchoolFollowCompany(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3))));
     }
-
-    @Autowired
-    SchoolProfileRepo repo;
 
     public List<SchoolProfileModel> getCompanyAllFollowers(int organization_id) {
         List<SchoolFollowCompany> list = jdbcTemplate.query("SELECT * FROM efaz_organization_following WHERE organization_id=?;", new Object[]{organization_id},
@@ -98,9 +93,8 @@ public class SchoolFollowCompanyRepo {
 
         return jdbcTemplate.query(sql, new Object[]{organization_id}, (resultSet, i) -> new SchoolProfileModel(resultSet.getInt(1), resultSet.getString(2),
                 resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
-                resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9),resultSet.getBytes(10), resultSet.getString(11)));
+                resultSet.getString(6), resultSet.getString(7), resultSet.getFloat(8), resultSet.getFloat(9), resultSet.getBytes(10), resultSet.getString(11)));
     }
-
 
 
 //, company_address, company_category_id, company_link_youtube, company_website_url, company_lng, company_lat, company_cover_image, " +
@@ -114,8 +108,6 @@ public class SchoolFollowCompanyRepo {
         return jdbcTemplate.query(sql, new Object[]{organization_id}, (resultSet, i) -> new CompanyFollowSch0oolDto(resultSet.getString(1), resultSet.getBytes(2)));
 
     }
-
-
 
 
     public int getFollowersCount(int organization_id) {
@@ -139,13 +131,13 @@ public class SchoolFollowCompanyRepo {
     }
 
 
-    public int getId(int id1, int id2){
+    public int getId(int id1, int id2) {
         return jdbcTemplate.queryForObject("SELECT follow_id FROM efaz_organization_following WHERE organization_id=? AND follower_id=?;",
                 Integer.class, id1, id2);
 
     }
 
-    public  List<FollowSchoolProfilesDto> getSchoolsWithFollow(int companyId){
+    public List<FollowSchoolProfilesDto> getSchoolsWithFollow(int companyId) {
         String sql = "SELECT school_id, school_name, school_logo_image, IF (profile.school_id = follow.organization_id AND follow.follower_id=?, true, false) " +
                 "AS is_follow FROM efaz_company.efaz_school_profile AS profile Left JOIN efaz_company.efaz_organization_following " +
                 "AS follow ON profile.school_id = follow.organization_id AND follow.follower_id=?;";
@@ -158,7 +150,7 @@ public class SchoolFollowCompanyRepo {
 
     }
 
-    public  List<getCompaniesWithFollowDTo> getCompaniesWithFollow(int schoolId){
+    public List<getCompaniesWithFollowDTo> getCompaniesWithFollow(int schoolId) {
         String sql = "SELECT company_id, company_name, company_logo_image, company_address, category_name, company_link_youtube, company_website_url," +
                 " company_lng, company_lat, company_cover_image, company_phone_number, IF (profile.company_id = follow.organization_id AND follow.follower_id=?, true, false) " +
                 "AS is_follow FROM ((efaz_company.efaz_company_profile AS profile Left JOIN efaz_company.efaz_organization_following " +
@@ -176,9 +168,9 @@ public class SchoolFollowCompanyRepo {
 
     }
 
-    public  List<GetCompaniesWithFollowANDOffers> getCompaniesWithFollowAndOffers(int schoolId){
+    public List<GetCompaniesWithFollowANDOffers> getCompaniesWithFollowAndOffers(int schoolId) {
         String sql = "SELECT company_id, company_name, company_logo_image, company_address, category_name, company_link_youtube, company_website_url," +
-                "                 company_lng, company_lat, company_cover_image, company_phone_number, "+
+                "                 company_lng, company_lat, company_cover_image, company_phone_number, " +
                 "                 count(distinct fol.follow_id) AS follower_count," +
                 "                 count(distinct offer.offer_id) AS offer_count," +
                 "                 IF (profile.company_id = follow.organization_id " +
