@@ -87,7 +87,7 @@ public class SchoolRequestNewController {
 
     @GetMapping("/request/school/{id}")
     public GetCollectiveTenders getRequestOfSchoolByID(@PathVariable int id) {
-        List<getSchoolCustomRequestById> obj =  repo.getRequestOfSchoolByID(id);
+        List<getSchoolCustomRequestById2> obj =  repo.getRequestOfSchoolByID(id);
         GetCollectiveTenderPartOneDTO tender = new GetCollectiveTenderPartOneDTO(obj.get(0).getRequest_id(),obj.get(0).getRequest_title(),
                 obj.get(0).getRequest_explaination(), obj.get(0).getRequest_display_date(), obj.get(0).getRequest_expired_date(),
                 obj.get(0).getSchool_id(), obj.get(0).getResponse_count());
@@ -95,11 +95,11 @@ public class SchoolRequestNewController {
 
         List<GetCollectiveTenderPartYTwoDTO> companies = new ArrayList<>();
         if (obj.get(0).getResponse_count()>0){
-            for (getSchoolCustomRequestById one:obj) {
+            for (getSchoolCustomRequestById2 one:obj) {
                 //if( one.getRequest_category_name().equals(null) )
                 GetCollectiveTenderPartYTwoDTO part2 = new GetCollectiveTenderPartYTwoDTO(one.getRequest_category_name()+"", one.getCompany_name()+"",
                         one.getCompany_logo_image(), one.getCategory_name()+"", one.getResponsed_cost(), one.getResponse_date(),
-                        one.getResponse_id(), one.getResponsed_company_id());
+                        one.getResponse_id(), one.getResponsed_company_id(), one.getIs_aproved());
                 companies.add(part2);
             }
         }

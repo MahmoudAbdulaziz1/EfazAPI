@@ -15,7 +15,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Null;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -201,9 +200,43 @@ public class DasboardsAPIControll {
             objectNode.put("message", "Validation Failed");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
-        int res = repo.addTender(model.getTender_logo(), model.getTender_title(), model.getTender_explain(),
-                model.getTender_display_date(), model.getTender_expire_date(), model.getTender_company_display_date(),
-                model.getTender_company_expired_date(), model.getCats());
+
+
+        if (model.getTender_display_date() < new Timestamp(System.currentTimeMillis()).getTime()
+                || model.getTender_expire_date() < new Timestamp(System.currentTimeMillis()).getTime()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed school date in past");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+
+        if (model.getTender_display_date() >= model.getTender_expire_date()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed school display date is greater than  expired date");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+
+
+        if (model.getTender_company_display_date() < new Timestamp(System.currentTimeMillis()).getTime()
+                || model.getTender_company_expired_date() < new Timestamp(System.currentTimeMillis()).getTime()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed company date in past");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+
+        if (model.getTender_company_display_date() >= model.getTender_company_expired_date()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed company display date is greater than  expired date");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+
+
+        int res = repo.updateTender(model.getTender_id(), model.getTender_logo(), model.getTender_title(),
+                model.getTender_explain(), model.getTender_display_date(), model.getTender_expire_date(),
+                model.getTender_company_display_date(), model.getTender_company_expired_date(), model.getCats());
 
         if (res > 0) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -221,10 +254,12 @@ public class DasboardsAPIControll {
         } else if (res == -100) {
             ObjectNode objectNode = mapper.createObjectNode();
             ArrayNode nodes = mapper.createArrayNode();
-            for (int i = 0; i < model.getCats().size(); i++) {
-                int categorys = repo.getCategoryId(model.getCats().get(i).getCategory_name());
+            List<CategoriesInUse> data = repo.getCategoriesInUse();
+            for (int i = 0; i < data.size(); i++) {
+                int categorys = repo.getCategoryId(data.get(i).getCategory_name());
+
                 if (categorys > 0) {
-                    nodes.add(model.getCats().get(i).getCategory_name());
+                    nodes.add(data.get(i).getCategory_name());
                 }
             }
             objectNode.set("cats", nodes);
@@ -365,7 +400,7 @@ public class DasboardsAPIControll {
                 model.setT_date(t_date);
                 //String encodedString = Base64.getEncoder().encodeToString(schoolLogo);
                 schools.add(model);
-            }catch (NullPointerException e){
+            } catch (NullPointerException e) {
                 schools.add(null);
             }
 
@@ -416,7 +451,7 @@ public class DasboardsAPIControll {
                 obj.setCategories(test2ModelArrayList);
                 schoolsList.add(obj);
             }
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             schoolsList.add(null);
         }
 
@@ -522,11 +557,6 @@ public class DasboardsAPIControll {
     }
 
 
-
-
-
-
-
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @GetMapping("/tender/request/{id}")
     public TenderRequestTenders getAllRequestsWithNameById2(@PathVariable int id) {
@@ -561,7 +591,7 @@ public class DasboardsAPIControll {
                 schools.add(model);
 
                 test2Models.add(test2Model);
-            }catch (NullPointerException e){
+            } catch (NullPointerException e) {
                 schools.clear();
             }
         }
@@ -622,18 +652,6 @@ public class DasboardsAPIControll {
 
         return mainModel;
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
@@ -1014,7 +1032,7 @@ public class DasboardsAPIControll {
     @PreAuthorize("hasAuthority('school')")
     @GetMapping("/school/tenders/request/school/{id}")
     public GetCollectiveTenders getRequestOfSchoolByID(@PathVariable int id) {
-        List<getSchoolCustomRequestById> obj = schoolRequestNewRepo.getRequestOfSchoolByID(id);
+        List<getSchoolCustomRequestById2> obj = schoolRequestNewRepo.getRequestOfSchoolByID(id);
         GetCollectiveTenderPartOneDTO tender = new GetCollectiveTenderPartOneDTO(obj.get(0).getRequest_id(), obj.get(0).getRequest_title(),
                 obj.get(0).getRequest_explaination(), obj.get(0).getRequest_display_date(), obj.get(0).getRequest_expired_date(),
                 obj.get(0).getSchool_id(), obj.get(0).getResponse_count());
@@ -1022,11 +1040,11 @@ public class DasboardsAPIControll {
 
         List<GetCollectiveTenderPartYTwoDTO> companies = new ArrayList<>();
         if (obj.get(0).getResponse_count() > 0) {
-            for (getSchoolCustomRequestById one : obj) {
+            for (getSchoolCustomRequestById2 one : obj) {
                 //if( one.getRequest_category_name().equals(null) )
                 GetCollectiveTenderPartYTwoDTO part2 = new GetCollectiveTenderPartYTwoDTO(one.getRequest_category_name() + "", one.getCompany_name() + "",
                         one.getCompany_logo_image(), one.getCategory_name() + "", one.getResponsed_cost(), one.getResponse_date(),
-                        one.getResponse_id(), one.getResponsed_company_id());
+                        one.getResponse_id(), one.getResponsed_company_id(), one.getIs_aproved());
                 companies.add(part2);
             }
         }
@@ -1100,38 +1118,39 @@ public class DasboardsAPIControll {
 
     @PreAuthorize("hasAuthority('school')")
     @PutMapping("/response/school/request/accept/{id}")
-    public JsonNode acceptCompanyResponseSchoolRequest(@PathVariable int id) {
+    public ResponseEntity<JsonNode> acceptCompanyResponseSchoolRequest(@PathVariable int id) {
 
         int res = companyResponseSchoolRequestRepo.acceptResponseSchoolRequest(id);
         if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("status", 200);
             objectNode.put("message", "accepted");
-            return objectNode;
+            objectNode.put("agree_flag", 1);
+            return ResponseEntity.status(HttpStatus.OK).body(objectNode);
         } else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("status", 400);
             objectNode.put("message", "failed");
-            return objectNode;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
 
         }
     }
 
     @PreAuthorize("hasAuthority('school')")
     @PutMapping("/response/school/request/refuse/{id}")
-    public JsonNode refuseCompanyResponseSchoolRequest(@PathVariable int id) {
+    public ResponseEntity<JsonNode> refuseCompanyResponseSchoolRequest(@PathVariable int id) {
         int res = companyResponseSchoolRequestRepo.refuseResponseSchoolRequest(id);
         if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("status", 200);
             objectNode.put("message", "refuse success");
-            return objectNode;
+            objectNode.put("agree_flag", 0);
+            return ResponseEntity.status(HttpStatus.OK).body(objectNode);
         } else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("status", 400);
             objectNode.put("message", "refuse failed");
-            return objectNode;
-
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
     }
 
@@ -1307,7 +1326,7 @@ public class DasboardsAPIControll {
     }
 
 
-    @PreAuthorize("hasAuthority('company')")
+    @PreAuthorize("hasAuthority('company') or hasAuthority('school')")
     @PostMapping("/follow/add")
     public ResponseEntity<ObjectNode> addFollower(@RequestBody @Valid SchoolFollowCompany model, Errors errors) {
         if (errors.hasErrors()) {
@@ -1363,6 +1382,35 @@ public class DasboardsAPIControll {
 
         }
 
+
+    }
+
+
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('school') or hasAuthority('company')")
+    @DeleteMapping("/follow/org/{org_id}/follower/{follow_id}")
+    public ObjectNode deleteSchoolFollowCompanyByIds(@PathVariable int org_id, @PathVariable int follow_id) {
+        if (schoolFollowCompanyRepo.isRecordExist(org_id, follow_id)) {
+            int res = schoolFollowCompanyRepo.deleteSchoolFollowCompanyByIds(org_id, follow_id);
+            if (res == 1) {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status", 200);
+                objectNode.put("message", "success");
+
+                return objectNode;
+            } else {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status", 400);
+                objectNode.put("message", "not success");
+
+                return objectNode;
+            }
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("status", 400);
+            objectNode.put("message", "not exist");
+
+            return objectNode;
+        }
 
     }
 

@@ -134,7 +134,7 @@ public class LoginRepo {
                 model = jdbcTemplate.queryForObject(sql
                         , new Object[]{user_email, login_role},
                         (resultSet, i) -> new NewLoginModelDto(resultSet.getInt(1), resultSet.getString(2),
-                                resultSet.getString(3), resultSet.getInt(4), resultSet.getString(5), resultSet.getString(6), resultSet.getString(8)));
+                                resultSet.getString(3), resultSet.getInt(4), resultSet.getString(5), resultSet.getString(6), resultSet.getString(10)));
             }catch (Exception e){
                 model = null;
             }

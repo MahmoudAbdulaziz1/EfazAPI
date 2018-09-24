@@ -45,8 +45,16 @@ public class SchoolRequestOfferController {
             objectNode.put("requsted_offer_id", model.getRequsted_offer_id());
             objectNode.put("request_offer_count", model.getRequest_offer_count());
             objectNode.put("is_accepted", model.getIs_accepted());
+            objectNode.put("updated", 1);
 
             return objectNode;
+        } else if (res == -1000) {
+
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("message", "can not updated");
+            objectNode.put("updated", 0);
+            return objectNode;
+
         } else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "not success");

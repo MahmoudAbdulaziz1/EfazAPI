@@ -17,7 +17,10 @@ public class RecievesNewsMailRepo {
     JdbcTemplate jdbcTemplate;
 
     public int addMail(String mail) {
-        return jdbcTemplate.update("INSERT INTO efaz_recieve_news_mails VALUES(?,?);", null, mail);
+        if (!checkIfExistByMail(mail)) {
+            return jdbcTemplate.update("INSERT INTO efaz_recieve_news_mails VALUES(?,?);", null, mail);
+        }
+        return 0;
     }
 
     public List<RecievesNewsMailsModel> getAllMails() {
@@ -42,6 +45,13 @@ public class RecievesNewsMailRepo {
         Integer cnt = jdbcTemplate.queryForObject(
                 "SELECT count(*) FROM  efaz_recieve_news_mails WHERE mail_id=?;",
                 Integer.class, mailId);
+        return cnt != null && cnt > 0;
+    }
+
+    public boolean checkIfExistByMail(String mailId) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM  efaz_recieve_news_mails WHERE mail LIKE ?;",
+                Integer.class, "%" + mailId + "%");
         return cnt != null && cnt > 0;
     }
 

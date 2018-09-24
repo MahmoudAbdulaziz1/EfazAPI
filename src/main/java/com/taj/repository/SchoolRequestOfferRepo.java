@@ -1,14 +1,14 @@
 package com.taj.repository;
 
-import com.taj.model.CompanyOfferModel;
-import com.taj.model.CompanyResponseSchoolRequestModel;
-import com.taj.model.GetSchoolsRequestOffersWitCoast;
-import com.taj.model.SchoolRequestOfferModel;
+import com.taj.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.List;
 
 /**
@@ -23,14 +23,62 @@ public class SchoolRequestOfferRepo {
 
     public boolean checkIfExist(int offer_id){
         Integer cnt = jdbcTemplate.queryForObject(
-                "SELECT count(*) FROM  efaz_school_request_offer WHERE request_id=?;;",
+                "SELECT count(*) FROM  efaz_school_request_offer WHERE request_id=?;",
                 Integer.class, offer_id);
         return cnt != null && cnt > 0;
     }
 
+    public boolean checkIfExistByIds(int school_id, int offer_id){
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM  efaz_school_request_offer WHERE requsted_school_id=? AND requsted_offer_id=?;",
+                Integer.class, school_id, offer_id);
+        return cnt != null && cnt > 0;
+    }
+
+    public boolean checkIfExistByDate(int school_id, int offer_id){
+        int id = jdbcTemplate.queryForObject("Select request_id FROM efaz_school_request_offer WHERE requsted_school_id=? AND requsted_offer_id=?;",
+                 Integer.class,school_id, offer_id);
+//        SchoolRequestOfferDateModel model = jdbcTemplate.queryForObject("Select * FROM efaz_school_request_offer_date WHERE id=?;",
+//                new Object[]{id}, (resultSet, i) -> new SchoolRequestOfferDateModel(resultSet.getInt(1), resultSet.getTimestamp(2).getTime()));
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM  efaz_school_request_offer_date WHERE id=? AND date< NOW()+ INTERVAL 3 DAY;",
+                Integer.class, id);
+        return cnt != null && cnt > 0;
+    }
+
+
 
     public int addSchoolRequestOffer(int requsted_school_id, int requsted_offer_id, int is_accepted, int request_offer_count) {
-        return jdbcTemplate.update("INSERT INTO efaz_school_request_offer VALUES (?,?,?,?,?)", null, requsted_school_id, requsted_offer_id, is_accepted, request_offer_count);
+        if (checkIfExistByIds(requsted_school_id, requsted_offer_id)){
+            if (checkIfExistByDate(requsted_school_id, requsted_offer_id)){
+                return jdbcTemplate.update("UPDATE efaz_school_request_offer SET request_offer_count=?" +
+                        " WHERE requsted_school_id=? AND requsted_offer_id=?",  request_offer_count, requsted_school_id, requsted_offer_id);
+            }else {
+                return -1000;
+            }
+
+        }else {
+
+            KeyHolder key = new GeneratedKeyHolder();
+            jdbcTemplate.update(new PreparedStatementCreator() {
+                @Override
+                public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                    final PreparedStatement ps = connection.prepareStatement("INSERT INTO efaz_school_request_offer VALUES (?,?,?,?,?)",
+                            Statement.RETURN_GENERATED_KEYS);
+                    ps.setString(1, null);
+                    ps.setInt(2, requsted_school_id);
+                    ps.setInt(3, requsted_offer_id);/////////
+                    ps.setInt(4, is_accepted);
+                    ps.setInt(5, request_offer_count);
+
+                    return ps;
+                }
+
+            }, key);
+            int id = key.getKey().intValue();
+
+            return jdbcTemplate.update("INSERT INTO efaz_school_request_offer_date VALUES (?,?)", id, new Timestamp(System.currentTimeMillis()));
+        }
     }
 
     public List<SchoolRequestOfferModel> getSchoolRequestOffer() {

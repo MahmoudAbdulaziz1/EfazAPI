@@ -25,14 +25,37 @@ public class CompanyResponseSchoolRequestRepo {
         return cnt != null && cnt > 0;
     }
 
+    public boolean checkIfExistByDate(int responsed_company_id, int responsed_request_id) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM  efaz_company.efaz_company_response_school_request WHERE responsed_company_id=?" +
+                        " AND responsed_request_id=? AND response_date< NOW()+ INTERVAL 3 DAY;",
+                Integer.class, responsed_company_id, responsed_request_id);
+        return cnt != null && cnt > 0;
+    }
+
     public int addResponseSchoolRequest( int responsed_company_id, int responsed_request_id, int responsed_from, int responsed_to, double responsed_cost, int is_aproved) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         if (checkIfExist(responsed_company_id, responsed_request_id)){
-            return jdbcTemplate.update("UPDATE efaz_company.efaz_company_response_school_request set responsed_cost=? " +
-                    " WHERE responsed_company_id=? AND responsed_request_id=?; ", responsed_cost, responsed_company_id, responsed_request_id);
+            if (checkIfExistByDate(responsed_company_id, responsed_request_id)){
+                int updateResponse = jdbcTemplate.update("UPDATE efaz_company.efaz_company_response_school_request set responsed_cost=? " +
+                        " WHERE responsed_company_id=? AND responsed_request_id=?; ", responsed_cost, responsed_company_id, responsed_request_id);
+                if (updateResponse ==1){
+                    return 100;
+                }else {
+                    return 0;
+                }
+            }else {
+                return -100;
+            }
+
         }else {
-            return jdbcTemplate.update("INSERT INTO efaz_company_response_school_request VALUES (?,?,?,?,?,?,?,?)", null, responsed_company_id, responsed_request_id,
+            int insertResponse = jdbcTemplate.update("INSERT INTO efaz_company_response_school_request VALUES (?,?,?,?,?,?,?,?)", null, responsed_company_id, responsed_request_id,
                     responsed_cost, responsed_to, responsed_from, 0, timestamp);
+            if (insertResponse == 1){
+                return 200;
+            }else {
+                return 0;
+            }
         }
 
     }

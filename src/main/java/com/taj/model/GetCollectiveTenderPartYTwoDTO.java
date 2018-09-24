@@ -13,10 +13,11 @@ public class GetCollectiveTenderPartYTwoDTO {
     private long response_date;
     private int response_id;
     private int responsed_company_id;
+    private int is_aproved;
 
     public GetCollectiveTenderPartYTwoDTO(String request_category_name, String company_name,
                                           byte[] company_logo_image, String category_name, double responsed_cost, long response_date
-            , int response_id, int responsed_company_id) {
+            , int response_id, int responsed_company_id, int is_aproved) {
         this.request_category_name = request_category_name;
         this.company_name = company_name;
         this.company_logo_image = company_logo_image;
@@ -25,6 +26,7 @@ public class GetCollectiveTenderPartYTwoDTO {
         this.response_date = response_date;
         this.response_id = response_id;
         this.responsed_company_id = responsed_company_id;
+        this.is_aproved = is_aproved;
     }
 
     public GetCollectiveTenderPartYTwoDTO() {
@@ -93,5 +95,13 @@ public class GetCollectiveTenderPartYTwoDTO {
 
     public void setResponsed_company_id(int responsed_company_id) {
         this.responsed_company_id = responsed_company_id;
+    }
+
+    public int getIs_aproved() {
+        return is_aproved;
+    }
+
+    public void setIs_aproved(int is_aproved) {
+        this.is_aproved = is_aproved;
     }
 }

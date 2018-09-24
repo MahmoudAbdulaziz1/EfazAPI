@@ -6,8 +6,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.CompanyResponseSchoolRequestModel;
 import com.taj.repository.CompanyResponseSchoolRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,17 +28,17 @@ public class CompanyResponseSchoolRequestController {
 
     @PostMapping("/add")
     public ObjectNode addCompanyResponseSchoolRequest(@Valid @RequestBody CompanyResponseSchoolRequestModel model, Errors errors) {
-        if (errors.hasErrors()){
+        if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
             objectNode.put("details", errors.getAllErrors().toString());
             return objectNode;
         }
-        int res = repo.addResponseSchoolRequest( model.getResponsed_company_id(), model.getResponsed_request_id(), model.getResponsed_from(),
+        int res = repo.addResponseSchoolRequest(model.getResponsed_company_id(), model.getResponsed_request_id(), model.getResponsed_from(),
                 model.getResponsed_to(), model.getResponsed_cost(), model.getIs_aproved());
 
-        if (res == 1){
+        if (res == 200) {
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             ObjectNode objectNode = mapper.createObjectNode();
             //objectNode.put("response_id", model.getResponse_id());
@@ -51,12 +49,26 @@ public class CompanyResponseSchoolRequestController {
             objectNode.put("responsed_cost", model.getResponsed_cost());
             objectNode.put("is_aproved", model.getIs_aproved());
             objectNode.put("response_date", timestamp.getTime());
-
             return objectNode;
-        }else {
+        } else if (res == 100) {
             ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("value", "not success");
-
+            //objectNode.put("response_id", model.getResponse_id());
+            objectNode.put("responsed_company_id", model.getResponsed_company_id());
+            objectNode.put("responsed_request_id", model.getResponsed_request_id());
+            objectNode.put("responsed_from", model.getResponsed_from());
+            objectNode.put("responsed_from", model.getResponsed_to());
+            objectNode.put("responsed_cost", model.getResponsed_cost());
+            objectNode.put("is_aproved", model.getIs_aproved());
+            objectNode.put("updated", 1);
+            return objectNode;
+        } else if (res == -100) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("message", "cant not updated");
+            objectNode.put("updated", 0);
+            return objectNode;
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("message", "fail");
             return objectNode;
         }
 
@@ -91,12 +103,12 @@ public class CompanyResponseSchoolRequestController {
     public JsonNode acceptCompanyResponseSchoolRequest(@PathVariable int id) {
 
         int res = repo.acceptResponseSchoolRequest(id);
-        if (res == 1){
+        if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("status", 200);
             objectNode.put("message", "accepted");
             return objectNode;
-        }else {
+        } else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("status", 400);
             objectNode.put("message", "failed");
@@ -108,12 +120,12 @@ public class CompanyResponseSchoolRequestController {
     @PutMapping("/refuse/{id}")
     public JsonNode refuseCompanyResponseSchoolRequest(@PathVariable int id) {
         int res = repo.refuseResponseSchoolRequest(id);
-        if (res == 1){
+        if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("status", 200);
             objectNode.put("message", "accepted");
             return objectNode;
-        }else {
+        } else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("status", 400);
             objectNode.put("message", "failed");
@@ -124,7 +136,7 @@ public class CompanyResponseSchoolRequestController {
 
     @PutMapping("/update")
     public ObjectNode updateCompanyResponseSchoolRequest(@Valid @RequestBody CompanyResponseSchoolRequestModel model, Errors errors) {
-        if (errors.hasErrors()){
+        if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
@@ -134,7 +146,7 @@ public class CompanyResponseSchoolRequestController {
         int res = repo.updateResponseSchoolRequest(model.getResponse_id(), model.getResponsed_company_id(), model.getResponsed_request_id(),
                 model.getResponsed_from(), model.getResponsed_to(), model.getResponsed_cost(), model.getIs_aproved());
 
-        if (res == 1){
+        if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("response_id", model.getResponse_id());
             objectNode.put("responsed_company_id", model.getResponsed_company_id());
@@ -145,7 +157,7 @@ public class CompanyResponseSchoolRequestController {
             objectNode.put("is_aproved", model.getIs_aproved());
 
             return objectNode;
-        }else {
+        } else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "not success");
 
@@ -155,14 +167,14 @@ public class CompanyResponseSchoolRequestController {
 
     @DeleteMapping("/delete/{id}")
     public ObjectNode deleteCompanyResponseSchoolRequest(@PathVariable int id) {
-        int res =  repo.deleteResponseSchoolRequest(id);
+        int res = repo.deleteResponseSchoolRequest(id);
 
-        if (res == 1){
+        if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "success");
 
             return objectNode;
-        }else {
+        } else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "not success");
 

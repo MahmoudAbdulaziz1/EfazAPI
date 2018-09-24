@@ -158,7 +158,7 @@ public class SchoolRequestNewRepo {
                         , resultSet.getInt(6), resultSet.getString(7), resultSet.getInt(8), resultSet.getInt(14)));
     }
 
-    public List<getSchoolCustomRequestById> getRequestOfSchoolByID(int id) {
+    public List<getSchoolCustomRequestById2> getRequestOfSchoolByID(int id) {
 
 
         String sql = "SELECT  \n" +
@@ -169,7 +169,8 @@ public class SchoolRequestNewRepo {
                 "                                ifnull(company_logo_image,0)as company_logo,\n" +
                 "                              ifnull(category_name,0) as category_name\n" +
                 "                                 ,ifnull(responsed_cost,0)as responsed_cost, ifnull(response_date,NOW()) \n" +
-                "                                 as  response_date, ifnull(response_id,0) AS response_id, ifnull(responsed_company_id,0) AS responsed_company_id \n" +
+                "                                 as  response_date, ifnull(response_id,0) AS response_id," +
+                " ifnull(responsed_company_id,0) AS responsed_company_id, is_aproved \n" +
                 "                                 FROM efaz_school_tender AS tender  \n" +
                 "\t\t\t\t\t\t\t\tLEFT JOIN efaz_company.efaz_company_response_school_request AS req \n" +
                 "                                ON tender.request_id = req.responsed_request_id \n" +
@@ -184,7 +185,7 @@ public class SchoolRequestNewRepo {
                 "                                 cp.company_category_id = cc.category_id \n" +
                 "                                WHERE  request_id=?\n" +
                 "                                  GROUP BY request_id, request_title, request_explaination, request_display_date,request_expired_date, school_id," +
-                "                                 request_category_name,company_name, company_logo_image, category_name,responsed_cost, response_date, response_id, responsed_company_id;";
+                "                                 request_category_name,company_name, company_logo_image, category_name,responsed_cost, response_date, response_id, responsed_company_id, is_aproved;";
 
         String sql1 = "SELECT  " +
                 "                request_id, request_title, request_explaination, request_display_date, " +
@@ -210,10 +211,10 @@ public class SchoolRequestNewRepo {
 
 
         return jdbcTemplate.query(sql,
-                new Object[]{id}, (resultSet, i) -> new getSchoolCustomRequestById(resultSet.getInt(1),
+                new Object[]{id}, (resultSet, i) -> new getSchoolCustomRequestById2(resultSet.getInt(1),
                         resultSet.getString(2), resultSet.getString(3), resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime()
                         , resultSet.getInt(6), resultSet.getString(7), resultSet.getInt(8), resultSet.getString(9), resultSet.getBytes(10),
-                        resultSet.getString(11), resultSet.getDouble(12), resultSet.getTimestamp(13).getTime(), resultSet.getInt(14), resultSet.getInt(15)));
+                        resultSet.getString(11), resultSet.getDouble(12), resultSet.getTimestamp(13).getTime(), resultSet.getInt(14), resultSet.getInt(15), resultSet.getInt(16)));
     }
 
 
