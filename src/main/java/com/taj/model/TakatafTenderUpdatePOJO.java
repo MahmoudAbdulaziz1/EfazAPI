@@ -29,9 +29,7 @@ public class TakatafTenderUpdatePOJO {
     private long tender_expire_date;
     private int tender_is_confirmed;
     private int tender_is_available;
-    @NotNull
     private long tender_company_display_date;
-    @NotNull
     private long tender_company_expired_date;
     private List<TakatfTenderCategoryPOJO> cats;
 
@@ -39,7 +37,7 @@ public class TakatafTenderUpdatePOJO {
                                    @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String tender_title,
                                    @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String tender_explain,
                                    @NotNull long tender_display_date, @NotNull long tender_expire_date, int tender_is_confirmed, int tender_is_available,
-                                   @NotNull long tender_company_display_date, @NotNull long tender_company_expired_date, List<TakatfTenderCategoryPOJO> cats) {
+                                   long tender_company_display_date, long tender_company_expired_date, List<TakatfTenderCategoryPOJO> cats) {
         this.tender_id = tender_id;
         this.tender_logo = tender_logo;
         this.tender_title = tender_title;
@@ -57,7 +55,7 @@ public class TakatafTenderUpdatePOJO {
                                    @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String tender_title,
                                    @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String tender_explain
             , @NotNull long tender_display_date, @NotNull long tender_expire_date, int tender_is_confirmed, int tender_is_available,
-                                   @NotNull long tender_company_display_date, @NotNull long tender_company_expired_date, List<TakatfTenderCategoryPOJO> cats) {
+                                   long tender_company_display_date, long tender_company_expired_date, List<TakatfTenderCategoryPOJO> cats) {
         this.tender_logo = tender_logo;
         this.tender_title = tender_title;
         this.tender_explain = tender_explain;

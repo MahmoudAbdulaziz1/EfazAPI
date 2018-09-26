@@ -26,9 +26,7 @@ public class TakatafTenderPOJO {
     private @NotNull long tender_display_date;
     @NotNull
     private long tender_expire_date;
-    @NotNull
     private long tender_company_display_date;
-    @NotNull
     private long tender_company_expired_date;
     private int response_count;
 
@@ -36,7 +34,7 @@ public class TakatafTenderPOJO {
                              @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String tender_title,
                              @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String tender_explain,
                              @NotNull long tender_display_date,
-                             @NotNull long tender_expire_date, @NotNull long tender_company_display_date, @NotNull long tender_company_expired_date, int response_count) {
+                             long tender_expire_date, long tender_company_display_date, @NotNull long tender_company_expired_date, int response_count) {
         this.tender_id = tender_id;
         this.tender_logo = tender_logo;
         this.tender_title = tender_title;
@@ -51,8 +49,8 @@ public class TakatafTenderPOJO {
     public TakatafTenderPOJO(byte[] tender_logo,
                              @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String tender_title,
                              @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String tender_explain,
-                             @NotNull long tender_display_date, @NotNull long tender_expire_date, @NotNull long tender_company_display_date,
-                             @NotNull long tender_company_expired_date, int response_count) {
+                             @NotNull long tender_display_date, @NotNull long tender_expire_date, long tender_company_display_date,
+                             long tender_company_expired_date, int response_count) {
         this.tender_logo = tender_logo;
         this.tender_title = tender_title;
         this.tender_explain = tender_explain;

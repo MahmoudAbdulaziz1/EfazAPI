@@ -1,6 +1,7 @@
 package com.taj.repository;
 
 import com.taj.model.*;
+import com.taj.model.school_request_image_web.schoolRequestWithImageDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -153,6 +154,85 @@ public class SchoolRequestRepo {
                         resultSet.getInt(8), resultSet.getString(9),resultSet.getBytes(10) , resultSet.getInt(11),
                         resultSet.getString(12),resultSet.getInt(13), resultSet.getInt(14), resultSet.getInt(15)));
     }
+
+
+
+    public List<schoolRequestWithImageDto> filterByCategoryWithImage(int cat) {
+//        int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
+//                Integer.class, "%" + cat + "%");
+
+
+
+
+//        return jdbcTemplate.query("SELECT * FROM efaz_school_tender WHERE  requests_category_id=?;",
+//                new Object[]{cat}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getInt(3),
+//                        resultSet.getString(4), resultSet.getString(5), resultSet.getTimestamp(6).getTime(), resultSet.getTimestamp(7).getTime(),
+//                        resultSet.getTimestamp(8).getTime(),resultSet.getInt(9), resultSet.getInt(10),
+//                        resultSet.getTimestamp(11).getTime(), resultSet.getInt(12), resultSet.getInt(13),
+//                        resultSet.getInt(14), resultSet.getInt(15), resultSet.getInt(16)));
+
+
+        String sql1 = "SELECT\n" +
+                "\ttender.request_id,\n" +
+                "\trequest_title,\n" +
+                "\trequest_explaination,\n" +
+                "\trequest_display_date,\n" +
+                "\trequest_expired_date,\n" +
+                "\tifnull( request_is_available, 0 ) AS request_is_available,\n" +
+                "\tifnull( request_is_conformied, 0 ) AS request_is_conformied,\n" +
+                "\ttender.school_id,\n" +
+                "\tifnull( school_name, 0 ) AS school_name,\n" +
+                "\tifnull( school_logo_image, 0 ) AS school_logo_image,\n" +
+                "\trequests_category_id,\n" +
+                "\trequest_category_name,\n" +
+                "\tifnull( extended_payment, 0 ) AS extended_payment,\n" +
+                "\tcount( response_id ) AS request_count,\n" +
+                "\tcount( seen_id ) AS views_count,\n" +
+                "\timage_one \n" +
+                "FROM\n" +
+                "\tefaz_company.efaz_school_tender AS tender\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_profile AS PROFILE ON tender.school_id = PROFILE.school_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_request_category AS cat ON tender.requests_category_id = cat.request_category_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_see_request AS reqst ON tender.request_id = reqst.request_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_response_school_request AS req ON tender.request_id = req.responsed_request_id \n" +
+                "\tLEFT JOIN efaz_company.school_requst_images AS img ON tender.images_id = img.image_id\n" +
+                "WHERE\n" +
+                "\ttender.requests_category_id = ? \n" +
+                "GROUP BY\n" +
+                "\ttender.request_id,\n" +
+                "\trequest_title,\n" +
+                "\trequest_explaination,\n" +
+                "\trequest_display_date,\n" +
+                "\trequest_expired_date,\n" +
+                "\trequest_is_available,\n" +
+                "\trequest_is_conformied,\n" +
+                "\ttender.school_id,\n" +
+                "\tschool_name,\n" +
+                "\tschool_logo_image,\n" +
+                "\trequests_category_id,\n" +
+                "\trequest_category_name,\n" +
+                "\textended_payment,\n" +
+                "\trequest_count,\n" +
+                "\timage_one;";
+
+
+        String sql = "SELECT request_id,  request_title, request_explaination, request_display_date,\n" +
+                " request_expired_date, ifnull(request_is_available,0)AS request_is_available, ifnull(request_is_conformied,0)AS request_is_conformied,\n" +
+                " tender.school_id, ifnull(school_name,0)AS school_name, ifnull(school_logo_image,0) AS school_logo_image , " +
+                " requests_category_id, request_category_name, ifnull(extended_payment,0) AS extended_payment, ifnull(request_count, 0)AS request_count \n" +
+                " FROM efaz_company.efaz_school_tender AS tender\n" +
+                " LEFT JOIN efaz_company.efaz_school_profile AS profile ON tender.school_id = profile.school_id\n" +
+                " Left JOIN efaz_company.efaz_school_request_category AS cat ON tender.requests_category_id = cat.request_category_id" +
+                " Where tender.requests_category_id=?;";
+        return jdbcTemplate.query(sql1,
+                new Object[]{cat}, (resultSet, i) -> new schoolRequestWithImageDto(resultSet.getInt(1),
+                        resultSet.getString(2), resultSet.getString(3), resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(),
+                        resultSet.getInt(6), resultSet.getInt(7),
+                        resultSet.getInt(8), resultSet.getString(9),resultSet.getBytes(10) , resultSet.getInt(11),
+                        resultSet.getString(12),resultSet.getInt(13), resultSet.getInt(14), resultSet.getInt(15), resultSet.getBytes(16)));
+    }
+
+
 
 
     public List<SchoolRequestsModel> filterByReceivePlace(int placeId) {

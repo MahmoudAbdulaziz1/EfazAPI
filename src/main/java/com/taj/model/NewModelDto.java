@@ -61,9 +61,11 @@ public class NewModelDto {
     @NotEmpty
     @Size(max = 450, min = 1, message = "role should have at least 1 characters")
     private String area;
+    private float lng;
+    private float lat;
 
     public NewModelDto(int registrationId, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 10, message = "email should have at least 11 characters") String registerationEmail, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 8, message = "password should have at least 8 characters") String registerationPassword, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "username should have at least 1 characters") String registerationUsername, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "phone_number should have at least 1 characters") String registerationPhoneNumber, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "organization_name should have at least 1 characters") String registrationOrganizationName, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "address_desc should have at least 1 characters") String registrationAddressDesc, String registrationWebsiteUrl, int registrationIsActive, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "role should have at least 1 characters") String registrationRole, long registerationDate, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "role should have at least 1 characters") String city,
-                       @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "role should have at least 1 characters") String area) {
+                       @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "role should have at least 1 characters") String area, float lng, float lat) {
         this.registrationId = registrationId;
         this.registerationEmail = registerationEmail;
         this.registerationPassword = registerationPassword;
@@ -77,6 +79,8 @@ public class NewModelDto {
         this.registerationDate = registerationDate;
         this.city = city;
         this.area = area;
+        this.lng = lng;
+        this.lat = lat;
     }
 
     public NewModelDto() {
@@ -184,5 +188,21 @@ public class NewModelDto {
 
     public void setArea(String area) {
         this.area = area;
+    }
+
+    public float getLng() {
+        return lng;
+    }
+
+    public void setLng(float lng) {
+        this.lng = lng;
+    }
+
+    public float getLat() {
+        return lat;
+    }
+
+    public void setLat(float lat) {
+        this.lat = lat;
     }
 }

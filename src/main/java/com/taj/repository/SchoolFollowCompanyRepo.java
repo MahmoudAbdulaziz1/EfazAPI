@@ -150,6 +150,51 @@ public class SchoolFollowCompanyRepo {
 
     }
 
+
+    public List<FollowSchoolProfilesDto> getSchoolsFollowCompany(int companyId) {
+        String sql = "SELECT\n" +
+                "\tschool_id,\n" +
+                "\tschool_name,\n" +
+                "\tschool_logo_image,\n" +
+                "IF\n" +
+                "\t( PROFILE.school_id = follow.follower_id AND follow.organization_id = ?, TRUE, FALSE ) AS is_follow \n" +
+                "FROM\n" +
+                "\tefaz_company.efaz_school_profile\n" +
+                "\tAS PROFILE INNER JOIN efaz_company.efaz_organization_following AS follow ON PROFILE.school_id = follow.follower_id \n" +
+                "\tAND follow.organization_id = ?;";
+
+        List<FollowSchoolProfilesDto> list = jdbcTemplate.query(sql, new Object[]{companyId, companyId},
+                ((resultSet, i) -> new FollowSchoolProfilesDto(resultSet.getInt(1), resultSet.getString(2), resultSet.getBytes(3), resultSet.getBoolean(4))));
+
+        return list;
+    }
+
+
+
+    public List<FollowCompanyProfilesDto> getCompainesFollowedBySchool(int schoolId) {
+        String sql = "SELECT\n" +
+                "\tcompany_id,\n" +
+                "\tcompany_name,\n" +
+                "\tcompany_logo_image,\n" +
+                "IF\n" +
+                "\t( PROFILE.company_id = follow.organization_id AND follow.follower_id = ?, TRUE, FALSE ) AS is_follow \n" +
+                "FROM\n" +
+                "\tefaz_company.efaz_company_profile\n" +
+                "\tAS PROFILE INNER JOIN efaz_company.efaz_organization_following AS follow ON PROFILE.company_id = follow.organization_id \n" +
+                "\tAND follow.follower_id = ?;";
+
+        List<FollowCompanyProfilesDto> list = jdbcTemplate.query(sql, new Object[]{schoolId, schoolId},
+                ((resultSet, i) -> new FollowCompanyProfilesDto(resultSet.getInt(1), resultSet.getString(2), resultSet.getBytes(3), resultSet.getBoolean(4))));
+
+        return list;
+    }
+
+
+
+
+
+
+
     public List<getCompaniesWithFollowDTo> getCompaniesWithFollow(int schoolId) {
         String sql = "SELECT company_id, company_name, company_logo_image, company_address, category_name, company_link_youtube, company_website_url," +
                 " company_lng, company_lat, company_cover_image, company_phone_number, IF (profile.company_id = follow.organization_id AND follow.follower_id=?, true, false) " +

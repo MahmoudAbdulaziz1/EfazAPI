@@ -1,12 +1,16 @@
 package com.taj.repository;
 
 import com.taj.model.*;
+import com.taj.model.school.request.image.getSchoolCustomNewRequestById;
+import com.taj.model.school_request_image_web.SchoolRequestWithImageByIdDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.StringArrayPropertyEditor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.List;
 
 /**
@@ -20,15 +24,34 @@ public class SchoolRequestNewRepo {
 
     public int addRequest(String request_title, String request_explaination,
                           long request_display_date, long request_expired_date, int school_id,
-                          String request_category_id) {
+                          String request_category_id, byte[] image_one) {
 
-//        int category = jdbcTemplate.queryForObject("SELECT request_category_id  FROM efaz_company.efaz_school_request_category WHERE  request_category_name=?;",
-//                Integer.class, request_category_id);
+        KeyHolder key = new GeneratedKeyHolder();
+        jdbcTemplate.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                final PreparedStatement ps = connection.prepareStatement("INSERT INTO school_requst_images VALUES (?,?,?,?,?)",
+                        Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, null);
+                try {
+                    ps.setBytes(2, image_one);
+                } catch (NullPointerException e) {
+                    ps.setBytes(2, null);
+                }
+                ps.setBytes(3, null);/////////
+                ps.setBytes(4, null);
+                ps.setBytes(5, null);
+                return ps;
+            }
+
+        }, key);
+
+        int image_id = key.getKey().intValue();
 
         int category = jdbcTemplate.queryForObject("SELECT request_category_id  FROM efaz_company.efaz_school_request_category WHERE  request_category_name LIKE ?;",
                 Integer.class, "%" + request_category_id + "%");
 
-        return jdbcTemplate.update("INSERT INTO efaz_school_tender VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", null, null, null, request_title,
+        return jdbcTemplate.update("INSERT INTO efaz_school_tender VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", null, null, image_id, request_title,
                 request_explaination, new Timestamp(request_display_date), new Timestamp(request_expired_date), null, null, null,
                 null, school_id, category, null, null, null);
     }
@@ -112,6 +135,64 @@ public class SchoolRequestNewRepo {
     }
 
 
+
+
+    public SchoolRequestWithImageByIdDto getRequestByIDWithImage(int id) {
+
+
+        String sql = "SELECT\n" +
+                "\ttender.request_id,\n" +
+                "\trequest_title,\n" +
+                "\trequest_explaination,\n" +
+                "\trequest_display_date,\n" +
+                "\trequest_expired_date,\n" +
+                "\ttender.school_id,\n" +
+                "\tschool_name,\n" +
+                "\tschool_logo_image,\n" +
+                "\trequest_category_name,\n" +
+                "\tcount( responsed_request_id ) AS response_count,\n" +
+                "\tcount( seen_id ) AS views_count,\n" +
+                "\timage_one \n" +
+                "FROM\n" +
+                "\tefaz_school_tender AS tender\n" +
+                "\tINNER JOIN efaz_company.efaz_school_request_category AS cat ON tender.requests_category_id = cat.request_category_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_response_school_request AS req ON tender.request_id = req.responsed_request_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_profile AS sp ON tender.school_id = sp.school_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_see_request AS reqst ON tender.request_id = reqst.request_id\n" +
+                "\tLEFT JOIN efaz_company.school_requst_images AS img ON tender.images_id = img.image_id \n" +
+                "WHERE\n" +
+                "\ttender.request_id = ? \n" +
+                "GROUP BY\n" +
+                "\ttender.request_id,\n" +
+                "\trequest_title,\n" +
+                "\trequest_explaination,\n" +
+                "\trequest_display_date,\n" +
+                "\trequest_expired_date,\n" +
+                "\ttender.school_id,\n" +
+                "\tschool_name,\n" +
+                "\tschool_logo_image,\n" +
+                "\trequest_category_name,\n" +
+                "\timage_one;";
+
+
+
+        return jdbcTemplate.queryForObject(sql,
+                new Object[]{id}, (resultSet, i) -> new SchoolRequestWithImageByIdDto(resultSet.getInt(1),
+                        resultSet.getString(2), resultSet.getString(3), resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime()
+                        , resultSet.getInt(6), resultSet.getString(7), resultSet.getBytes(8), resultSet.getString(9),
+                        resultSet.getInt(10), resultSet.getInt(11), resultSet.getBytes(12)));
+    }
+
+
+
+
+
+
+
+
+
+
+
     public List<SchoolRequestNewDto2> getRequestsBySchoolID(int id) {
 
 
@@ -158,35 +239,53 @@ public class SchoolRequestNewRepo {
                         , resultSet.getInt(6), resultSet.getString(7), resultSet.getInt(8), resultSet.getInt(14)));
     }
 
-    public List<getSchoolCustomRequestById2> getRequestOfSchoolByID(int id) {
+    public List<getSchoolCustomNewRequestById> getRequestOfSchoolByID(int id) {
 
 
-        String sql = "SELECT  \n" +
-                "                               request_id, request_title, request_explaination, request_display_date, \n" +
-                "                request_expired_date, school_id, \n" +
-                "                                request_category_name,  \n" +
-                "                                count( responsed_request_id) AS response_count, ifnull(company_name,0) as company_name,\n" +
-                "                                ifnull(company_logo_image,0)as company_logo,\n" +
-                "                              ifnull(category_name,0) as category_name\n" +
-                "                                 ,ifnull(responsed_cost,0)as responsed_cost, ifnull(response_date,NOW()) \n" +
-                "                                 as  response_date, ifnull(response_id,0) AS response_id," +
-                " ifnull(responsed_company_id,0) AS responsed_company_id, is_aproved \n" +
-                "                                 FROM efaz_school_tender AS tender  \n" +
-                "\t\t\t\t\t\t\t\tLEFT JOIN efaz_company.efaz_company_response_school_request AS req \n" +
-                "                                ON tender.request_id = req.responsed_request_id \n" +
-                "                                Left JOIN efaz_company.efaz_company_profile as cp ON req.responsed_company_id = cp.company_id \n" +
-                "                                Left JOIN \n" +
-                "                                efaz_company.efaz_school_request_category AS cat\n" +
-                "                                 ON \n" +
-                "                                 tender.requests_category_id = cat.request_category_id \n" +
-                "                                  Left JOIN \n" +
-                "                                efaz_company.efaz_company_category AS cc \n" +
-                "                                ON \n" +
-                "                                 cp.company_category_id = cc.category_id \n" +
-                "                                WHERE  request_id=?\n" +
-                "                                  GROUP BY request_id, request_title, request_explaination, request_display_date,request_expired_date, school_id," +
-                "                                 request_category_name,company_name, company_logo_image, category_name,responsed_cost, response_date, response_id, responsed_company_id, is_aproved;";
-
+        String sql = "SELECT\n" +
+                "\trequest_id,\n" +
+                "\trequest_title,\n" +
+                "\trequest_explaination,\n" +
+                "\trequest_display_date,\n" +
+                "\trequest_expired_date,\n" +
+                "\tschool_id,\n" +
+                "\trequest_category_name,\n" +
+                "\tcount( responsed_request_id ) AS response_count,\n" +
+                "\tifnull( company_name, 0 ) AS company_name,\n" +
+                "\tifnull( company_logo_image, 0 ) AS company_logo,\n" +
+                "\tifnull( category_name, 0 ) AS category_name,\n" +
+                "\tifnull( responsed_cost, 0 ) AS responsed_cost,\n" +
+                "\tifnull( response_date, NOW( ) ) AS response_date,\n" +
+                "\tifnull( response_id, 0 ) AS response_id,\n" +
+                "\tifnull( responsed_company_id, 0 ) AS responsed_company_id,\n" +
+                "\tis_aproved ,\n" +
+                "\timage_one\n" +
+                "FROM\n" +
+                "\tefaz_school_tender AS tender\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_response_school_request AS req ON tender.request_id = req.responsed_request_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_profile AS cp ON req.responsed_company_id = cp.company_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_request_category AS cat ON tender.requests_category_id = cat.request_category_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_category AS cc ON cp.company_category_id = cc.category_id \n" +
+                "\tLEFT JOIN school_requst_images AS sri ON tender.images_id = sri.image_id\n" +
+                "WHERE\n" +
+                "\trequest_id = ? \n" +
+                "GROUP BY\n" +
+                "\trequest_id,\n" +
+                "\trequest_title,\n" +
+                "\trequest_explaination,\n" +
+                "\trequest_display_date,\n" +
+                "\trequest_expired_date,\n" +
+                "\tschool_id,\n" +
+                "\trequest_category_name,\n" +
+                "\tcompany_name,\n" +
+                "\tcompany_logo_image,\n" +
+                "\tcategory_name,\n" +
+                "\tresponsed_cost,\n" +
+                "\tresponse_date,\n" +
+                "\tresponse_id,\n" +
+                "\tresponsed_company_id,\n" +
+                "\tis_aproved, \n" +
+                "\timage_one;";
         String sql1 = "SELECT  " +
                 "                request_id, request_title, request_explaination, request_display_date, " +
                 " request_expired_date, school_id, " +
@@ -211,12 +310,12 @@ public class SchoolRequestNewRepo {
 
 
         return jdbcTemplate.query(sql,
-                new Object[]{id}, (resultSet, i) -> new getSchoolCustomRequestById2(resultSet.getInt(1),
+                new Object[]{id}, (resultSet, i) -> new getSchoolCustomNewRequestById(resultSet.getInt(1),
                         resultSet.getString(2), resultSet.getString(3), resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime()
                         , resultSet.getInt(6), resultSet.getString(7), resultSet.getInt(8), resultSet.getString(9), resultSet.getBytes(10),
-                        resultSet.getString(11), resultSet.getDouble(12), resultSet.getTimestamp(13).getTime(), resultSet.getInt(14), resultSet.getInt(15), resultSet.getInt(16)));
+                        resultSet.getString(11), resultSet.getDouble(12), resultSet.getTimestamp(13).getTime(), resultSet.getInt(14),
+                        resultSet.getInt(15), resultSet.getInt(16), resultSet.getBytes(17)));
     }
-
 
 
     public List<SchoolRequestNewDto> getRequestsByCategoryID(String id) {

@@ -62,8 +62,18 @@ public class TakatafTenderNewRepo {
                 ps.setTimestamp(6, new Timestamp(tender_expire_date));
                 ps.setInt(7, 0);
                 ps.setInt(8, 1);
-                ps.setTimestamp(9, new Timestamp(tender_company_display_date));
-                ps.setTimestamp(10, new Timestamp(tender_company_expired_date));
+                if (tender_company_display_date==0){
+                    ps.setTimestamp(9, null);
+
+                }else {
+                    ps.setTimestamp(9, new Timestamp(tender_company_display_date));
+                }
+
+                if (tender_company_display_date==0){
+                    ps.setTimestamp(10, null);
+                }else {
+                    ps.setTimestamp(10, new Timestamp(tender_company_expired_date));
+                }
                 return ps;
             }
 

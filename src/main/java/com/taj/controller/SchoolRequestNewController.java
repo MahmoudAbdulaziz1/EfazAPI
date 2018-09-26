@@ -4,6 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.*;
+import com.taj.model.school.request.image.GetCollectiveTenderPartOneDTO2;
+import com.taj.model.school.request.image.GetCollectiveTenders2;
+import com.taj.model.school.request.image.SchoolNewRequestsDTO2;
+import com.taj.model.school.request.image.getSchoolCustomNewRequestById;
+import com.taj.model.school_request_image_web.SchoolRequestWithImageByIdDto;
+import com.taj.repository.AddSchoolRequestImagesRepo;
 import com.taj.repository.SchoolRequestNewRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,11 +32,13 @@ public class SchoolRequestNewController {
     @Autowired
     SchoolRequestNewRepo repo;
     @Autowired
+    AddSchoolRequestImagesRepo addSchoolRequestImagesRepo;
+    @Autowired
     ObjectMapper mapper;
 
 
     @PostMapping("/")
-    public ResponseEntity<JsonNode> addSchoolRequest(@RequestBody @Valid SchoolRequestsDTO model, Errors errors) {
+    public ResponseEntity<JsonNode> addSchoolRequest(@RequestBody @Valid SchoolNewRequestsDTO2 model, Errors errors) {
 
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -40,8 +48,9 @@ public class SchoolRequestNewController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
 
+
         int res = repo.addRequest(model.getRequest_title(), model.getRequest_explaination(),
-                model.getRequest_display_date(), model.getRequest_expired_date(), model.getSchool_id(), model.getRequest_category_id());
+                model.getRequest_display_date(), model.getRequest_expired_date(), model.getSchool_id(), model.getRequest_category_name(), model.getImage_one());
         if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
 
@@ -50,7 +59,8 @@ public class SchoolRequestNewController {
             objectNode.put("request_display_date", model.getRequest_display_date());
             objectNode.put("request_expired_date", model.getRequest_expired_date());
             objectNode.put("school_id", model.getSchool_id());
-            objectNode.put("request_category_id", model.getRequest_category_id());
+            objectNode.put("request_category_id", model.getRequest_category_name());
+            objectNode.put("image", model.getImage_one());
 
             return ResponseEntity.status(HttpStatus.OK).body(objectNode);
         } else {
@@ -62,11 +72,22 @@ public class SchoolRequestNewController {
         }
     }
 
+//    @GetMapping("/{id}")
+//    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+//    public ResponseEntity<SchoolRequestNewDtoById> getSchoolSingleRequest(@PathVariable int id) {
+//        if (repo.isExist(id)) {
+//            return ResponseEntity.status(HttpStatus.OK).body(repo.getRequestByID(id));
+//        } else {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+//        }
+//
+//    }
+
     @GetMapping("/{id}")
     //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
-    public ResponseEntity<SchoolRequestNewDtoById> getSchoolSingleRequest(@PathVariable int id) {
+    public ResponseEntity<SchoolRequestWithImageByIdDto> getSchoolSingleRequestByImage(@PathVariable int id) {
         if (repo.isExist(id)) {
-            return ResponseEntity.status(HttpStatus.OK).body(repo.getRequestByID(id));
+            return ResponseEntity.status(HttpStatus.OK).body(repo.getRequestByIDWithImage(id));
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
@@ -86,33 +107,31 @@ public class SchoolRequestNewController {
     }
 
     @GetMapping("/request/school/{id}")
-    public GetCollectiveTenders getRequestOfSchoolByID(@PathVariable int id) {
-        List<getSchoolCustomRequestById2> obj =  repo.getRequestOfSchoolByID(id);
-        GetCollectiveTenderPartOneDTO tender = new GetCollectiveTenderPartOneDTO(obj.get(0).getRequest_id(),obj.get(0).getRequest_title(),
+    public GetCollectiveTenders2 getRequestOfSchoolByID(@PathVariable int id) {
+        List<getSchoolCustomNewRequestById> obj = repo.getRequestOfSchoolByID(id);
+        GetCollectiveTenderPartOneDTO2 tender = new GetCollectiveTenderPartOneDTO2(obj.get(0).getRequest_id(), obj.get(0).getRequest_title(),
                 obj.get(0).getRequest_explaination(), obj.get(0).getRequest_display_date(), obj.get(0).getRequest_expired_date(),
-                obj.get(0).getSchool_id(), obj.get(0).getResponse_count());
+                obj.get(0).getSchool_id(), obj.get(0).getResponse_count(), obj.get(0).getImage_one());
 
 
         List<GetCollectiveTenderPartYTwoDTO> companies = new ArrayList<>();
-        if (obj.get(0).getResponse_count()>0){
-            for (getSchoolCustomRequestById2 one:obj) {
+        if (obj.get(0).getResponse_count() > 0) {
+            for (getSchoolCustomNewRequestById one : obj) {
                 //if( one.getRequest_category_name().equals(null) )
-                GetCollectiveTenderPartYTwoDTO part2 = new GetCollectiveTenderPartYTwoDTO(one.getRequest_category_name()+"", one.getCompany_name()+"",
-                        one.getCompany_logo_image(), one.getCategory_name()+"", one.getResponsed_cost(), one.getResponse_date(),
+                GetCollectiveTenderPartYTwoDTO part2 = new GetCollectiveTenderPartYTwoDTO(one.getRequest_category_name() + "", one.getCompany_name() + "",
+                        one.getCompany_logo_image(), one.getCategory_name() + "", one.getResponsed_cost(), one.getResponse_date(),
                         one.getResponse_id(), one.getResponsed_company_id(), one.getIs_aproved());
                 companies.add(part2);
             }
         }
 
-        if (obj.get(0).getResponse_count()==0){
-            GetCollectiveTenders tenders = new GetCollectiveTenders(tender, null);
-            return  tenders;
-        }else {
-            GetCollectiveTenders tenders = new GetCollectiveTenders(tender, companies);
-            return  tenders;
+        if (obj.get(0).getResponse_count() == 0) {
+            GetCollectiveTenders2 tenders = new GetCollectiveTenders2(tender, null);
+            return tenders;
+        } else {
+            GetCollectiveTenders2 tenders = new GetCollectiveTenders2(tender, companies);
+            return tenders;
         }
-
-
 
 
     }

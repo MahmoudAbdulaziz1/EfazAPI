@@ -40,6 +40,7 @@ public class MultiCategoryProfileModel {
     private byte[] company_cover_image;
     private String company_phone_number;
     private String company_desc;
+    @NotNull
     private List<TakatfTenderCategoryPOJO> category;
 
     public MultiCategoryProfileModel(int company_id,

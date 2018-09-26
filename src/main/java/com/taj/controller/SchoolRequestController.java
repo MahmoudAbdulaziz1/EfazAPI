@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.*;
+import com.taj.model.school_request_image_web.schoolRequestWithImageDto;
 import com.taj.repository.SchoolRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -174,12 +174,16 @@ public class SchoolRequestController {
         return repo.filterByExplain(explain);
     }
 
-    @GetMapping("/filterCat/{cat}")
+    @GetMapping("/filterCats/{cat}")
     //@PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
     public List<GetSingleSchoolRequestByCategory> filterByCategory(@PathVariable int cat) {
         return repo.filterByCategory(cat);
     }
 
+    @GetMapping("/filterCat/{cat}")
+    public List<schoolRequestWithImageDto> filterByCategoryWithImage(@PathVariable int cat) {
+        return repo.filterByCategoryWithImage(cat);
+    }
     @GetMapping("/filterPlace/{place}")
     //@PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
     public List<SchoolRequestsModel> filterByReceivePlace(@PathVariable int place) {

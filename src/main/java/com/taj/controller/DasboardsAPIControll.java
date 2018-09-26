@@ -5,6 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.*;
+import com.taj.model.school.request.image.GetCollectiveTenderPartOneDTO2;
+import com.taj.model.school.request.image.GetCollectiveTenders2;
+import com.taj.model.school.request.image.SchoolNewRequestsDTO2;
+import com.taj.model.school.request.image.getSchoolCustomNewRequestById;
 import com.taj.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -108,23 +112,32 @@ public class DasboardsAPIControll {
             objectNode.put("message", "Validation Failed school display date is greater than  expired date");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
+        if (model.getTender_company_expired_date() == 0 || model.getTender_company_expired_date() == 0) {
 
+        } else {
 
-        if (model.getTender_company_display_date() < new Timestamp(System.currentTimeMillis()).getTime()
-                || model.getTender_company_expired_date() < new Timestamp(System.currentTimeMillis()).getTime()) {
-            ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("state", 400);
-            objectNode.put("message", "Validation Failed company date in past");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            if (model.getTender_company_display_date() < model.getTender_expire_date()) {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("state", 400);
+                objectNode.put("message", "Validation Failed company date in past");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            }
+
+            if (model.getTender_company_display_date() < new Timestamp(System.currentTimeMillis()).getTime()
+                    || model.getTender_company_expired_date() < new Timestamp(System.currentTimeMillis()).getTime()) {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("state", 400);
+                objectNode.put("message", "Validation Failed company date in past");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            }
+
+            if (model.getTender_company_display_date() >= model.getTender_company_expired_date()) {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("state", 400);
+                objectNode.put("message", "Validation Failed company display date is greater than  expired date");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            }
         }
-
-        if (model.getTender_company_display_date() >= model.getTender_company_expired_date()) {
-            ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("state", 400);
-            objectNode.put("message", "Validation Failed company display date is greater than  expired date");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
-        }
-
 
         int res = repo.addTender(model.getTender_logo(), model.getTender_title(), model.getTender_explain(),
                 model.getTender_display_date(), model.getTender_expire_date(), model.getTender_company_display_date(),
@@ -360,9 +373,9 @@ public class DasboardsAPIControll {
 
     @PreAuthorize("hasAuthority('admin') OR hasAuthority('school')")
     @GetMapping("request/tender/{id}")
-    public TenderRequestTenderModel getTenderRequestObject(@PathVariable int id) {
+    public TenderRequestTenderModel2 getTenderRequestObject(@PathVariable int id) {
         Map<TenderRequestSchoolModel, List<TenderRequestCategoriesModel>> res = new HashMap<>();
-        List<Map<String, Object>> list = tenderRequestRepo.getTenderRequestObject(id);
+        List<Map<String, Object>> list = tenderRequestRepo.getTenderRequestObjectWithCompanyDates(id);
         List<TenderRequestSchoolModel> schoolsList = new ArrayList<>();
         Set<TenderRequestSchoolModel> schools = new HashSet<>();
         List<TenderRequestCategoriesModel> test2Models = new ArrayList<>();
@@ -457,19 +470,22 @@ public class DasboardsAPIControll {
 
         if (Long.parseLong(list.get(0).get("response_count").toString()) == 0) {
             List<CategoryNameDto> category = takatafTenderRequestRepo.categoryData(id);
-            TenderRequestTenderModel mainModel = new TenderRequestTenderModel(Long.parseLong(list.get(0).get("tender_id").toString()),
+            TenderRequestTenderModel2 mainModel = new TenderRequestTenderModel2(Long.parseLong(list.get(0).get("tender_id").toString()),
                     (String) list.get(0).get("tender_title"),
                     (String) list.get(0).get("tender_explain"), ((Timestamp) (list.get(0).get("tender_display_date"))).getTime(),
-                    ((Timestamp) list.get(0).get("tender_expire_date")).getTime(), Long.parseLong(list.get(0).get("response_count").toString()), category, null);
+                    ((Timestamp) list.get(0).get("tender_expire_date")).getTime(), ((Timestamp) list.get(0).get("tender_company_display_date")).getTime(),
+                    ((Timestamp) list.get(0).get("tender_company_expired_date")).getTime(), Long.parseLong(list.get(0).get("response_count").toString()), category, null);
 
 
             return mainModel;
         } else {
             List<CategoryNameDto> category = takatafTenderRequestRepo.categoryData(id);
-            TenderRequestTenderModel mainModel = new TenderRequestTenderModel(Long.parseLong(list.get(0).get("tender_id").toString()),
+            TenderRequestTenderModel2 mainModel = new TenderRequestTenderModel2(Long.parseLong(list.get(0).get("tender_id").toString()),
                     (String) list.get(0).get("tender_title"),
                     (String) list.get(0).get("tender_explain"), ((Timestamp) (list.get(0).get("tender_display_date"))).getTime(),
-                    ((Timestamp) list.get(0).get("tender_expire_date")).getTime(), Long.parseLong(list.get(0).get("response_count").toString()), category, schoolsList);
+                    ((Timestamp) list.get(0).get("tender_expire_date")).getTime(), ((Timestamp) list.get(0).get("tender_company_display_date")).getTime(),
+                    ((Timestamp) list.get(0).get("tender_company_expired_date")).getTime(),
+                    Long.parseLong(list.get(0).get("response_count").toString()), category, schoolsList);
 
 
             return mainModel;
@@ -809,6 +825,22 @@ public class DasboardsAPIControll {
         return schoolFollowCompanyRepo.getSchoolsWithFollow(id);
     }
 
+///////////ADMIN//////////////////////////////////////////////////////////////////////////////////////////////////////////
+    @PreAuthorize("hasAuthority('admin')  or hasAuthority('school')  or hasAuthority('company')")
+    @GetMapping("/follow/companies/{id}")
+    public List<FollowSchoolProfilesDto> getSchoolsFollowCompany(@PathVariable int id) {
+        return schoolFollowCompanyRepo.getSchoolsFollowCompany(id);
+    }
+
+
+    @PreAuthorize("hasAuthority('admin')  or hasAuthority('school')  or hasAuthority('company')")
+    @GetMapping("/follow/schools/{id}")
+    public List<FollowCompanyProfilesDto> getCompainesFollowedBySchool(@PathVariable int id) {
+        return schoolFollowCompanyRepo.getCompainesFollowedBySchool(id);
+    }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     @PreAuthorize("hasAuthority('school')")
     @GetMapping("/follow/company/{id}")
     public List<getCompaniesWithFollowDTo> getCompaniesWithFollow(@PathVariable int id) {
@@ -981,7 +1013,7 @@ public class DasboardsAPIControll {
 
     @PreAuthorize("hasAuthority('school')")
     @PostMapping("/school/tenders/")
-    public ResponseEntity<JsonNode> addSchoolRequest(@RequestBody @Valid SchoolRequestsDTO model, Errors errors) {
+    public ResponseEntity<JsonNode> addSchoolRequest(@RequestBody @Valid SchoolNewRequestsDTO2 model, Errors errors) {
 
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -1008,7 +1040,7 @@ public class DasboardsAPIControll {
 
 
         int res = schoolRequestNewRepo.addRequest(model.getRequest_title(), model.getRequest_explaination(),
-                model.getRequest_display_date(), model.getRequest_expired_date(), model.getSchool_id(), model.getRequest_category_id());
+                model.getRequest_display_date(), model.getRequest_expired_date(), model.getSchool_id(), model.getRequest_category_name(), model.getImage_one());
         if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
 
@@ -1017,7 +1049,8 @@ public class DasboardsAPIControll {
             objectNode.put("request_display_date", model.getRequest_display_date());
             objectNode.put("request_expired_date", model.getRequest_expired_date());
             objectNode.put("school_id", model.getSchool_id());
-            objectNode.put("request_category_id", model.getRequest_category_id());
+            objectNode.put("request_category_id", model.getRequest_category_name());
+            objectNode.put("image", model.getImage_one());
 
             return ResponseEntity.status(HttpStatus.OK).body(objectNode);
         } else {
@@ -1031,16 +1064,16 @@ public class DasboardsAPIControll {
 
     @PreAuthorize("hasAuthority('school')")
     @GetMapping("/school/tenders/request/school/{id}")
-    public GetCollectiveTenders getRequestOfSchoolByID(@PathVariable int id) {
-        List<getSchoolCustomRequestById2> obj = schoolRequestNewRepo.getRequestOfSchoolByID(id);
-        GetCollectiveTenderPartOneDTO tender = new GetCollectiveTenderPartOneDTO(obj.get(0).getRequest_id(), obj.get(0).getRequest_title(),
+    public GetCollectiveTenders2 getRequestOfSchoolByID(@PathVariable int id) {
+        List<getSchoolCustomNewRequestById> obj = schoolRequestNewRepo.getRequestOfSchoolByID(id);
+        GetCollectiveTenderPartOneDTO2 tender = new GetCollectiveTenderPartOneDTO2(obj.get(0).getRequest_id(), obj.get(0).getRequest_title(),
                 obj.get(0).getRequest_explaination(), obj.get(0).getRequest_display_date(), obj.get(0).getRequest_expired_date(),
-                obj.get(0).getSchool_id(), obj.get(0).getResponse_count());
+                obj.get(0).getSchool_id(), obj.get(0).getResponse_count(), obj.get(0).getImage_one());
 
 
         List<GetCollectiveTenderPartYTwoDTO> companies = new ArrayList<>();
         if (obj.get(0).getResponse_count() > 0) {
-            for (getSchoolCustomRequestById2 one : obj) {
+            for (getSchoolCustomNewRequestById one : obj) {
                 //if( one.getRequest_category_name().equals(null) )
                 GetCollectiveTenderPartYTwoDTO part2 = new GetCollectiveTenderPartYTwoDTO(one.getRequest_category_name() + "", one.getCompany_name() + "",
                         one.getCompany_logo_image(), one.getCategory_name() + "", one.getResponsed_cost(), one.getResponse_date(),
@@ -1050,10 +1083,10 @@ public class DasboardsAPIControll {
         }
 
         if (obj.get(0).getResponse_count() == 0) {
-            GetCollectiveTenders tenders = new GetCollectiveTenders(tender, null);
+            GetCollectiveTenders2 tenders = new GetCollectiveTenders2(tender, null);
             return tenders;
         } else {
-            GetCollectiveTenders tenders = new GetCollectiveTenders(tender, companies);
+            GetCollectiveTenders2 tenders = new GetCollectiveTenders2(tender, companies);
             return tenders;
         }
 

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.NewModelDto;
 import com.taj.model.NewRegisterModel;
 import com.taj.model.UserType;
+import com.taj.model.new_register.CheckOrgNameNotFoundDto;
 import com.taj.repository.NewRegisterRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -60,12 +61,13 @@ public class NewRegisterController {
                 registrationModel.getRegistrationRole().trim().compareTo(UserType.company.toString()) == 0) {
 
             String encodedPassword = bCryptPasswordEncoder.encode(registrationModel.getRegisterationPassword());
-            NewRegisterModel model = registrationRepo.addUser(registrationModel.getRegisterationEmail(), encodedPassword,
+            int model = registrationRepo.addUser(registrationModel.getRegisterationEmail(), encodedPassword,
                     registrationModel.getRegisterationUsername(), registrationModel.getRegisterationPhoneNumber(),
                     registrationModel.getRegistrationOrganizationName(), registrationModel.getRegistrationAddressDesc(),
                     registrationModel.getRegistrationWebsiteUrl(), registrationModel.getRegistrationRole(),
-                    new Timestamp(System.currentTimeMillis()).getTime(), registrationModel.getCity(), registrationModel.getArea());
-            if (model != null) {
+                    new Timestamp(System.currentTimeMillis()).getTime(), registrationModel.getCity(), registrationModel.getArea(),
+                    registrationModel.getLng(), registrationModel.getLat());
+            if (model == 1) {
                 ObjectNode objectNode = mapper.createObjectNode();
                 objectNode.put(STATUS, 201);
                 objectNode.put("registeration_email", registrationModel.getRegisterationEmail());
@@ -80,7 +82,14 @@ public class NewRegisterController {
                 objectNode.put("registration_date", new Timestamp(System.currentTimeMillis()).getTime());
                 objectNode.put("city", registrationModel.getCity());
                 objectNode.put("Area", registrationModel.getArea());
+                objectNode.put("lng", registrationModel.getLng());
+                objectNode.put("lat", registrationModel.getLat());
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+            } else if (model == -100) {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put(STATUS, 400);
+                objectNode.put(MESSAGE, "This Name Is Already Exist");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
             } else {
                 ObjectNode objectNode = mapper.createObjectNode();
                 objectNode.put(STATUS, 400);
@@ -97,6 +106,11 @@ public class NewRegisterController {
         }
 
 
+    }
+
+    @PostMapping("/org")
+    public boolean IfOrgNameExist(@RequestBody CheckOrgNameNotFoundDto dto) {
+        return registrationRepo.IfOrgNameExist(dto.getRegistration_organization_name());
     }
 
     @GetMapping("/getInActive")
@@ -202,7 +216,7 @@ public class NewRegisterController {
     @GetMapping("/{id}")
     public ResponseEntity<ObjectNode> getUser(@PathVariable int id) {
 
-        if (registrationRepo.IfEmailExist(id)){
+        if (registrationRepo.IfEmailExist(id)) {
             NewRegisterModel model = registrationRepo.getUser(id);
             ObjectNode nodes = mapper.createObjectNode();
             nodes.put("registration_id", model.getRegistrationId());
@@ -218,8 +232,10 @@ public class NewRegisterController {
             nodes.put("registeration_date", model.getRegisterationDate());
             nodes.put("city", model.getCity());
             nodes.put("area", model.getArea());
+            nodes.put("lng", model.getLng());
+            nodes.put("lat", model.getLat());
             return ResponseEntity.status(HttpStatus.OK).body(nodes);
-        }else {
+        } else {
             ObjectNode nodes = mapper.createObjectNode();
             nodes.put("message", "No data for this id");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(nodes);

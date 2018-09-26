@@ -28,9 +28,13 @@ public class NewRegisterRepo {
     private JavaMailSender sender;
 
 
-    public NewRegisterModel addUser(String email, String password, String userName, String phoneNumber, String companyName
-            , String address, String website, String registrationRole, long registerationDate, String city, String area) {
+    public int addUser(String email, String password, String userName, String phoneNumber, String companyName
+            , String address, String website, String registrationRole, long registerationDate, String city, String area
+                       ,float lng, float lat) {
 
+        if (IfOrgNameExist(companyName)){
+            return -100;
+        }
 
         KeyHolder holder = new GeneratedKeyHolder();
 
@@ -51,39 +55,40 @@ public class NewRegisterRepo {
                 ps.setInt(9, 0);
                 ps.setString(10, registrationRole);
                 ps.setTimestamp(11, new Timestamp(registerationDate));
+
                 return ps;
             }
         }, holder);
 
         int id = holder.getKey().intValue();
 
-        jdbcTemplate.update("INSERT INTO  efaz_company.complete_register_data VALUES (?,?,?,?,?)", id, city, area, 0, 0);
-        String sql = "SELECT " +
-                "\tregistration_id, " +
-                "\tregisteration_email, " +
-                "\tregisteration_password, " +
-                "\tregisteration_username, " +
-                "\tregisteration_phone_number, " +
-                "\tregistration_organization_name, " +
-                "\tregistration_address_desc, " +
-                "\tregistration_website_url, " +
-                "\tregistration_isActive, " +
-                "\tregistration_role, " +
-                "\tregisteration_date, " +
-                "\tcity, " +
-                "\tarea, " +
-                "\tarchive, " +
-                "\tconsider  " +
-                "FROM " +
-                " efaz_registration AS org" +
-                " LEFT JOIN efaz_company.complete_register_data AS DATA ON org.registration_id = DATA.id  " +
-                "WHERE " +
-                " registration_id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{id},
-                ((resultSet, i) -> new NewRegisterModel(resultSet.getInt(1), resultSet.getString(2),
-                        resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
-                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10),
-                        resultSet.getTimestamp(11).getTime(), resultSet.getString(12), resultSet.getString(13), resultSet.getInt(14), resultSet.getInt(15))));
+        return jdbcTemplate.update("INSERT INTO  efaz_company.complete_register_data VALUES (?,?,?,?,?,?,?)", id, city, area, 0, 0, lng, lat);
+//        String sql = "SELECT " +
+//                "\tregistration_id, " +
+//                "\tregisteration_email, " +
+//                "\tregisteration_password, " +
+//                "\tregisteration_username, " +
+//                "\tregisteration_phone_number, " +
+//                "\tregistration_organization_name, " +
+//                "\tregistration_address_desc, " +
+//                "\tregistration_website_url, " +
+//                "\tregistration_isActive, " +
+//                "\tregistration_role, " +
+//                "\tregisteration_date, " +
+//                "\tcity, " +
+//                "\tarea, " +
+//                "\tarchive, " +
+//                "\tconsider  " +
+//                "FROM " +
+//                " efaz_registration AS org" +
+//                " LEFT JOIN efaz_company.complete_register_data AS DATA ON org.registration_id = DATA.id  " +
+//                "WHERE " +
+//                " registration_id = ?";
+//        return jdbcTemplate.queryForObject(sql, new Object[]{id},
+//                ((resultSet, i) -> new NewRegisterModel(resultSet.getInt(1), resultSet.getString(2),
+//                        resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
+//                        resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10),
+//                        resultSet.getTimestamp(11).getTime(), resultSet.getString(12), resultSet.getString(13), resultSet.getInt(14), resultSet.getInt(15))));
 
 
     }
@@ -105,6 +110,13 @@ public class NewRegisterRepo {
     }
 
 
+    public boolean IfOrgNameExist(String id) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_registration WHERE registration_organization_name=?;",
+                Integer.class, id);
+        return cnt != null && cnt > 0;
+    }
+
 
     public List<NewRegisterModel> getInActiveCompanies() {
         String sql = " SELECT " +
@@ -122,7 +134,9 @@ public class NewRegisterRepo {
                 " city, " +
                 " area, " +
                 " archive, " +
-                " consider  " +
+                " consider ," +
+                " lng," +
+                " lat " +
                 " FROM " +
                 " efaz_registration AS org " +
                 " LEFT JOIN efaz_company.complete_register_data AS dta ON org.registration_id = dta.id  " +
@@ -136,7 +150,7 @@ public class NewRegisterRepo {
                         resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
                         resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10),
                         resultSet.getTimestamp(11).getTime(), resultSet.getString(12), resultSet.getString(13),
-                        resultSet.getInt(14), resultSet.getInt(15)));
+                        resultSet.getInt(14), resultSet.getInt(15), resultSet.getFloat(16), resultSet.getFloat(17)));
 
 
     }
@@ -191,7 +205,8 @@ public class NewRegisterRepo {
                 "\tcity,\n" +
                 "\tarea,\n" +
                 "\tarchive,\n" +
-                "\tconsider \n" +
+                "\tconsider ," +
+                " lng, lat " +
                 "FROM\n" +
                 "\tefaz_registration AS org\n" +
                 "\tLEFT JOIN efaz_company.complete_register_data AS dta ON org.registration_id = dta.id \n" +
@@ -204,7 +219,7 @@ public class NewRegisterRepo {
                         resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
                         resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10),
                         resultSet.getTimestamp(11).getTime(), resultSet.getString(12), resultSet.getString(13),
-                        resultSet.getInt(14), resultSet.getInt(15)));
+                        resultSet.getInt(14), resultSet.getInt(15), resultSet.getFloat(16), resultSet.getFloat(17)));
 
 
     }
@@ -230,7 +245,8 @@ public class NewRegisterRepo {
                 "\tcity,\n" +
                 "\tarea,\n" +
                 "\tarchive,\n" +
-                "\tconsider \n" +
+                "\tconsider ," +
+                " lng, lat " +
                 "FROM\n" +
                 "\tefaz_registration AS org\n" +
                 "\tLEFT JOIN efaz_company.complete_register_data AS dta ON org.registration_id = dta.id ;";
@@ -241,7 +257,8 @@ public class NewRegisterRepo {
                 (resultSet, i) -> new NewModelDto(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
                         resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10) ,
-                        resultSet.getTimestamp(11).getTime(), resultSet.getString(12), resultSet.getString(13)));
+                        resultSet.getTimestamp(11).getTime(), resultSet.getString(12), resultSet.getString(13),
+                        resultSet.getFloat(16),resultSet.getFloat(17)));
     }
 
 
@@ -263,7 +280,8 @@ public class NewRegisterRepo {
                 "city, " +
                 "area, " +
                 "archive, " +
-                "consider  " +
+                "consider ," +
+                " lng, lat " +
                 "FROM " +
                 "efaz_registration AS org " +
                 "LEFT JOIN efaz_company.complete_register_data AS dta ON org.registration_id = dta.id  " +
@@ -276,7 +294,7 @@ public class NewRegisterRepo {
                         resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
                         resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10),
                         resultSet.getTimestamp(11).getTime(), resultSet.getString(12), resultSet.getString(13),
-                        resultSet.getInt(14), resultSet.getInt(15)));
+                        resultSet.getInt(14), resultSet.getInt(15), resultSet.getFloat(16), resultSet.getFloat(17)));
 
 
     }
@@ -298,7 +316,8 @@ public class NewRegisterRepo {
                 "\tcity,\n" +
                 "\tarea,\n" +
                 "\tarchive,\n" +
-                "\tconsider \n" +
+                "\tconsider ," +
+                " lng, lat" +
                 "FROM\n" +
                 "\tefaz_registration AS org\n" +
                 "\tLEFT JOIN efaz_company.complete_register_data AS dta ON org.registration_id = dta.id \n" +
@@ -312,7 +331,7 @@ public class NewRegisterRepo {
                         resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
                         resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10),
                         resultSet.getTimestamp(11).getTime(), resultSet.getString(12), resultSet.getString(13),
-                        resultSet.getInt(14), resultSet.getInt(15)));
+                        resultSet.getInt(14), resultSet.getInt(15), resultSet.getFloat(16), resultSet.getFloat(17)));
 
 
     }
@@ -334,11 +353,12 @@ public class NewRegisterRepo {
                 "\tcity,\n" +
                 "\tarea,\n" +
                 "\tarchive,\n" +
-                "\tconsider \n" +
+                "\tconsider ," +
+                " lng, lat " +
                 "FROM\n" +
-                "\tefaz_registration AS org\n" +
-                "\tLEFT JOIN efaz_company.complete_register_data AS dta ON org.registration_id = dta.id \n" +
-                "WHERE\n" +
+                "\tefaz_registration AS org " +
+                "\tLEFT JOIN efaz_company.complete_register_data AS dta ON org.registration_id = dta.id " +
+                " WHERE\n" +
                 " registration_id=?; ";
 
         return jdbcTemplate.queryForObject(sql, new Object[]{id},
@@ -346,7 +366,7 @@ public class NewRegisterRepo {
                         resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
                         resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10),
                         resultSet.getTimestamp(11).getTime(), resultSet.getString(12), resultSet.getString(13),
-                        resultSet.getInt(14), resultSet.getInt(15))));
+                        resultSet.getInt(14), resultSet.getInt(15), resultSet.getFloat(16), resultSet.getFloat(17))));
     }
 
 

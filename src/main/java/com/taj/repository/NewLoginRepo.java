@@ -47,7 +47,7 @@ public class NewLoginRepo {
                             resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
                             resultSet.getString(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10),
                             resultSet.getTimestamp(11).getTime(), resultSet.getString(12), resultSet.getString(13),
-                            resultSet.getInt(14), resultSet.getInt(15)));
+                            resultSet.getInt(14), resultSet.getInt(15), resultSet.getFloat(16), resultSet.getFloat(17)));
             if (bCryptPasswordEncoder.matches(userPassword, model.getRegisterationPassword())) {
                 if (isActive == 1) {
                     String encodedPassword = bCryptPasswordEncoder.encode(userPassword);
