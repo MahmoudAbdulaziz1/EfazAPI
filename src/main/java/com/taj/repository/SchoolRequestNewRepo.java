@@ -24,7 +24,7 @@ public class SchoolRequestNewRepo {
 
     public int addRequest(String request_title, String request_explaination,
                           long request_display_date, long request_expired_date, int school_id,
-                          String request_category_id, byte[] image_one) {
+                          String request_category_id, byte[] image_one, int request_count) {
 
         KeyHolder key = new GeneratedKeyHolder();
         jdbcTemplate.update(new PreparedStatementCreator() {
@@ -53,7 +53,7 @@ public class SchoolRequestNewRepo {
 
         return jdbcTemplate.update("INSERT INTO efaz_school_tender VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", null, null, image_id, request_title,
                 request_explaination, new Timestamp(request_display_date), new Timestamp(request_expired_date), null, null, null,
-                null, school_id, category, null, null, null);
+                null, school_id, category, null, null, request_count);
     }
 
     public List<SchoolRequestsDTO> getRequests() {
@@ -61,7 +61,7 @@ public class SchoolRequestNewRepo {
         String sql = "SELECT " +
                 "request_id, request_title, request_explaination, request_display_date, " +
                 "    request_expired_date, school_id," +
-                "    request_category_name" +
+                "    request_category_name, request_count" +
                 " FROM efaz_school_tender AS tender INNER JOIN" +
                 "                        efaz_company.efaz_school_request_category AS cat" +
                 "                         ON" +
@@ -70,7 +70,7 @@ public class SchoolRequestNewRepo {
         return jdbcTemplate.query(sql,
                 (resultSet, i) -> new SchoolRequestsDTO(resultSet.getInt(1),
                         resultSet.getString(2), resultSet.getString(3), resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime()
-                        , resultSet.getInt(6), resultSet.getString(7)));
+                        , resultSet.getInt(6), resultSet.getString(7), resultSet.getInt(8)));
     }
 
 

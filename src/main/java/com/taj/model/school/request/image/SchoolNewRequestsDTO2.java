@@ -30,12 +30,16 @@ public class SchoolNewRequestsDTO2 {
     @NotNull
     private String request_category_name;
     private byte[] image_one;
+    private int request_count;
 
     public SchoolNewRequestsDTO2() {
     }
 
-    public SchoolNewRequestsDTO2(int request_id, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String request_title, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String request_explaination,
-                                 @NotNull long request_display_date, @NotNull long request_expired_date, int school_id, @NotNull String request_category_name, byte[] image_one) {
+    public SchoolNewRequestsDTO2(int request_id, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1,
+            message = "title should have at least 1 characters") String request_title, @NotNull @NotBlank @NotEmpty @Size
+            (max = 450, min = 1, message = "explain should have at least 1 characters") String request_explaination,
+                                 @NotNull long request_display_date, @NotNull long request_expired_date, int school_id,
+                                 @NotNull String request_category_name, byte[] image_one, int request_count) {
         this.request_id = request_id;
         this.request_title = request_title;
         this.request_explaination = request_explaination;
@@ -44,10 +48,12 @@ public class SchoolNewRequestsDTO2 {
         this.school_id = school_id;
         this.request_category_name = request_category_name;
         this.image_one = image_one;
+        this.request_count = request_count;
     }
 
     public SchoolNewRequestsDTO2(@NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String request_title, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String request_explaination,
-                                 @NotNull long request_display_date, @NotNull long request_expired_date, int school_id, @NotNull String request_category_name, byte[] image_one) {
+                                 @NotNull long request_display_date, @NotNull long request_expired_date, int school_id,
+                                 @NotNull String request_category_name, byte[] image_one, int request_count) {
         this.request_title = request_title;
         this.request_explaination = request_explaination;
         this.request_display_date = request_display_date;
@@ -55,6 +61,7 @@ public class SchoolNewRequestsDTO2 {
         this.school_id = school_id;
         this.request_category_name = request_category_name;
         this.image_one = image_one;
+        this.request_count = request_count;
     }
 
     public int getRequest_id() {
@@ -119,5 +126,13 @@ public class SchoolNewRequestsDTO2 {
 
     public void setImage_one(byte[] image_one) {
         this.image_one = image_one;
+    }
+
+    public int getRequest_count() {
+        return request_count;
+    }
+
+    public void setRequest_count(int request_count) {
+        this.request_count = request_count;
     }
 }

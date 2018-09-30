@@ -26,6 +26,7 @@ public class SchoolRequestsDTO {
     private int school_id;
     @NotNull
     private String request_category_name;
+    private int request_count;
 
 
     public SchoolRequestsDTO() {
@@ -34,7 +35,7 @@ public class SchoolRequestsDTO {
     public SchoolRequestsDTO(int request_id,
                              @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String request_title,
                              @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String request_explaination,
-                             @NotNull long request_display_date, @NotNull long request_expired_date, int school_id, @NotNull String request_category_name) {
+                             @NotNull long request_display_date, @NotNull long request_expired_date, int school_id, @NotNull String request_category_name, int request_count) {
         this.request_id = request_id;
         this.request_title = request_title;
         this.request_explaination = request_explaination;
@@ -42,17 +43,20 @@ public class SchoolRequestsDTO {
         this.request_expired_date = request_expired_date;
         this.school_id = school_id;
         this.request_category_name = request_category_name;
+        this.request_count = request_count;
     }
 
     public SchoolRequestsDTO(@NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String request_title,
                              @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String request_explaination,
-                             @NotNull long request_display_date, @NotNull long request_expired_date, int school_id, @NotNull @Min(1) String request_category_name) {
+                             @NotNull long request_display_date, @NotNull long request_expired_date,
+                             int school_id, @NotNull @Min(1) String request_category_name, int request_count) {
         this.request_title = request_title;
         this.request_explaination = request_explaination;
         this.request_display_date = request_display_date;
         this.request_expired_date = request_expired_date;
         this.school_id = school_id;
         this.request_category_name = request_category_name;
+        this.request_count = request_count;
     }
 
     public int getRequest_id() {
@@ -109,5 +113,21 @@ public class SchoolRequestsDTO {
 
     public void setRequest_category_id(String request_category_name) {
         this.request_category_name = request_category_name;
+    }
+
+    public String getRequest_category_name() {
+        return request_category_name;
+    }
+
+    public void setRequest_category_name(String request_category_name) {
+        this.request_category_name = request_category_name;
+    }
+
+    public int getRequest_count() {
+        return request_count;
+    }
+
+    public void setRequest_count(int request_count) {
+        this.request_count = request_count;
     }
 }

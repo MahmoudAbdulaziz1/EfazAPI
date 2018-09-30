@@ -1243,7 +1243,8 @@ public class DasboardsAPIControll {
 
 
         int res = schoolRequestNewRepo.addRequest(model.getRequest_title(), model.getRequest_explaination(),
-                model.getRequest_display_date(), model.getRequest_expired_date(), model.getSchool_id(), model.getRequest_category_name(), model.getImage_one());
+                model.getRequest_display_date(), model.getRequest_expired_date(), model.getSchool_id(),
+                model.getRequest_category_name(), model.getImage_one(), model.getRequest_count());
         if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
 
@@ -1254,6 +1255,7 @@ public class DasboardsAPIControll {
             objectNode.put("school_id", model.getSchool_id());
             objectNode.put("request_category_id", model.getRequest_category_name());
             objectNode.put("image", model.getImage_one());
+            objectNode.put("request_count", model.getRequest_count());
 
             return ResponseEntity.status(HttpStatus.OK).body(objectNode);
         } else {
