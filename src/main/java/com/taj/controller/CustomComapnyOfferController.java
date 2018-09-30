@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.*;
+import com.taj.model.offer_description.CustomCompanyModelWithViewAndDescRes;
+import com.taj.model.offer_description.getCustomeOffer2;
 import com.taj.repository.CompanyOfferRepo;
 import com.taj.repository.CustomCompanyOfferRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +47,7 @@ public class CustomComapnyOfferController {
         } else {
             int res = repo.addOfferEdeited(model.getImage_one(), model.getImage_two(), model.getImage_third(), model.getImage_four(), model.getOffer_title(), model.getOffer_explaination(),
                     model.getOffer_cost(), model.getOffer_display_date(), model.getOffer_expired_date(), model.getOffer_deliver_date(),
-                    model.getCompany_id(), model.getOffer_count());
+                    model.getCompany_id(), model.getOffer_count(), model.getCity(), model.getArea(), model.getLng(), model.getLat());
             if (res == 1) {
                 ObjectNode objectNode = mapper.createObjectNode();
                 objectNode.put("status", 200);
@@ -76,14 +78,14 @@ public class CustomComapnyOfferController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<getCustomeOffer> getCompanyOffer(@PathVariable int id) {
+    public ResponseEntity<getCustomeOffer2> getCompanyOffer(@PathVariable int id) {
         if (repo.checkIfExist(id)){
-            CustomCompanyModelWithView model = repo.getCompanyOffer(id);
+            CustomCompanyModelWithViewAndDescRes model = repo.getCompanyOfferWithDesc(id);
 
-            return ResponseEntity.status(HttpStatus.OK).body(new getCustomeOffer("200", model));
+            return ResponseEntity.status(HttpStatus.OK).body(new getCustomeOffer2("200", model));
 
         }else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new getCustomeOffer("400", null));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new getCustomeOffer2("400", null));
         }
 
     }
@@ -91,7 +93,7 @@ public class CustomComapnyOfferController {
 
     @GetMapping("/{id}/company")
     public ResponseEntity<getCustomeCompanyOffer> getSingleCompanyOffer(@PathVariable int id) {
-        List<CustomCompanyOfferModel> offers = repo.getCompanyOffers(id);
+        List<CustomeCompanyOfferModel2> offers = repo.getCompanyOffers(id);
         if (offers!= null)
         {
             return ResponseEntity.status(HttpStatus.OK).body(new getCustomeCompanyOffer("200", offers));
@@ -103,8 +105,8 @@ public class CustomComapnyOfferController {
 
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<List<CustomCompanyOfferModel>> getSingleCompanyOffers(@PathVariable int id) {
-        List<CustomCompanyOfferModel> offers = repo.getCompanyOffers(id);
+    public ResponseEntity<List<CustomeCompanyOfferModel2>> getSingleCompanyOffers(@PathVariable int id) {
+        List<CustomeCompanyOfferModel2> offers = repo.getCompanyOffers(id);
         return ResponseEntity.status(HttpStatus.OK).body(offers);
     }
 
@@ -129,7 +131,7 @@ public class CustomComapnyOfferController {
         if (repo.checkIfExist(model.getOffer_id())){
             int res = repo.updateCompanyOfferWithImages(model.getOffer_id(), model.getImage_one(), model.getImage_two(), model.getImage_third(), model.getImage_four(),
                     model.getOffer_title(), model.getOffer_explaination(), model.getOffer_cost(), model.getOffer_display_date(),
-                    model.getOffer_expired_date(), model.getOffer_deliver_date(), model.getCompany_id(), model.getOffer_count());
+                    model.getOffer_expired_date(), model.getOffer_deliver_date(), model.getCompany_id(), model.getOffer_count(), model.getCity(), model.getArea(), model.getLng(), model.getLat());
 
             if (res == 1){
                 ObjectNode objectNode = mapper.createObjectNode();

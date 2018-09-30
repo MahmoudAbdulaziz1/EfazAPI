@@ -38,9 +38,11 @@ public class getSchoolCustomNewRequestById {
     private int responsed_company_id;
     private int is_aproved;
     private byte[] image_one;
+    private String response_desc;
 
     public getSchoolCustomNewRequestById(int request_id, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String request_title, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String request_explaination, @NotNull long request_display_date, @NotNull long request_expired_date, int school_id, @NotNull String request_category_name, int response_count, String company_name, byte[] company_logo_image,
-                                         String category_name, double responsed_cost, long response_date, int response_id, int responsed_company_id, int is_aproved, byte[] image_one) {
+                                         String category_name, double responsed_cost, long response_date, int response_id, int responsed_company_id, int is_aproved,
+                                         byte[] image_one, String response_desc) {
         this.request_id = request_id;
         this.request_title = request_title;
         this.request_explaination = request_explaination;
@@ -58,6 +60,7 @@ public class getSchoolCustomNewRequestById {
         this.responsed_company_id = responsed_company_id;
         this.is_aproved = is_aproved;
         this.image_one = image_one;
+        this.response_desc = response_desc;
     }
 
     public getSchoolCustomNewRequestById() {
@@ -197,5 +200,13 @@ public class getSchoolCustomNewRequestById {
 
     public void setImage_one(byte[] image_one) {
         this.image_one = image_one;
+    }
+
+    public String getResponse_desc() {
+        return response_desc;
+    }
+
+    public void setResponse_desc(String response_desc) {
+        this.response_desc = response_desc;
     }
 }

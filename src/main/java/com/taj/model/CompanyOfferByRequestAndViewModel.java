@@ -24,13 +24,10 @@ public class CompanyOfferByRequestAndViewModel {
     private String offer_explaination;
     @Min(1)
     private double offer_cost;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     private @NotNull Timestamp offer_display_date;
     @NotNull
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     private Timestamp offer_expired_date;
     @NotNull
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     private Timestamp offer_deliver_date;
     @Min(1)
     private int company_id;

@@ -113,10 +113,10 @@ public class TenderRequestRepo {
                 "\ttender_title,\n" +
                 "\ttender_explain,\n" +
                 "\ttender_display_date,\n" +
-                "\ttender_company_display_date,\n" +
-                "\ttender_company_expired_date,\n" +
+                "\tIFNULL( tender_company_display_date, STR_TO_DATE('1970-01-01 02:00:00','%Y-%m-%d %H:%i:%s') ) AS tender_company_display_date,\n" +
+                "\tIFNULL( tender_company_expired_date, STR_TO_DATE('1970-01-01 02:00:00','%Y-%m-%d %H:%i:%s') ) AS tender_company_expired_date,\n" +
                 "\ttender_expire_date,\n" +
-                "\t( SELECT COUNT( DISTINCT request_school_id ) FROM takatf_request_tender ) AS response_count,\n" +
+                "\t( SELECT COUNT( DISTINCT request_school_id ) FROM takatf_request_tender WHERE request_tender_id = ? ) AS response_count,\n" +
                 "\tid,\n" +
                 "\tcategory_name,\n" +
                 "\tcount,\n" +
@@ -133,7 +133,7 @@ public class TenderRequestRepo {
                 "\tt.tender_id = ?;";
 
 
-        return jdbcTemplate.queryForList(sql3, new Object[]{id});
+        return jdbcTemplate.queryForList(sql3, new Object[]{id, id});
 
     }
 

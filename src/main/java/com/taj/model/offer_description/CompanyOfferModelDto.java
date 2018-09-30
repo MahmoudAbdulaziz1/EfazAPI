@@ -1,16 +1,12 @@
-package com.taj.model;
-
-
-import com.fasterxml.jackson.annotation.JsonFormat;
+package com.taj.model.offer_description;
 
 import javax.validation.constraints.*;
 import java.sql.Timestamp;
 
 /**
- * Created by MahmoudAhmed on 6/4/2018.
+ * Created by User on 9/27/2018.
  */
-public class CompanyOfferModel {
-
+public class CompanyOfferModelDto {
 
     private int offer_id;
     private int offer_images_id;
@@ -26,22 +22,24 @@ public class CompanyOfferModel {
     private String offer_explaination;
     @Min(1)
     private double offer_cost;
-    @NotNull
-    private Timestamp offer_display_date;
+    private @NotNull Timestamp offer_display_date;
     @NotNull
     private Timestamp offer_expired_date;
-    @NotNull
     private Timestamp offer_deliver_date;
     @Min(1)
     private int company_id;
     @Min(1)
     private int offer_count;
+    private String city;
+    private String area;
+    private float lng;
+    private float lat;
 
-    public CompanyOfferModel() {
+    public CompanyOfferModelDto() {
     }
 
-    public CompanyOfferModel(int offer_id, int offer_images_id, String offer_title, String offer_explaination, double offer_cost,
-                             Timestamp offer_display_date, Timestamp offer_expired_date, Timestamp offer_deliver_date, int company_id, int offer_count) {
+    public CompanyOfferModelDto(int offer_id, int offer_images_id, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String offer_title, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explian should have at least 1 characters") String offer_explaination, @Min(1) double offer_cost, @NotNull Timestamp offer_display_date,
+                                @NotNull Timestamp offer_expired_date, Timestamp offer_deliver_date, @Min(1) int company_id, @Min(1) int offer_count, String city, String area, float lng, float lat) {
         this.offer_id = offer_id;
         this.offer_images_id = offer_images_id;
         this.offer_title = offer_title;
@@ -52,19 +50,10 @@ public class CompanyOfferModel {
         this.offer_deliver_date = offer_deliver_date;
         this.company_id = company_id;
         this.offer_count = offer_count;
-    }
-
-    public CompanyOfferModel(int offer_images_id, String offer_title, String offer_explaination, double offer_cost,
-                             Timestamp offer_display_date, Timestamp offer_expired_date, Timestamp offer_deliver_date, int company_id, int offer_count) {
-        this.offer_images_id = offer_images_id;
-        this.offer_title = offer_title;
-        this.offer_explaination = offer_explaination;
-        this.offer_cost = offer_cost;
-        this.offer_display_date = offer_display_date;
-        this.offer_expired_date = offer_expired_date;
-        this.offer_deliver_date = offer_deliver_date;
-        this.company_id = company_id;
-        this.offer_count = offer_count;
+        this.city = city;
+        this.area = area;
+        this.lng = lng;
+        this.lat = lat;
     }
 
     public int getOffer_id() {
@@ -79,8 +68,8 @@ public class CompanyOfferModel {
         return offer_images_id;
     }
 
-    public void setOffer_logo(int offer_logo) {
-        this.offer_images_id = offer_logo;
+    public void setOffer_images_id(int offer_images_id) {
+        this.offer_images_id = offer_images_id;
     }
 
     public String getOffer_title() {
@@ -145,5 +134,37 @@ public class CompanyOfferModel {
 
     public void setOffer_count(int offer_count) {
         this.offer_count = offer_count;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public float getLng() {
+        return lng;
+    }
+
+    public void setLng(float lng) {
+        this.lng = lng;
+    }
+
+    public float getLat() {
+        return lat;
+    }
+
+    public void setLat(float lat) {
+        this.lat = lat;
     }
 }

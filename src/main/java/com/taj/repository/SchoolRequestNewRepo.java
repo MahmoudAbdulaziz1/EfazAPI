@@ -258,15 +258,16 @@ public class SchoolRequestNewRepo {
                 "\tifnull( response_date, NOW( ) ) AS response_date,\n" +
                 "\tifnull( response_id, 0 ) AS response_id,\n" +
                 "\tifnull( responsed_company_id, 0 ) AS responsed_company_id,\n" +
-                "\tis_aproved ,\n" +
-                "\timage_one\n" +
+                "\tis_aproved,\n" +
+                "\timage_one,\n" +
+                "\tresponse_desc \n" +
                 "FROM\n" +
                 "\tefaz_school_tender AS tender\n" +
                 "\tLEFT JOIN efaz_company.efaz_company_response_school_request AS req ON tender.request_id = req.responsed_request_id\n" +
                 "\tLEFT JOIN efaz_company.efaz_company_profile AS cp ON req.responsed_company_id = cp.company_id\n" +
                 "\tLEFT JOIN efaz_company.efaz_school_request_category AS cat ON tender.requests_category_id = cat.request_category_id\n" +
-                "\tLEFT JOIN efaz_company.efaz_company_category AS cc ON cp.company_category_id = cc.category_id \n" +
-                "\tLEFT JOIN school_requst_images AS sri ON tender.images_id = sri.image_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_category AS cc ON cp.company_category_id = cc.category_id\n" +
+                "\tLEFT JOIN school_requst_images AS sri ON tender.images_id = sri.image_id \n" +
                 "WHERE\n" +
                 "\trequest_id = ? \n" +
                 "GROUP BY\n" +
@@ -284,8 +285,9 @@ public class SchoolRequestNewRepo {
                 "\tresponse_date,\n" +
                 "\tresponse_id,\n" +
                 "\tresponsed_company_id,\n" +
-                "\tis_aproved, \n" +
-                "\timage_one;";
+                "\tis_aproved,\n" +
+                "\timage_one,\n" +
+                "\tresponse_desc;";
         String sql1 = "SELECT  " +
                 "                request_id, request_title, request_explaination, request_display_date, " +
                 " request_expired_date, school_id, " +
@@ -314,7 +316,7 @@ public class SchoolRequestNewRepo {
                         resultSet.getString(2), resultSet.getString(3), resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime()
                         , resultSet.getInt(6), resultSet.getString(7), resultSet.getInt(8), resultSet.getString(9), resultSet.getBytes(10),
                         resultSet.getString(11), resultSet.getDouble(12), resultSet.getTimestamp(13).getTime(), resultSet.getInt(14),
-                        resultSet.getInt(15), resultSet.getInt(16), resultSet.getBytes(17)));
+                        resultSet.getInt(15), resultSet.getInt(16), resultSet.getBytes(17), resultSet.getString(18)));
     }
 
 

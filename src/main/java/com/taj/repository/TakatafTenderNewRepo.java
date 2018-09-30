@@ -135,7 +135,9 @@ public class TakatafTenderNewRepo {
 
     public List<TakatafMyTenderPageDTO> getAdminTenders() {
         String sql = "SELECT " +
-                " tender_id, tender_title, tender_explain, tender_display_date, tender_expire_date , tender_company_display_date, tender_company_expired_date," +
+                " tender_id, tender_title, tender_explain, tender_display_date, tender_expire_date ," +
+                " IFNULL(tender_company_display_date,'1970-01-01 02:00:00')AS tender_company_display_date," +
+                " IFNULL(tender_company_expired_date,'1970-01-01 02:00:00')AS tender_company_expired_date," +
                 " count(distinct request_id) AS response_count, " +
                 " count(DISTINCT ten.t_category_id) AS cat_count " +
                 "FROM " +

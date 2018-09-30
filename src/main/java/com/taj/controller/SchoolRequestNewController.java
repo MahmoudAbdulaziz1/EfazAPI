@@ -84,7 +84,6 @@ public class SchoolRequestNewController {
 //    }
 
     @GetMapping("/{id}")
-    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     public ResponseEntity<SchoolRequestWithImageByIdDto> getSchoolSingleRequestByImage(@PathVariable int id) {
         if (repo.isExist(id)) {
             return ResponseEntity.status(HttpStatus.OK).body(repo.getRequestByIDWithImage(id));
@@ -120,7 +119,7 @@ public class SchoolRequestNewController {
                 //if( one.getRequest_category_name().equals(null) )
                 GetCollectiveTenderPartYTwoDTO part2 = new GetCollectiveTenderPartYTwoDTO(one.getRequest_category_name() + "", one.getCompany_name() + "",
                         one.getCompany_logo_image(), one.getCategory_name() + "", one.getResponsed_cost(), one.getResponse_date(),
-                        one.getResponse_id(), one.getResponsed_company_id(), one.getIs_aproved());
+                        one.getResponse_id(), one.getResponsed_company_id(), one.getIs_aproved(), one.getResponse_desc());
                 companies.add(part2);
             }
         }

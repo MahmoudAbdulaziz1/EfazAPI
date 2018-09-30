@@ -5,6 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.*;
+import com.taj.model.offer_description.CustomCompanyModelWithViewAndDescRes;
+import com.taj.model.offer_description.CustomeCompanyOfferModel2DTo;
+import com.taj.model.offer_description.getCustomeCompanyOffer2;
+import com.taj.model.offer_description.getCustomeOffer2;
 import com.taj.model.school.request.image.GetCollectiveTenderPartOneDTO2;
 import com.taj.model.school.request.image.GetCollectiveTenders2;
 import com.taj.model.school.request.image.SchoolNewRequestsDTO2;
@@ -199,8 +203,36 @@ public class DasboardsAPIControll {
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @GetMapping("takataf/tenders/admin")
-    public List<TakatafMyTenderPageDTO> getAdminTenders() {
-        return repo.getAdminTenders();
+    public ResponseEntity<ArrayNode> getAdminTenders() {
+        List<TakatafMyTenderPageDTO> model = repo.getAdminTenders();
+        ArrayNode arr = mapper.createArrayNode();
+        for (int i=0; i<model.size(); i++){
+            ObjectNode nodes = mapper.createObjectNode();
+            nodes.put("tender_id",model.get(i).getTender_id());
+            nodes.put("tender_title",model.get(i).getTender_title());
+            nodes.put("tender_explain",model.get(i).getTender_explain());
+            if (model.get(i).getTender_company_display_date()==0){
+                String nullvalue =null;
+                nodes.put("tender_company_display_date",nullvalue);
+
+            }else {
+                nodes.put("tender_company_display_date",model.get(i).getTender_company_display_date());
+            }
+            if (model.get(i).getTender_company_expired_date()==0){
+                String nullvalue =null;
+                nodes.put("tender_company_expired_date", nullvalue);
+
+            }else {
+                nodes.put("tender_company_expired_date",model.get(i).getTender_company_expired_date());
+
+            }
+            nodes.put("tender_display_date",model.get(i).getTender_display_date());
+            nodes.put("tender_expire_date",model.get(i).getTender_expire_date());
+            nodes.put("response_count",model.get(i).getResponse_count());
+            nodes.put("cat_num",model.get(i).getCat_num());
+            arr.add(nodes);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(arr);
 
     }
 
@@ -470,11 +502,14 @@ public class DasboardsAPIControll {
 
         if (Long.parseLong(list.get(0).get("response_count").toString()) == 0) {
             List<CategoryNameDto> category = takatafTenderRequestRepo.categoryData(id);
+
             TenderRequestTenderModel2 mainModel = new TenderRequestTenderModel2(Long.parseLong(list.get(0).get("tender_id").toString()),
                     (String) list.get(0).get("tender_title"),
                     (String) list.get(0).get("tender_explain"), ((Timestamp) (list.get(0).get("tender_display_date"))).getTime(),
-                    ((Timestamp) list.get(0).get("tender_expire_date")).getTime(), ((Timestamp) list.get(0).get("tender_company_display_date")).getTime(),
-                    ((Timestamp) list.get(0).get("tender_company_expired_date")).getTime(), Long.parseLong(list.get(0).get("response_count").toString()), category, null);
+                    ((Timestamp) list.get(0).get("tender_expire_date")).getTime(),
+                    ((Timestamp) list.get(0).get("tender_company_display_date")).getTime(),
+                    ((Timestamp) list.get(0).get("tender_company_expired_date")).getTime(),
+                    Long.parseLong(list.get(0).get("response_count").toString()), category, null);
 
 
             return mainModel;
@@ -483,7 +518,8 @@ public class DasboardsAPIControll {
             TenderRequestTenderModel2 mainModel = new TenderRequestTenderModel2(Long.parseLong(list.get(0).get("tender_id").toString()),
                     (String) list.get(0).get("tender_title"),
                     (String) list.get(0).get("tender_explain"), ((Timestamp) (list.get(0).get("tender_display_date"))).getTime(),
-                    ((Timestamp) list.get(0).get("tender_expire_date")).getTime(), ((Timestamp) list.get(0).get("tender_company_display_date")).getTime(),
+                    ((Timestamp) list.get(0).get("tender_expire_date")).getTime(),
+                    ((Timestamp) list.get(0).get("tender_company_display_date")).getTime(),
                     ((Timestamp) list.get(0).get("tender_company_expired_date")).getTime(),
                     Long.parseLong(list.get(0).get("response_count").toString()), category, schoolsList);
 
@@ -1077,7 +1113,7 @@ public class DasboardsAPIControll {
                 //if( one.getRequest_category_name().equals(null) )
                 GetCollectiveTenderPartYTwoDTO part2 = new GetCollectiveTenderPartYTwoDTO(one.getRequest_category_name() + "", one.getCompany_name() + "",
                         one.getCompany_logo_image(), one.getCategory_name() + "", one.getResponsed_cost(), one.getResponse_date(),
-                        one.getResponse_id(), one.getResponsed_company_id(), one.getIs_aproved());
+                        one.getResponse_id(), one.getResponsed_company_id(), one.getIs_aproved(), one.getResponse_desc());
                 companies.add(part2);
             }
         }
@@ -1232,7 +1268,7 @@ public class DasboardsAPIControll {
 
             int res = customCompanyOfferRepo.addOfferEdeited(model.getImage_one(), model.getImage_two(), model.getImage_third(), model.getImage_four(), model.getOffer_title(), model.getOffer_explaination(),
                     model.getOffer_cost(), model.getOffer_display_date(), model.getOffer_expired_date(), model.getOffer_deliver_date(),
-                    model.getCompany_id(), model.getOffer_count());
+                    model.getCompany_id(), model.getOffer_count(), model.getCity(), model.getArea(), model.getLng(), model.getLat());
             if (res == 1) {
                 ObjectNode objectNode = mapper.createObjectNode();
                 objectNode.put("status", 200);
@@ -1258,7 +1294,7 @@ public class DasboardsAPIControll {
     }
 
     @PreAuthorize("hasAuthority('company')")
-    @GetMapping("/company/offer/{id}")
+    @GetMapping("/company/offers/{id}")
     public ResponseEntity<getCustomeOffer> getCompanyOffer(@PathVariable int id) {
         if (customCompanyOfferRepo.checkIfExist(id)) {
             CustomCompanyModelWithView model = customCompanyOfferRepo.getCompanyOffer(id);
@@ -1271,10 +1307,47 @@ public class DasboardsAPIControll {
 
     }
 
+
+
+
+
+    @PreAuthorize("hasAuthority('company')")
+    @GetMapping("/company/offer/{id}")
+    public ResponseEntity<getCustomeOffer2> getCompanyOfferWithDesc(@PathVariable int id) {
+        if (customCompanyOfferRepo.checkIfExist(id)) {
+            CustomCompanyModelWithViewAndDescRes model = customCompanyOfferRepo.getCompanyOfferWithDesc(id);
+
+            return ResponseEntity.status(HttpStatus.OK).body(new getCustomeOffer2("200", model));
+
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new getCustomeOffer2("400", null));
+        }
+
+    }
+
+///getCompanyOffersWithDesc
     @PreAuthorize("hasAuthority('company')")
     @GetMapping("/company/offer/{id}/company")
+    public ResponseEntity<getCustomeCompanyOffer2> getSingleCompanyOfferWithDesc(@PathVariable int id) {
+        List<CustomeCompanyOfferModel2DTo> offers = customCompanyOfferRepo.getCompanyOffersWithDesc(id);
+        if (offers != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(new getCustomeCompanyOffer2("200", offers));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new getCustomeCompanyOffer2("400", offers));
+        }
+
+    }
+
+
+
+
+
+
+
+    @PreAuthorize("hasAuthority('company')")
+    @GetMapping("/company/offer/{id}/companies")
     public ResponseEntity<getCustomeCompanyOffer> getSingleCompanyOffer(@PathVariable int id) {
-        List<CustomCompanyOfferModel> offers = customCompanyOfferRepo.getCompanyOffers(id);
+        List<CustomeCompanyOfferModel2> offers = customCompanyOfferRepo.getCompanyOffers(id);
         if (offers != null) {
             return ResponseEntity.status(HttpStatus.OK).body(new getCustomeCompanyOffer("200", offers));
         } else {
@@ -1282,6 +1355,17 @@ public class DasboardsAPIControll {
         }
 
     }
+
+
+
+
+
+
+
+
+
+
+
 
     @PreAuthorize("hasAuthority('company')")
     @PutMapping("/company/offer/")
@@ -1297,7 +1381,8 @@ public class DasboardsAPIControll {
         if (customCompanyOfferRepo.checkIfExist(model.getOffer_id())) {
             int res = customCompanyOfferRepo.updateCompanyOfferWithImages(model.getOffer_id(), model.getImage_one(), model.getImage_two(), model.getImage_third(), model.getImage_four(),
                     model.getOffer_title(), model.getOffer_explaination(), model.getOffer_cost(), model.getOffer_display_date(),
-                    model.getOffer_expired_date(), model.getOffer_deliver_date(), model.getCompany_id(), model.getOffer_count());
+                    model.getOffer_expired_date(), model.getOffer_deliver_date(), model.getCompany_id(), model.getOffer_count(), model.getCity(), model.getArea(),
+                    model.getLng(), model.getLat());
 
             if (res == 1) {
                 ObjectNode objectNode = mapper.createObjectNode();

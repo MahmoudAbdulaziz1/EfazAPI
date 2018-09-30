@@ -8,9 +8,9 @@ import java.util.List;
 public class getCustomeCompanyOffer {
 
     private String status;
-    private List<CustomCompanyOfferModel> offers;
+    private List<CustomeCompanyOfferModel2> offers;
 
-    public getCustomeCompanyOffer(String status, List<CustomCompanyOfferModel> list) {
+    public getCustomeCompanyOffer(String status, List<CustomeCompanyOfferModel2> list) {
         this.status = status;
         this.offers = list;
     }
@@ -26,11 +26,11 @@ public class getCustomeCompanyOffer {
         this.status = status;
     }
 
-    public List<CustomCompanyOfferModel> getList() {
+    public List<CustomeCompanyOfferModel2> getList() {
         return offers;
     }
 
-    public void setList(List<CustomCompanyOfferModel> list) {
+    public void setList(List<CustomeCompanyOfferModel2> list) {
         this.offers = list;
     }
 }

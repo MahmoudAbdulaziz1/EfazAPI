@@ -36,7 +36,7 @@ public class CompanyResponseSchoolRequestController {
             return objectNode;
         }
         int res = repo.addResponseSchoolRequest(model.getResponsed_company_id(), model.getResponsed_request_id(), model.getResponsed_from(),
-                model.getResponsed_to(), model.getResponsed_cost(), model.getIs_aproved());
+                model.getResponsed_to(), model.getResponsed_cost(), model.getIs_aproved(), model.getResponse_desc());
 
         if (res == 200) {
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -49,6 +49,7 @@ public class CompanyResponseSchoolRequestController {
             objectNode.put("responsed_cost", model.getResponsed_cost());
             objectNode.put("is_aproved", model.getIs_aproved());
             objectNode.put("response_date", timestamp.getTime());
+            objectNode.put("response_desc", model.getResponse_desc());
             return objectNode;
         } else if (res == 100) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -59,6 +60,7 @@ public class CompanyResponseSchoolRequestController {
             objectNode.put("responsed_from", model.getResponsed_to());
             objectNode.put("responsed_cost", model.getResponsed_cost());
             objectNode.put("is_aproved", model.getIs_aproved());
+            objectNode.put("response_desc", model.getResponse_desc());
             objectNode.put("updated", 1);
             return objectNode;
         } else if (res == -100) {
@@ -144,7 +146,7 @@ public class CompanyResponseSchoolRequestController {
             return objectNode;
         }
         int res = repo.updateResponseSchoolRequest(model.getResponse_id(), model.getResponsed_company_id(), model.getResponsed_request_id(),
-                model.getResponsed_from(), model.getResponsed_to(), model.getResponsed_cost(), model.getIs_aproved());
+                model.getResponsed_from(), model.getResponsed_to(), model.getResponsed_cost(), model.getIs_aproved(), model.getResponse_desc());
 
         if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -155,6 +157,7 @@ public class CompanyResponseSchoolRequestController {
             objectNode.put("responsed_from", model.getResponsed_to());
             objectNode.put("responsed_cost", model.getResponsed_cost());
             objectNode.put("is_aproved", model.getIs_aproved());
+            objectNode.put("response_desc", model.getResponse_desc());
 
             return objectNode;
         } else {

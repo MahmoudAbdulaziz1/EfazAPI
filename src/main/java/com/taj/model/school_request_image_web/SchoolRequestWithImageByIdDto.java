@@ -55,6 +55,14 @@ public class SchoolRequestWithImageByIdDto {
     public SchoolRequestWithImageByIdDto() {
     }
 
+    public int getRequest_id() {
+        return request_id;
+    }
+
+    public void setRequest_id(int request_id) {
+        this.request_id = request_id;
+    }
+
     public String getRequest_title() {
         return request_title;
     }
