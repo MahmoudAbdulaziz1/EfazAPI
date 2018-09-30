@@ -381,9 +381,9 @@ public class NewRegisterRepo {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return jdbcTemplate.update("INSERT INTO efaz_login VALUES (?,?,?,?,?,?,?,?,?)", null, model.getRegisterationEmail(),
+            return jdbcTemplate.update("INSERT INTO efaz_login VALUES (?,?,?,?,?,?,?,?,?,?,?)", null, model.getRegisterationEmail(),
                     model.getRegisterationPassword(), 0, model.getRegistrationRole(), "Token=", new Timestamp(System.currentTimeMillis())
-                    , model.getCity(), model.getArea());
+                    , model.getCity(), model.getArea(), model.getLng(), model.getLat());
         }
     }
 

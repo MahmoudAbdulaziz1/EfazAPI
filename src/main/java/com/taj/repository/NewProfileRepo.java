@@ -4,6 +4,9 @@ import com.taj.model.NewProfileDto;
 import com.taj.model.NewProfileDto2;
 import com.taj.model.NewProfileModel;
 import com.taj.model.TakatfTenderCategoryPOJO;
+import com.taj.model.new_profile_map.NewProfileDto2DTO;
+import com.taj.model.new_profile_map.NewProfileDtoDTO;
+import com.taj.model.new_profile_map.NewProfileModelDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -119,6 +122,63 @@ public class NewProfileRepo {
 
 
 
+
+
+
+    public List<NewProfileModelDTO> getProfiles2() {
+
+        String sql = "SELECT\n" +
+                "\tcompany_id,\n" +
+                "\tcompany_name,\n" +
+                "\tcompany_logo_image,\n" +
+                "\tcompany_address,\n" +
+                "\tcompany_link_youtube,\n" +
+                "\tcompany_website_url,\n" +
+                "\tcompany_lng,\n" +
+                "\tcompany_lat,\n" +
+                "\tcompany_cover_image,\n" +
+                "\tcompany_phone_number,\n" +
+                "\tcount( DISTINCT follow_id ) AS follower_count,\n" +
+                "\tcount( DISTINCT offer_id ) AS order_count,\n" +
+                "\tcompany_desc,\n" +
+                "\tCOUNT( DISTINCT id ) AS category_num,\n" +
+                "\tcity,\n" +
+                "\tarea, lng, lat \n" +
+                "FROM\n" +
+                "\t(\n" +
+                "\t\t(\n" +
+                "\t\t\t( efaz_company.efaz_company_profile AS PROFILE LEFT JOIN efaz_company.efaz_organization_following AS follow ON PROFILE.company_id = follow.follower_id )\n" +
+                "\t\t\tLEFT JOIN efaz_company_offer AS offer ON PROFILE.company_id = offer.offer_company_id \n" +
+                "\t\t)\n" +
+                "\t\tLEFT JOIN efaz_company.efaz_company_profile_cats AS cats ON PROFILE.company_id = cats.company_profile_id \n" +
+                "\t)\n" +
+                "\tLEFT JOIN efaz_company.efaz_login AS pc ON PROFILE.company_id = pc.login_id \n" +
+                "GROUP BY\n" +
+                "\tPROFILE.company_id;";
+
+        return jdbcTemplate.query(sql,
+                (resultSet, i) -> new NewProfileModelDTO(resultSet.getInt(1), resultSet.getString(2),
+                        resultSet.getBytes(3), resultSet.getString(4),
+                        resultSet.getString(5), resultSet.getString(6), resultSet.getFloat(7), resultSet.getFloat(8),
+                        resultSet.getBytes(9), resultSet.getString(10), resultSet.getInt(11), resultSet.getInt(12),
+                        resultSet.getString(13), resultSet.getInt(14), resultSet.getString(15), resultSet.getString(16),
+                        resultSet.getFloat(17), resultSet.getFloat(18)));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public List<Map<String,Object>> getCompaniesProfilesObject() {
         String sql = "SELECT\n" +
                 "\tcompany_id,\n" +
@@ -209,6 +269,53 @@ public class NewProfileRepo {
 
 
 
+    public List<Map<String,Object>> getCompaniesProfilesObjectForAll2(int school_id) {
+        String sql = "SELECT\n" +
+                "\n" +
+                "                company_id,\n" +
+                "                company_name,\n" +
+                "                company_logo_image,\n" +
+                "                company_address,\n" +
+                "                company_link_youtube,\n" +
+                "                company_website_url,\n" +
+                "                company_lng,\n" +
+                "                company_lat,\n" +
+                "                company_cover_image,\n" +
+                "                company_phone_number,\n" +
+                "                count( DISTINCT follow.follow_id ) AS follower_count,\n" +
+                "                count( DISTINCT offer_id ) AS order_count,\n" +
+                "                company_desc,\n" +
+                "                COUNT( id ) AS category_num,\n" +
+                "                city,\n" +
+                "                area,lng,lat,\n" +
+                "                 category_id,\n" +
+                "                category_name,\n" +
+                "                IF\n" +
+                "                ( PROFILE.company_id = follow2.organization_id AND follow2.follower_id = ?,  1, 0 ) AS is_follow \n" +
+                "                FROM\n" +
+                "                (\n" +
+                "                (\n" +
+                "                ( efaz_company.efaz_company_profile AS PROFILE LEFT JOIN efaz_company.efaz_organization_following AS follow ON PROFILE.company_id = follow.organization_id )\n" +
+                "                LEFT JOIN efaz_company_offer AS offer ON PROFILE.company_id = offer.offer_company_id \n" +
+                "                )\n" +
+                "                LEFT JOIN efaz_company.efaz_company_profile_cats AS cats ON PROFILE.company_id = cats.company_profile_id \n" +
+                "                )\n" +
+                "                LEFT JOIN efaz_company.efaz_login AS pc ON PROFILE.company_id = pc.login_id\n" +
+                "                LEFT JOIN efaz_company.efaz_company_category AS ccat ON cats.company_cat_id = ccat.category_id\n" +
+                "                LEFT JOIN efaz_company.efaz_organization_following AS follow2 ON PROFILE.company_id = follow2.organization_id \n" +
+                "                AND follow2.follower_id = ? \n" +
+                "                GROUP BY\n" +
+                "                company_id,\n" +
+                "                ccat.category_id,\n" +
+                "                \tfollow2.follower_id;";
+
+
+        return  jdbcTemplate.queryForList(sql, new Object[]{school_id, school_id});
+//        List<Map<String,Object>> maps=jdbcTemplate.queryForList(sql, new Object[]{id});//, new Object[]{id}, (resultSet, i) -> new Object());
+
+    }
+
+
     public List<NewProfileDto> getProfile(int profile) {
         String sql = "SELECT\n" +
                 "\tcompany_id,\n" +
@@ -251,6 +358,53 @@ public class NewProfileRepo {
     }
 
 
+
+
+
+
+
+    public List<NewProfileDtoDTO> getProfile2(int profile) {
+        String sql = "SELECT\n" +
+                "\tcompany_id,\n" +
+                "\tcompany_name,\n" +
+                "\tcompany_logo_image,\n" +
+                "\tcompany_address,\n" +
+                "\tcompany_link_youtube,\n" +
+                "\tcompany_website_url,\n" +
+                "\tcompany_lng,\n" +
+                "\tcompany_lat,\n" +
+                "\tcompany_cover_image,\n" +
+                "\tcompany_phone_number,\n" +
+                "\tcount( DISTINCT follow_id ) AS follower_count,\n" +
+                "\tcount( DISTINCT offer_id ) AS order_count,\n" +
+                "\tcompany_desc,\n" +
+                "\tcompany_cat_id,\n" +
+                "\tcategory.category_name,\n" +
+                "\tcity,\n" +
+                "\tarea, pc.lng, pc.lat \n" +
+                "FROM\n" +
+                "\t(\n" +
+                "\t\t(\n" +
+                "\t\t\t( efaz_company.efaz_company_profile AS PROFILE LEFT JOIN efaz_company.efaz_organization_following AS follow ON PROFILE.company_id = follow.follower_id )\n" +
+                "\t\t\tLEFT JOIN efaz_company_offer AS offer ON PROFILE.company_id = offer.offer_company_id \n" +
+                "\t\t)\n" +
+                "\t\tLEFT JOIN efaz_company.efaz_company_profile_cats AS cats ON PROFILE.company_id = cats.company_profile_id\n" +
+                "\t\tLEFT JOIN efaz_company.efaz_login AS pc ON PROFILE.company_id = pc.login_id\n" +
+                "\t\tINNER JOIN efaz_company_category AS category ON cats.company_cat_id = category.category_id \n" +
+                "\t) \n" +
+                "WHERE\n" +
+                "\tPROFILE.company_id = ? \n" +
+                "GROUP BY\n" +
+                "\tcats.company_cat_id;";
+        return jdbcTemplate.query(sql, new Object[]{profile},
+                (resultSet, i) -> new NewProfileDtoDTO(resultSet.getInt(1), resultSet.getString(2), resultSet.getBytes(3),
+                        resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
+                        resultSet.getFloat(7), resultSet.getFloat(8), resultSet.getBytes(9), resultSet.getString(10),
+                        resultSet.getInt(11), resultSet.getInt(12), resultSet.getString(13), resultSet.getInt(14),
+                        resultSet.getString(15), resultSet.getString(16), resultSet.getString(17), resultSet.getFloat(18), resultSet.getFloat(19)));
+    }
+
+
     public int updateProfile(int companyId, String companyName, byte[] companyLogoImage, String companyAddress,
                              String companyLinkYoutube, String companyWebsiteUrl, float schoolLng,
                              float schoolLat, byte[] companyCoverImage, String companyPhoneNumber, String companyDesc,
@@ -277,6 +431,35 @@ public class NewProfileRepo {
 
 
     }
+
+
+    public int updateProfile2(int companyId, String companyName, byte[] companyLogoImage, String companyAddress,
+                             String companyLinkYoutube, String companyWebsiteUrl, float schoolLng,
+                             float schoolLat, byte[] companyCoverImage, String companyPhoneNumber, String companyDesc,
+                             String city, String area, float lng, float lat, List<TakatfTenderCategoryPOJO> category) {
+        jdbcTemplate.update("DELETE FROM efaz_company.efaz_company_profile_cats WHERE company_profile_id=?;", companyId);
+
+        for (int i = 0; i < category.size(); i++) {
+            int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
+                    Integer.class, "%" + category.get(i).getCategory_name().trim() + "%");
+
+            jdbcTemplate.update("INSERT INTO efaz_company.efaz_company_profile_cats VALUES  (?,?,?)", null, companyId, categorys);
+        }
+
+        jdbcTemplate.update("update efaz_company.efaz_login set city=?," +
+                "area=?, lng=?, lat=?  "+
+                " where login_id=?;", city, area, lng, lat , companyId);
+
+        return jdbcTemplate.update("update efaz_company_profile set company_name=?," +
+                        "company_logo_image=?, company_address=?," +
+                        "company_category_id=?, company_link_youtube=?, company_website_url=?, company_lng=?, company_lat=?," +
+                        " company_cover_image=?, company_phone_number=?, company_desc=? " +
+                        " where company_id=?;", companyName, companyLogoImage, companyAddress, 2
+                , companyLinkYoutube, companyWebsiteUrl, schoolLng, schoolLat, companyCoverImage, companyPhoneNumber, companyDesc, companyId);
+
+
+    }
+
 
 
     public List<NewProfileDto2> getProfileByCategory(String id) {
@@ -319,6 +502,92 @@ public class NewProfileRepo {
                         resultSet.getBytes(9), resultSet.getString(10), resultSet.getInt(11), resultSet.getInt(12),
                         resultSet.getString(13), resultSet.getString(14), resultSet.getString(15)));
     }
+
+    public List<NewProfileDto2DTO> getProfileByCategory2(String id) {
+
+        String sql = "SELECT\n" +
+                "\tcompany_id,\n" +
+                "\tcompany_name,\n" +
+                "\tcompany_logo_image,\n" +
+                "\tcompany_address,\n" +
+                "\tcompany_link_youtube,\n" +
+                "\tcompany_website_url,\n" +
+                "\tcompany_lng,\n" +
+                "\tcompany_lat,\n" +
+                "\tcompany_cover_image,\n" +
+                "\tcompany_phone_number,\n" +
+                "\tcount( DISTINCT follow_id ) AS follower_count,\n" +
+                "\tcount( DISTINCT offer_id ) AS order_count,\n" +
+                "\tcompany_desc,\n" +
+                "\tcity,\n" +
+                "\tarea, lng, lat \n" +
+                "FROM\n" +
+                "\t(\n" +
+                "\t\t(\n" +
+                "\t\t\t( efaz_company.efaz_company_profile AS PROFILE LEFT JOIN efaz_company.efaz_organization_following AS follow ON PROFILE.company_id = follow.follower_id )\n" +
+                "\t\t\tLEFT JOIN efaz_company_offer AS offer ON PROFILE.company_id = offer.offer_company_id\n" +
+                "\t\t\tLEFT JOIN efaz_company.efaz_company_profile_cats AS cats ON PROFILE.company_id = cats.company_profile_id\n" +
+                "\t\t\tLEFT JOIN efaz_company.efaz_login AS pc ON PROFILE.company_id = pc.login_id \n" +
+                "\t\t) \n" +
+                "\t) \n" +
+                "WHERE\n" +
+                "\tcats.company_cat_id = ? \n" +
+                "GROUP BY\n" +
+                "\tPROFILE.company_id;";
+        int category = jdbcTemplate.queryForObject("SELECT category_id FROM efaz_company_category WHERE  category_name LIKE ?;",
+                Integer.class, "%" + id + "%");
+        return jdbcTemplate.query(sql, new Object[]{category},
+                (resultSet, i) -> new NewProfileDto2DTO(resultSet.getInt(1), resultSet.getString(2),
+                        resultSet.getBytes(3), resultSet.getString(4), resultSet.getString(5),
+                        resultSet.getString(6), resultSet.getFloat(7), resultSet.getFloat(8),
+                        resultSet.getBytes(9), resultSet.getString(10), resultSet.getInt(11), resultSet.getInt(12),
+                        resultSet.getString(13), resultSet.getString(14), resultSet.getString(15), resultSet.getFloat(16), resultSet.getFloat(17)));
+    }
+
+
+
+    public List<Map<String,Object>> getCompaniesProfilesObject2() {
+        String sql = "SELECT\n" +
+                "\tcompany_id,\n" +
+                "\tcompany_name,\n" +
+                "\tcompany_logo_image,\n" +
+                "\tcompany_address,\n" +
+                "\tcompany_link_youtube,\n" +
+                "\tcompany_website_url,\n" +
+                "\tcompany_lng,\n" +
+                "\tcompany_lat,\n" +
+                "\tcompany_cover_image,\n" +
+                "\tcompany_phone_number,\n" +
+                "\tcount( DISTINCT follow_id ) AS follower_count,\n" +
+                "\tcount( DISTINCT offer_id ) AS order_count,\n" +
+                "\tcompany_desc,\n" +
+                "\tCOUNT( DISTINCT id ) AS category_num,\n" +
+                "\tcity,\n" +
+                "\tarea, lng, lat, \n" +
+                "\tcategory_id,\n" +
+                "\tcategory_name \n" +
+                "FROM\n" +
+                "\t(\n" +
+                "\t\t(\n" +
+                "\t\t\t( efaz_company.efaz_company_profile AS PROFILE LEFT JOIN efaz_company.efaz_organization_following AS follow ON PROFILE.company_id = follow.follower_id )\n" +
+                "\t\t\tLEFT JOIN efaz_company_offer AS offer ON PROFILE.company_id = offer.offer_company_id \n" +
+                "\t\t)\n" +
+                "\t\tLEFT JOIN efaz_company.efaz_company_profile_cats AS cats ON PROFILE.company_id = cats.company_profile_id \n" +
+                "\t)\n" +
+                "\tLEFT JOIN efaz_company.efaz_login AS pc ON PROFILE.company_id = pc.login_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_category AS ccat ON cats.company_cat_id = ccat.category_id \n" +
+                "GROUP BY\n" +
+                "\tPROFILE.company_id,\n" +
+                "\tccat.category_id;";
+
+
+        return  jdbcTemplate.queryForList(sql);
+//        List<Map<String,Object>> maps=jdbcTemplate.queryForList(sql, new Object[]{id});//, new Object[]{id}, (resultSet, i) -> new Object());
+
+    }
+
+
+
 
 
     public int isCategoryExist(String catName) {

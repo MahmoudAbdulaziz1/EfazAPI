@@ -64,32 +64,37 @@ public class CompanyResponseSchoolRequestRepo {
     public List<CompanyResponseSchoolRequestModel> getResponseSchoolRequest() {
         return jdbcTemplate.query("SELECT * FROM efaz_company_response_school_request;",
                 ((resultSet, i) -> new CompanyResponseSchoolRequestModel(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3),
-                        resultSet.getInt(4), resultSet.getInt(5), resultSet.getDouble(6), resultSet.getInt(7), resultSet.getTimestamp(8).getTime(),resultSet.getString(9))));
+                        resultSet.getInt(4), resultSet.getInt(5), resultSet.getDouble(6), resultSet.getInt(7), resultSet.getTimestamp(8).getTime()
+                        ,resultSet.getString(9))));
     }
 
     public CompanyResponseSchoolRequestModel getResponseSchoolRequest(int id) {
         return jdbcTemplate.queryForObject("SELECT * FROM efaz_company_response_school_request WHERE response_id=?;", new Object[]{id},
                 ((resultSet, i) -> new CompanyResponseSchoolRequestModel(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3),
-                        resultSet.getInt(4), resultSet.getInt(5), resultSet.getDouble(6), resultSet.getInt(7), resultSet.getTimestamp(8).getTime(),resultSet.getString(9))));
+                        resultSet.getInt(4), resultSet.getInt(5), resultSet.getDouble(6), resultSet.getInt(7), resultSet.getTimestamp(8).getTime()
+                        ,resultSet.getString(9))));
     }
 
 
     public List<CompanyResponseSchoolRequestModel> getResponseSchoolRequestByCompany(int companyId) {
         return jdbcTemplate.query("SELECT * FROM efaz_company_response_school_request WHERE responsed_company_id=?;", new Object[]{companyId},
                 ((resultSet, i) -> new CompanyResponseSchoolRequestModel(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3),
-                        resultSet.getInt(4), resultSet.getInt(5), resultSet.getDouble(6), resultSet.getInt(7), resultSet.getTimestamp(8).getTime(),resultSet.getString(9))));
+                        resultSet.getInt(4), resultSet.getInt(5), resultSet.getDouble(6), resultSet.getInt(7), resultSet.getTimestamp(8).getTime()
+                        ,resultSet.getString(9))));
     }
 
     public List<CompanyResponseSchoolRequestModel> getResponseSchoolRequestByRequest(int requestId) {
         return jdbcTemplate.query("SELECT * FROM efaz_company_response_school_request WHERE responsed_request_id=?;", new Object[]{requestId},
                 ((resultSet, i) -> new CompanyResponseSchoolRequestModel(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3),
-                        resultSet.getInt(4), resultSet.getInt(5), resultSet.getDouble(6), resultSet.getInt(7), resultSet.getTimestamp(8).getTime(),resultSet.getString(9))));
+                        resultSet.getInt(4), resultSet.getInt(5), resultSet.getDouble(6), resultSet.getInt(7), resultSet.getTimestamp(8).getTime()
+                        ,resultSet.getString(9))));
     }
 
     public List<CompanyResponseSchoolRequestModel> getResponseSchoolRequestByAccept(int acceptId) {
         return jdbcTemplate.query("SELECT * FROM efaz_company_response_school_request WHERE is_aproved=?;", new Object[]{acceptId},
                 ((resultSet, i) -> new CompanyResponseSchoolRequestModel(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3),
-                        resultSet.getInt(4), resultSet.getInt(5), resultSet.getDouble(6), resultSet.getInt(7), resultSet.getTimestamp(8).getTime(),resultSet.getString(9))));
+                        resultSet.getInt(4), resultSet.getInt(5), resultSet.getDouble(6), resultSet.getInt(7), resultSet.getTimestamp(8).getTime()
+                        ,resultSet.getString(9))));
     }
 
     public int acceptResponseSchoolRequest(int response_id) {

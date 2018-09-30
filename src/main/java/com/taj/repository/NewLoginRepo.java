@@ -35,7 +35,7 @@ public class NewLoginRepo {
     private JavaMailSender sender;
 
 
-    public LoginModel loginUser(String userEmail, String userPassword, int isActive, String loginRole, String loginToken, String city, String area) {
+    public LoginModel loginUser(String userEmail, String userPassword, int isActive, String loginRole, String loginToken, String city, String area, float lng, float lat) {
 
 
         NewRegisterModel model = null;
@@ -55,7 +55,7 @@ public class NewLoginRepo {
                     jdbcTemplate.update(new PreparedStatementCreator() {
                         @Override
                         public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                            final PreparedStatement ps = connection.prepareStatement("INSERT INTO efaz_login VALUES (?,?,?,?,?,?,?,?,?)",
+                            final PreparedStatement ps = connection.prepareStatement("INSERT INTO efaz_login VALUES (?,?,?,?,?,?,?,?,?,?,?)",
                                     Statement.RETURN_GENERATED_KEYS);
                             ps.setString(1, null);
                             ps.setString(2, userEmail);
@@ -63,9 +63,11 @@ public class NewLoginRepo {
                             ps.setInt(4, isActive);
                             ps.setString(5, loginRole);
                             ps.setString(6, loginToken);
-                            ps.setString(7, city);
-                            ps.setString(8, area);
                             ps.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
+                            ps.setString(8, city);
+                            ps.setString(9, area);
+                            ps.setFloat(10, lng);
+                            ps.setFloat(11, lat);
                             return ps;
                         }
 

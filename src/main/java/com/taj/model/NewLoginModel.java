@@ -32,12 +32,14 @@ public class NewLoginModel {
     private String loginToken;
     private String city;
     private String area;
+    private float lng;
+    private float lat;
 
     public NewLoginModel(int loginId,
                          @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 11, message = "email should have at least 2 characters") String userEmail,
                          @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 8, message = "password should have at least 8 characters") String userPassword,
                          @NotNull int isActive, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "role should have at least 1 characters") String loginRole,
-                         long loginDate, String loginToken, String city, String area) {
+                         long loginDate, String loginToken, String city, String area, float lng, float lat) {
         this.loginId = loginId;
         this.userEmail = userEmail;
         this.userPassword = userPassword;
@@ -47,12 +49,14 @@ public class NewLoginModel {
         this.loginToken = loginToken;
         this.city = city;
         this.area = area;
+        this.lat = lat;
+        this.lng = lng;
     }
 
     public NewLoginModel(@NotNull @NotBlank @NotEmpty @Size(max = 450, min = 11, message = "email should have at least 2 characters") String userEmail,
                          @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 8, message = "password should have at least 8 characters") String userPassword,
                          @NotNull int isActive, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "role should have at least 1 characters") String loginRole,
-                         long loginDate, String loginToken, String city, String area) {
+                         long loginDate, String loginToken, String city, String area, float lng, float lat) {
         this.userEmail = userEmail;
         this.userPassword = userPassword;
         this.isActive = isActive;
@@ -61,6 +65,8 @@ public class NewLoginModel {
         this.loginToken = loginToken;
         this.city = city;
         this.area = area;
+        this.lat = lat;
+        this.lng = lng;
     }
 
     public NewLoginModel() {
@@ -136,5 +142,21 @@ public class NewLoginModel {
 
     public void setArea(String area) {
         this.area = area;
+    }
+
+    public float getLng() {
+        return lng;
+    }
+
+    public void setLng(float lng) {
+        this.lng = lng;
+    }
+
+    public float getLat() {
+        return lat;
+    }
+
+    public void setLat(float lat) {
+        this.lat = lat;
     }
 }

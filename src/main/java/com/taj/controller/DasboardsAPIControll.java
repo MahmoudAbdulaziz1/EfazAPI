@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.*;
+import com.taj.model.new_school_profile_map.NewCustomSchoolProfileModelDTO;
+import com.taj.model.new_school_profile_map.NewSchoolProfileModelDTO;
 import com.taj.model.offer_description.CustomCompanyModelWithViewAndDescRes;
 import com.taj.model.offer_description.CustomeCompanyOfferModel2DTo;
 import com.taj.model.offer_description.getCustomeCompanyOffer2;
@@ -83,6 +85,8 @@ public class DasboardsAPIControll {
     CompanyOfferRepo companyOfferRepo;
     @Autowired
     private SchoolProfileRepo schoolProfileRepo;
+    @Autowired
+    private NewSchoolProfileRepo newSchoolProfileRepo;
 
     @Autowired
 
@@ -206,30 +210,30 @@ public class DasboardsAPIControll {
     public ResponseEntity<ArrayNode> getAdminTenders() {
         List<TakatafMyTenderPageDTO> model = repo.getAdminTenders();
         ArrayNode arr = mapper.createArrayNode();
-        for (int i=0; i<model.size(); i++){
+        for (int i = 0; i < model.size(); i++) {
             ObjectNode nodes = mapper.createObjectNode();
-            nodes.put("tender_id",model.get(i).getTender_id());
-            nodes.put("tender_title",model.get(i).getTender_title());
-            nodes.put("tender_explain",model.get(i).getTender_explain());
-            if (model.get(i).getTender_company_display_date()==0){
-                String nullvalue =null;
-                nodes.put("tender_company_display_date",nullvalue);
+            nodes.put("tender_id", model.get(i).getTender_id());
+            nodes.put("tender_title", model.get(i).getTender_title());
+            nodes.put("tender_explain", model.get(i).getTender_explain());
+            if (model.get(i).getTender_company_display_date() == 0) {
+                String nullvalue = null;
+                nodes.put("tender_company_display_date", nullvalue);
 
-            }else {
-                nodes.put("tender_company_display_date",model.get(i).getTender_company_display_date());
+            } else {
+                nodes.put("tender_company_display_date", model.get(i).getTender_company_display_date());
             }
-            if (model.get(i).getTender_company_expired_date()==0){
-                String nullvalue =null;
+            if (model.get(i).getTender_company_expired_date() == 0) {
+                String nullvalue = null;
                 nodes.put("tender_company_expired_date", nullvalue);
 
-            }else {
-                nodes.put("tender_company_expired_date",model.get(i).getTender_company_expired_date());
+            } else {
+                nodes.put("tender_company_expired_date", model.get(i).getTender_company_expired_date());
 
             }
-            nodes.put("tender_display_date",model.get(i).getTender_display_date());
-            nodes.put("tender_expire_date",model.get(i).getTender_expire_date());
-            nodes.put("response_count",model.get(i).getResponse_count());
-            nodes.put("cat_num",model.get(i).getCat_num());
+            nodes.put("tender_display_date", model.get(i).getTender_display_date());
+            nodes.put("tender_expire_date", model.get(i).getTender_expire_date());
+            nodes.put("response_count", model.get(i).getResponse_count());
+            nodes.put("cat_num", model.get(i).getCat_num());
             arr.add(nodes);
         }
         return ResponseEntity.status(HttpStatus.OK).body(arr);
@@ -393,7 +397,13 @@ public class DasboardsAPIControll {
         return registrationRepo.getUser(id);
     }
 
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    @PreAuthorize("hasAuthority('admin')")
+    @GetMapping("register/get/address/{id}")
+    public NewRegisterModel getUserWithAddresData(@PathVariable int id) {
+        return newRegisterRepo.getUser(id);
+    }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //    @PreAuthorize("hasAuthority('admin')")
 //    @GetMapping("register/get/{id}")
 //    public NewRegisterModel getUser(@PathVariable int id) {
@@ -861,7 +871,7 @@ public class DasboardsAPIControll {
         return schoolFollowCompanyRepo.getSchoolsWithFollow(id);
     }
 
-///////////ADMIN//////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////ADMIN//////////////////////////////////////////////////////////////////////////////////////////////////////////
     @PreAuthorize("hasAuthority('admin')  or hasAuthority('school')  or hasAuthority('company')")
     @GetMapping("/follow/companies/{id}")
     public List<FollowSchoolProfilesDto> getSchoolsFollowCompany(@PathVariable int id) {
@@ -902,6 +912,114 @@ public class DasboardsAPIControll {
         return ordersRepo.getOrdersForCompany(id);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    @PreAuthorize("hasAuthority('school')")
+    @PostMapping("/school/profil/")
+    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+    public ResponseEntity<ObjectNode> AddSchoolProfile(@Valid @RequestBody SchoolProfileModel model, Errors errors) {
+
+        if (errors.hasErrors()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            objectNode.put("details", errors.getAllErrors().toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+        if (newSchoolProfileRepo.isExistInLogin(model.getSchool_id(), "school")) {
+
+            if (!repo.isExist(model.getSchool_id())) {
+                int res = newSchoolProfileRepo.addSchoolProfile(model.getSchool_id(), model.getSchool_name(), model.getSchool_logo_image(),
+                        model.getSchool_address(), model.getSchool_service_desc(), model.getSchool_link_youtube(),
+                        model.getSchool_website_url(), model.getSchool_lng(), model.getSchool_lat(), model.getSchool_cover_image(), model.getSchool_phone_number());
+                if (res == 1) {
+                    ObjectNode objectNode = mapper.createObjectNode();
+                    objectNode.put("school_name", model.getSchool_name());
+                    objectNode.put("school_logo_image", model.getSchool_logo_image());
+                    objectNode.put("school_address", model.getSchool_address());
+                    objectNode.put("school_service_desc", model.getSchool_service_desc());
+                    objectNode.put("school_link_youtube", model.getSchool_link_youtube());
+                    objectNode.put("school_website_url", model.getSchool_website_url());
+                    objectNode.put("school_lng", model.getSchool_lng());
+                    objectNode.put("school_lat", model.getSchool_lat());
+                    objectNode.put("school_cover_image", model.getSchool_cover_image());
+                    objectNode.put("school_phone_number", model.getSchool_phone_number());
+                    return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+                } else {
+                    ObjectNode objectNode = mapper.createObjectNode();
+                    objectNode.put("status", 400);
+                    objectNode.put("message", "not success");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+                }
+            } else {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("status", 400);
+                objectNode.put("message", "id Already has profile");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            }
+
+
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("status", 400);
+            objectNode.put("message", "id not found");
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+
+
+    }
+
+    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+    @GetMapping("/school/profil/get/{id}")
+    public NewCustomSchoolProfileModelDTO getProfileForAdmin2(@PathVariable int id) {
+        return newSchoolProfileRepo.getSchoolProfileForAdmin2(id);
+    }
+
+
+    @PreAuthorize("hasAuthority('school')")
+    @PutMapping("/school/profil/update")
+    public ResponseEntity<ObjectNode> updateProfileForAdmin2(@RequestBody @Valid NewSchoolProfileModelDTO model, Errors errors) {
+
+        if (errors.hasErrors()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("state", 400);
+            objectNode.put("message", "Validation Failed");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+
+        }
+
+        int res = newSchoolProfileRepo.updateProfileForAdmin2(model.getSchool_id(), model.getSchool_name(), model.getSchool_logo_image(),
+                model.getSchool_address(), model.getSchool_service_desc(), model.getSchool_link_youtube(),
+                model.getSchool_website_url(), model.getSchool_cover_image(), model.getSchool_phone_number(), model.getCity(), model.getArea(),
+                model.getLng(), model.getLat());
+
+        if (res == 1) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("school_name", model.getSchool_name());
+            objectNode.put("school_logo_image", model.getSchool_logo_image());
+            objectNode.put("school_address", model.getSchool_address());
+            objectNode.put("school_service_desc", model.getSchool_service_desc());
+            objectNode.put("school_link_youtube", model.getSchool_link_youtube());
+            objectNode.put("school_website_url", model.getSchool_website_url());
+            objectNode.put("school_cover_image", model.getSchool_cover_image());
+            objectNode.put("school_phone_number", model.getSchool_phone_number());
+            objectNode.put("city", model.getCity());
+            objectNode.put("area", model.getArea());
+            objectNode.put("lng", model.getLng());
+            objectNode.put("lat", model.getLat());
+            return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+        } else {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("value", "not success");
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+        }
+
+
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @PreAuthorize("hasAuthority('school')")
     @PostMapping("/school/profile/addProfile")
     //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
@@ -957,6 +1075,7 @@ public class DasboardsAPIControll {
 
 
     }
+
 
     @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @GetMapping("/school/profile/get/{id}")
@@ -1308,9 +1427,6 @@ public class DasboardsAPIControll {
     }
 
 
-
-
-
     @PreAuthorize("hasAuthority('company')")
     @GetMapping("/company/offer/{id}")
     public ResponseEntity<getCustomeOffer2> getCompanyOfferWithDesc(@PathVariable int id) {
@@ -1325,7 +1441,7 @@ public class DasboardsAPIControll {
 
     }
 
-///getCompanyOffersWithDesc
+    ///getCompanyOffersWithDesc
     @PreAuthorize("hasAuthority('company')")
     @GetMapping("/company/offer/{id}/company")
     public ResponseEntity<getCustomeCompanyOffer2> getSingleCompanyOfferWithDesc(@PathVariable int id) {
@@ -1339,11 +1455,6 @@ public class DasboardsAPIControll {
     }
 
 
-
-
-
-
-
     @PreAuthorize("hasAuthority('company')")
     @GetMapping("/company/offer/{id}/companies")
     public ResponseEntity<getCustomeCompanyOffer> getSingleCompanyOffer(@PathVariable int id) {
@@ -1355,16 +1466,6 @@ public class DasboardsAPIControll {
         }
 
     }
-
-
-
-
-
-
-
-
-
-
 
 
     @PreAuthorize("hasAuthority('company')")

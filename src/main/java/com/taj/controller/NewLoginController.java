@@ -37,7 +37,7 @@ public class NewLoginController {
         }
 
         loginRepo.loginUser(model.getUserEmail(), model.getUserPassword(),
-                model.getIsActive(), model.getLoginRole(), model.getLoginToken(), model.getCity(), model.getArea());
+                model.getIsActive(), model.getLoginRole(), model.getLoginToken(), model.getCity(), model.getArea(), model.getLng(), model.getLat());
         ObjectNode objectNode = mapper.createObjectNode();
         objectNode.put("user_email", model.getUserEmail());
         objectNode.put("user_password", model.getUserPassword());
@@ -46,6 +46,8 @@ public class NewLoginController {
         objectNode.put("login_token", model.getLoginToken());
         objectNode.put("city", model.getCity());
         objectNode.put("area", model.getArea());
+        objectNode.put("lng", model.getLng());
+        objectNode.put("lat", model.getLat());
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(objectNode);
 
