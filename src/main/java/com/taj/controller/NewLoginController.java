@@ -2,6 +2,7 @@ package com.taj.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.taj.model.LoginIsLoggedDTO;
 import com.taj.model.NewLoginModel;
 import com.taj.repository.NewLoginRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class NewLoginController {
     ObjectMapper mapper;
 
     @PostMapping("/")
-    public ResponseEntity<ObjectNode> loginUsers(@RequestBody @Valid NewLoginModel model, Errors errors) {
+    public ResponseEntity<ObjectNode> loginUsers(@RequestBody @Valid LoginIsLoggedDTO model, Errors errors) {
         if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put(STATUS, 400);
@@ -36,20 +37,22 @@ public class NewLoginController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
 
-        loginRepo.loginUser(model.getUserEmail(), model.getUserPassword(),
-                model.getIsActive(), model.getLoginRole(), model.getLoginToken(), model.getCity(), model.getArea(), model.getLng(), model.getLat());
-        ObjectNode objectNode = mapper.createObjectNode();
-        objectNode.put("user_email", model.getUserEmail());
-        objectNode.put("user_password", model.getUserPassword());
-        objectNode.put("is_active", model.getIsActive());
-        objectNode.put("login_role", model.getLoginRole());
-        objectNode.put("login_token", model.getLoginToken());
-        objectNode.put("city", model.getCity());
-        objectNode.put("area", model.getArea());
-        objectNode.put("lng", model.getLng());
-        objectNode.put("lat", model.getLat());
+//        loginRepo.loginUser(model.getUserEmail(), model.getUserPassword(),
+//                model.getIsActive(), model.getLoginRole(), model.getLoginToken(), model.getCity(), model.getArea(), model.getLng(), model.getLat());
+//        ObjectNode objectNode = mapper.createObjectNode();
+//        objectNode.put("user_email", model.getUserEmail());
+//        objectNode.put("user_password", model.getUserPassword());
+//        objectNode.put("is_active", model.getIsActive());
+//        objectNode.put("login_role", model.getLoginRole());
+//        objectNode.put("login_token", model.getLoginToken());
+//        objectNode.put("city", model.getCity());
+//        objectNode.put("area", model.getArea());
+//        objectNode.put("lng", model.getLng());
+//        objectNode.put("lat", model.getLat());
+//
+//        return ResponseEntity.status(HttpStatus.ACCEPTED).body(objectNode);
 
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(objectNode);
+        return loginRepo.isLogged(model.getUser_email(), model.getUser_password(), model.getLogin_role());
 
     }
 

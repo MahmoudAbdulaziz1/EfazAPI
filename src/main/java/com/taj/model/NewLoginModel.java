@@ -21,7 +21,6 @@ public class NewLoginModel {
     @NotEmpty
     @Size(max = 450, min = 8, message = "password should have at least 8 characters")
     private String userPassword;
-    @NotNull
     private int isActive;
     @NotNull
     @NotBlank
