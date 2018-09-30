@@ -20,7 +20,6 @@ public class AdminLogin {
     private String area;
     private float lng;
     private float lat;
-    @NotNull
     private String name;
 
     public AdminLogin(int id, @NotNull String email,

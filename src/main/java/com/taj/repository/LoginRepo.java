@@ -105,7 +105,6 @@ public class LoginRepo {
     }
 
     public ObjectNode isLogged(String user_email, String user_passwords, String login_role) {
-        //String encodedPassword = bCryptPasswordEncoder.encode(user_password);
 
         NewLoginModelDto model = null;
 

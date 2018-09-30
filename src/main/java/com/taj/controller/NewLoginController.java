@@ -21,7 +21,7 @@ import javax.validation.Valid;
 public class NewLoginController {
 
     private static final String STATUS = "status";
-    private static final String MESSAGE = "MESSAGE";
+    private static final String MESSAGE = "message";
     @Autowired
     NewLoginRepo loginRepo;
     @Autowired
