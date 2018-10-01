@@ -3,10 +3,13 @@ package com.taj.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.taj.model.*;
+import com.taj.model.CustomCompanyOfferModel;
+import com.taj.model.CustomeCompanyOfferModel2;
+import com.taj.model.getCustomeCompanyOffer;
+import com.taj.model.new_company_history.CompanyHistoryDto;
+import com.taj.model.new_company_history.CompanyHistoryDto2;
 import com.taj.model.offer_description.CustomCompanyModelWithViewAndDescRes;
 import com.taj.model.offer_description.getCustomeOffer2;
-import com.taj.repository.CompanyOfferRepo;
 import com.taj.repository.CustomCompanyOfferRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -79,12 +82,12 @@ public class CustomComapnyOfferController {
 
     @GetMapping("/{id}")
     public ResponseEntity<getCustomeOffer2> getCompanyOffer(@PathVariable int id) {
-        if (repo.checkIfExist(id)){
+        if (repo.checkIfExist(id)) {
             CustomCompanyModelWithViewAndDescRes model = repo.getCompanyOfferWithDesc(id);
 
             return ResponseEntity.status(HttpStatus.OK).body(new getCustomeOffer2("200", model));
 
-        }else {
+        } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new getCustomeOffer2("400", null));
         }
 
@@ -94,10 +97,9 @@ public class CustomComapnyOfferController {
     @GetMapping("/{id}/company")
     public ResponseEntity<getCustomeCompanyOffer> getSingleCompanyOffer(@PathVariable int id) {
         List<CustomeCompanyOfferModel2> offers = repo.getCompanyOffers(id);
-        if (offers!= null)
-        {
+        if (offers != null) {
             return ResponseEntity.status(HttpStatus.OK).body(new getCustomeCompanyOffer("200", offers));
-        }else {
+        } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new getCustomeCompanyOffer("400", offers));
         }
 
@@ -111,7 +113,6 @@ public class CustomComapnyOfferController {
     }
 
 
-
     /**
      * update offer of company
      *
@@ -121,21 +122,21 @@ public class CustomComapnyOfferController {
     @PutMapping("/")
     public ResponseEntity<JsonNode> updateCompanyOfferWithImage(@Valid @RequestBody CustomCompanyOfferModel model, Errors errors) {
 
-        if (errors.hasErrors()){
+        if (errors.hasErrors()) {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("state", 400);
             objectNode.put("message", "Validation Failed");
             //objectNode.put("details", errors.getAllErrors().toString());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
-        if (repo.checkIfExist(model.getOffer_id())){
+        if (repo.checkIfExist(model.getOffer_id())) {
             int res = repo.updateCompanyOfferWithImages(model.getOffer_id(), model.getImage_one(), model.getImage_two(), model.getImage_third(), model.getImage_four(),
                     model.getOffer_title(), model.getOffer_explaination(), model.getOffer_cost(), model.getOffer_display_date(),
                     model.getOffer_expired_date(), model.getOffer_deliver_date(), model.getCompany_id(), model.getOffer_count(), model.getCity(), model.getArea(), model.getLng(), model.getLat());
 
-            if (res == 1){
+            if (res == 1) {
                 ObjectNode objectNode = mapper.createObjectNode();
-                objectNode.put("status",200);
+                objectNode.put("status", 200);
                 objectNode.put("offer_id", model.getOffer_id());
                 objectNode.put("image_one", model.getImage_one());
                 objectNode.put("image_two", model.getImage_two());
@@ -150,14 +151,14 @@ public class CustomComapnyOfferController {
                 objectNode.put("company_id", model.getCompany_id());
                 objectNode.put("offer_count", model.getOffer_count());
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);
-            }else {
+            } else {
                 ObjectNode objectNode = mapper.createObjectNode();
                 objectNode.put("status", 400);
                 objectNode.put("message", "not success");
 
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
             }
-        }else {
+        } else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("status", 400);
             objectNode.put("message", "not exist");
@@ -177,20 +178,20 @@ public class CustomComapnyOfferController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ObjectNode> deleteCompanyOffer(@PathVariable int id) {
 
-        if (repo.checkIfExist(id)){
+        if (repo.checkIfExist(id)) {
             int res = repo.deleteCompanyOffer(id);
-            if (res == 1){
+            if (res == 1) {
                 ObjectNode objectNode = mapper.createObjectNode();
                 objectNode.put("message", "success");
 
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);
-            }else {
+            } else {
                 ObjectNode objectNode = mapper.createObjectNode();
                 objectNode.put("message", "not success");
 
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
             }
-        }else {
+        } else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("message", "not found");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
@@ -198,13 +199,21 @@ public class CustomComapnyOfferController {
 
     }
 
+    @GetMapping("/history/{companyId}")
+    public List<CompanyHistoryDto> getCompanyHistory(@PathVariable int companyId) {
+        return repo.getCompanyHistory(companyId);
+    }
+
+    @GetMapping("/history2/{companyId}")
+    public List<CompanyHistoryDto2> getCompanyHistory2(@PathVariable int companyId) {
+        return repo.getCompanyHistory2(companyId);
+    }
+
 
     @GetMapping("/{id}/count")
     public int getCompanyOfferCount(@PathVariable int id) {
         return repo.getCompanyOfferCount(id);
     }
-
-
 
 
 }

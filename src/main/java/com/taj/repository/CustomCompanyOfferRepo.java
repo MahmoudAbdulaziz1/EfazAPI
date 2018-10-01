@@ -1,6 +1,8 @@
 package com.taj.repository;
 
 import com.taj.model.*;
+import com.taj.model.new_company_history.CompanyHistoryDto;
+import com.taj.model.new_company_history.CompanyHistoryDto2;
 import com.taj.model.offer_description.CompanyOfferModelDto;
 import com.taj.model.offer_description.CustomCompanyModelWithViewAndDesc;
 import com.taj.model.offer_description.CustomCompanyModelWithViewAndDescRes;
@@ -326,6 +328,130 @@ public class CustomCompanyOfferRepo {
         }
 
     }
+
+    public List<CompanyHistoryDto> getCompanyHistory(int companyId){
+
+        String sql ="SELECT\n" +
+                "\toffer_id,\n" +
+                "\timage_one,\n" +
+                "\timage_two,\n" +
+                "\timage_three,\n" +
+                "\timage_four,\n" +
+                "\toffer_title,\n" +
+                "\toffer_explaination,\n" +
+                "\toffer_cost,\n" +
+                "\toffer_display_date,\n" +
+                "\tdate,\n" +
+                "\toffer_count,\n" +
+                "\tcity,\n" +
+                "\tarea,\n" +
+                "\tlng,\n" +
+                "\tlat,\n" +
+                "\trequest_id,\n" +
+                "\trequsted_school_id,\n" +
+                "\trequest_offer_count,\n" +
+                "\tcount( requsted_offer_id ) AS request_count \n" +
+                "FROM\n" +
+                "\tefaz_company.efaz_company_offer AS offer\n" +
+                "\tLEFT JOIN efaz_company.company_offer_images AS img ON img.images_id = offer.offer_image_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_offer_place AS p ON p.id = offer_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_request_offer_date AS d ON d.id = offer_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_request_offer AS res ON res.requsted_offer_id = offer_id \n" +
+                "WHERE\n" +
+                "\toffer_company_id = ? \n" +
+                "\tAND is_accepted = 1 \n" +
+                "GROUP BY\n" +
+                "\toffer_id,\n" +
+                "\timage_one,\n" +
+                "\timage_two,\n" +
+                "\timage_three,\n" +
+                "\timage_four,\n" +
+                "\toffer_title,\n" +
+                "\toffer_explaination,\n" +
+                "\toffer_cost,\n" +
+                "\toffer_display_date,\n" +
+                "\tdate,\n" +
+                "\toffer_count,\n" +
+                "\tcity,\n" +
+                "\tarea,\n" +
+                "\tlng,\n" +
+                "\tlat,\n" +
+                "\trequest_id,\n" +
+                "\trequsted_school_id,\n" +
+                "\trequest_offer_count;";
+        return jdbcTemplate.query(sql, new Object[]{companyId},
+                (resultSet, i) -> new CompanyHistoryDto(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getBytes(3), resultSet.getBytes(4),
+                        resultSet.getBytes(5), resultSet.getString(6), resultSet.getString(7), resultSet.getDouble(8), resultSet.getTimestamp(9).getTime(),
+                        resultSet.getTimestamp(10).getTime(), resultSet.getInt(11), resultSet.getString(12), resultSet.getString(13), resultSet.getFloat(14),
+                        resultSet.getFloat(15), resultSet.getInt(16), resultSet.getInt(17), resultSet.getInt(18), resultSet.getInt(19)));
+    }
+
+
+    public List<CompanyHistoryDto2> getCompanyHistory2(int companyId){
+
+        String sql ="SELECT\n" +
+                "\toffer_id,\n" +
+                "\timage_one,\n" +
+                "\timage_two,\n" +
+                "\timage_three,\n" +
+                "\timage_four,\n" +
+                "\toffer_title,\n" +
+                "\toffer_explaination,\n" +
+                "\toffer_cost,\n" +
+                "\toffer_display_date,\n" +
+                "\tdate,\n" +
+                "\toffer_count,\n" +
+                "\tcity,\n" +
+                "\tarea,\n" +
+                "\tlng,\n" +
+                "\tlat,\n" +
+                "\trequest_id,\n" +
+                "\trequest_offer_count,\n" +
+                "\tcount( requsted_offer_id ) AS request_count,\n" +
+                "\tschool_id,\n" +
+                "\tschool_name,\n" +
+                "\tschool_logo_image \n" +
+                "FROM\n" +
+                "\tefaz_company.efaz_company_offer AS offer\n" +
+                "\tLEFT JOIN efaz_company.company_offer_images AS img ON img.images_id = offer.offer_image_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_offer_place AS p ON p.id = offer_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_request_offer_date AS d ON d.id = offer_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_request_offer AS res ON res.requsted_offer_id = offer_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_profile AS sp ON sp.school_id = requsted_school_id \n" +
+                "WHERE\n" +
+                "\toffer_company_id = ? \n" +
+                "\tAND is_accepted = 1 \n" +
+                "GROUP BY\n" +
+                "\toffer_id,\n" +
+                "\timage_one,\n" +
+                "\timage_two,\n" +
+                "\timage_three,\n" +
+                "\timage_four,\n" +
+                "\toffer_title,\n" +
+                "\toffer_explaination,\n" +
+                "\toffer_cost,\n" +
+                "\toffer_display_date,\n" +
+                "\tdate,\n" +
+                "\toffer_count,\n" +
+                "\tcity,\n" +
+                "\tarea,\n" +
+                "\tlng,\n" +
+                "\tlat,\n" +
+                "\trequest_id,\n" +
+                "\trequest_offer_count,\n" +
+                "\tschool_id,\n" +
+                "\tschool_name,\n" +
+                "\tschool_logo_image;";
+        return jdbcTemplate.query(sql, new Object[]{companyId},
+                (resultSet, i) -> new CompanyHistoryDto2(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getBytes(3), resultSet.getBytes(4),
+                        resultSet.getBytes(5), resultSet.getString(6), resultSet.getString(7), resultSet.getDouble(8), resultSet.getTimestamp(9).getTime(),
+                        resultSet.getTimestamp(10).getTime(), resultSet.getInt(11), resultSet.getString(12), resultSet.getString(13), resultSet.getFloat(14),
+                        resultSet.getFloat(15), resultSet.getInt(16), resultSet.getInt(17), resultSet.getInt(18), resultSet.getInt(19), resultSet.getString(20),
+                        resultSet.getBytes(21)));
+    }
+
+
+
 
 
     public int deleteCompanyOffer(int id) {

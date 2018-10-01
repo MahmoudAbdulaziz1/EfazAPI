@@ -1,6 +1,11 @@
 package com.taj.repository;
 
-import com.taj.model.*;
+import com.taj.model.GetSingleSchoolRequestByCategory;
+import com.taj.model.SchoolRequestDto;
+import com.taj.model.SchoolRequestHistoryDto;
+import com.taj.model.SchoolRequestsModel;
+import com.taj.model.new_school_history.SchoolRequestHistoryDtoDTO;
+import com.taj.model.new_school_history.SchoolRequestHistoryDtoDTO2;
 import com.taj.model.school_request_image_web.schoolRequestWithImageDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -61,7 +66,7 @@ public class SchoolRequestRepo {
         return jdbcTemplate.update("update efaz_school_tender set request_details_file=?," + " images_id=?, request_title=?," +
                         "request_explaination=?," + " request_display_date=?, request_expired_date=?, request_deliver_date=?," +
                         "request_payment_date=?, request_is_available=?, request_is_conformied=?, school_id=?, request_category_id=?," +
-                " receive_palce_id=?, extended_payment=?, request_count=? " +
+                        " receive_palce_id=?, extended_payment=?, request_count=? " +
                         " where request_id=?", request_details_file, images_id, request_title, request_explaination, new Timestamp(request_display_date)
                 , new Timestamp(request_expired_date), new Timestamp(request_deliver_date), new Timestamp(request_payment_date), request_is_available, request_is_conformied, school_id, request_category_id,
                 receive_palce_id, extended_payment, request_count, request_id);
@@ -112,8 +117,6 @@ public class SchoolRequestRepo {
 //                Integer.class, "%" + cat + "%");
 
 
-
-
 //        return jdbcTemplate.query("SELECT * FROM efaz_school_tender WHERE  requests_category_id=?;",
 //                new Object[]{cat}, (resultSet, i) -> new SchoolRequestsModel(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getInt(3),
 //                        resultSet.getString(4), resultSet.getString(5), resultSet.getTimestamp(6).getTime(), resultSet.getTimestamp(7).getTime(),
@@ -151,17 +154,14 @@ public class SchoolRequestRepo {
                 new Object[]{cat}, (resultSet, i) -> new GetSingleSchoolRequestByCategory(resultSet.getInt(1),
                         resultSet.getString(2), resultSet.getString(3), resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(),
                         resultSet.getInt(6), resultSet.getInt(7),
-                        resultSet.getInt(8), resultSet.getString(9),resultSet.getBytes(10) , resultSet.getInt(11),
-                        resultSet.getString(12),resultSet.getInt(13), resultSet.getInt(14), resultSet.getInt(15)));
+                        resultSet.getInt(8), resultSet.getString(9), resultSet.getBytes(10), resultSet.getInt(11),
+                        resultSet.getString(12), resultSet.getInt(13), resultSet.getInt(14), resultSet.getInt(15)));
     }
-
 
 
     public List<schoolRequestWithImageDto> filterByCategoryWithImage(int cat) {
 //        int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
 //                Integer.class, "%" + cat + "%");
-
-
 
 
 //        return jdbcTemplate.query("SELECT * FROM efaz_school_tender WHERE  requests_category_id=?;",
@@ -228,11 +228,9 @@ public class SchoolRequestRepo {
                 new Object[]{cat}, (resultSet, i) -> new schoolRequestWithImageDto(resultSet.getInt(1),
                         resultSet.getString(2), resultSet.getString(3), resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(),
                         resultSet.getInt(6), resultSet.getInt(7),
-                        resultSet.getInt(8), resultSet.getString(9),resultSet.getBytes(10) , resultSet.getInt(11),
-                        resultSet.getString(12),resultSet.getInt(13), resultSet.getInt(14), resultSet.getInt(15), resultSet.getBytes(16)));
+                        resultSet.getInt(8), resultSet.getString(9), resultSet.getBytes(10), resultSet.getInt(11),
+                        resultSet.getString(12), resultSet.getInt(13), resultSet.getInt(14), resultSet.getInt(15), resultSet.getBytes(16)));
     }
-
-
 
 
     public List<SchoolRequestsModel> filterByReceivePlace(int placeId) {
@@ -253,11 +251,6 @@ public class SchoolRequestRepo {
 
 
     public List<SchoolRequestHistoryDto> getHistoryRequestsBySchoolId(int id) {
-        String sql = "SELECT request_id, request_title, count( s.responsed_request_id) AS request_count, request_display_date, response_date, responsed_cost, responsed_company_id, response_id  " +
-                "FROM efaz_company.efaz_school_tender AS t " +
-                "LEFT JOIN efaz_company.efaz_company_response_school_request AS s ON t.request_id=s.responsed_request_id " +
-                "WHERE school_id=? AND s.is_aproved=1 " +
-                "Group BY s.responsed_request_id, request_id, request_title,request_display_date, response_date, responsed_cost,responsed_company_id, response_id; ";
 
         String sql2 = "SELECT request_id, request_title, count( s.responsed_request_id) AS request_count, " +
                 "request_display_date, response_date, responsed_cost, responsed_company_id, response_id \n" +
@@ -271,6 +264,88 @@ public class SchoolRequestRepo {
                         resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(), resultSet.getDouble(6),
                         resultSet.getInt(7), resultSet.getInt(8)));
     }
+
+
+    public List<SchoolRequestHistoryDtoDTO> getHistoryRequestsBySchoolId2(int id) {
+
+        String sql2 = "SELECT\n" +
+                "\trequest_id,\n" +
+                "\trequest_title,\n" +
+                "\tcount( s.responsed_request_id ) AS request_count,\n" +
+                "\trequest_display_date,\n" +
+                "\tresponse_date,\n" +
+                "\tresponsed_cost,\n" +
+                "\tresponsed_company_id,\n" +
+                "\tresponse_id,\n" +
+                "\tresponse_desc \n" +
+                "FROM\n" +
+                "\tefaz_company.efaz_school_tender AS t\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_response_school_request AS s ON t.request_id = s.responsed_request_id \n" +
+                "WHERE\n" +
+                "\tschool_id = ? \n" +
+                "\tAND s.is_aproved = 1 \n" +
+                "GROUP BY\n" +
+                "\ts.responsed_request_id,\n" +
+                "\trequest_id,\n" +
+                "\trequest_title,\n" +
+                "\trequest_display_date,\n" +
+                "\tresponse_date,\n" +
+                "\tresponsed_cost,\n" +
+                "\tresponsed_company_id,\n" +
+                "\tresponse_id;";
+        return jdbcTemplate.query(sql2,
+                new Object[]{id}, (resultSet, i) -> new SchoolRequestHistoryDtoDTO(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3),
+                        resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(), resultSet.getDouble(6),
+                        resultSet.getInt(7), resultSet.getInt(8), resultSet.getString(9)));
+    }
+
+
+
+
+
+    public List<SchoolRequestHistoryDtoDTO2> getHistoryRequestsBySchoolId3(int id) {
+
+        String sql2 = "SELECT\n" +
+                "\trequest_id,\n" +
+                "\trequest_title,\n" +
+                "\tcount( s.responsed_request_id ) AS request_count,\n" +
+                "\trequest_display_date,\n" +
+                "\tresponse_date,\n" +
+                "\tresponsed_cost,\n" +
+                "\tresponse_id,\n" +
+                "\tresponse_desc,\n" +
+                "\tcompany_id,\n" +
+                "\tcompany_name,\n" +
+                "\tcompany_logo_image,\n" +
+                "\tcompany_desc \n" +
+                "FROM\n" +
+                "\tefaz_company.efaz_school_tender AS t\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_response_school_request AS s ON t.request_id = s.responsed_request_id\n" +
+                "\tLEFT JOIN efaz_company_profile AS pro ON pro.company_id = s.responsed_company_id \n" +
+                "WHERE\n" +
+                "\tschool_id = ? \n" +
+                "\tAND s.is_aproved = 1 \n" +
+                "GROUP BY\n" +
+                "\ts.responsed_request_id,\n" +
+                "\trequest_id,\n" +
+                "\trequest_title,\n" +
+                "\trequest_display_date,\n" +
+                "\tresponse_date,\n" +
+                "\tresponsed_cost,\n" +
+                "\tresponsed_company_id,\n" +
+                "\tresponse_id,\n" +
+                "\tresponse_desc,\n" +
+                "\tcompany_name,\n" +
+                "\tcompany_logo_image,\n" +
+                "\tcompany_desc ;";
+        return jdbcTemplate.query(sql2,
+                new Object[]{id}, (resultSet, i) -> new SchoolRequestHistoryDtoDTO2(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3),
+                        resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(), resultSet.getDouble(6),
+                        resultSet.getInt(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10), resultSet.getBytes(11), resultSet.getString(12)));
+    }
+
+
+
 
 
     public List<SchoolRequestHistoryDto> getOrderRequestsBySchoolId(int id) {

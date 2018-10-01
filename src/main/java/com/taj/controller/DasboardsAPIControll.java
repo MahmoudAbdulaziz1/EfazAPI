@@ -5,6 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.*;
+import com.taj.model.new_company_history.CompanyHistoryDto;
+import com.taj.model.new_company_history.CompanyHistoryDto2;
+import com.taj.model.new_school_history.SchoolRequestHistoryDtoDTO;
+import com.taj.model.new_school_history.SchoolRequestHistoryDtoDTO2;
 import com.taj.model.new_school_profile_map.NewCustomSchoolProfileModelDTO;
 import com.taj.model.new_school_profile_map.NewSchoolProfileModelDTO;
 import com.taj.model.offer_description.CustomCompanyModelWithViewAndDescRes;
@@ -1254,6 +1258,36 @@ public class DasboardsAPIControll {
     public List<SchoolRequestHistoryDto> getSchoolHistoryRequestBySchoolId(@PathVariable int id) {
         return schoolRequestRepo.getHistoryRequestsBySchoolId(id);
     }
+
+
+    @PreAuthorize("hasAuthority('school')")
+    @GetMapping("/school/requests/get/history/desc/{id}")
+    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+    public List<SchoolRequestHistoryDtoDTO> getSchoolHistoryRequestBySchoolIdWithDesc(@PathVariable int id) {
+        return schoolRequestRepo.getHistoryRequestsBySchoolId2(id);
+    }
+
+
+    @PreAuthorize("hasAuthority('school')")
+    @GetMapping("/school/requests/get/history/desc2/{id}")
+    //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+    public List<SchoolRequestHistoryDtoDTO2> getSchoolHistoryRequestBySchoolIdWithDesc2(@PathVariable int id) {
+        return schoolRequestRepo.getHistoryRequestsBySchoolId3(id);
+    }
+
+
+    @PreAuthorize("hasAuthority('company')")
+    @GetMapping("/company/offer/history/{companyId}")
+    public List<CompanyHistoryDto> getCompanyHistory(@PathVariable int companyId) {
+        return customCompanyOfferRepo.getCompanyHistory(companyId);
+    }
+
+    @PreAuthorize("hasAuthority('company')")
+    @GetMapping("/company/offer/history2/{companyId}")
+    public List<CompanyHistoryDto2> getCompanyHistory2(@PathVariable int companyId) {
+        return customCompanyOfferRepo.getCompanyHistory2(companyId);
+    }
+
 
     @PreAuthorize("hasAuthority('school')")
     @GetMapping("/school/requests/get/order/{id}")

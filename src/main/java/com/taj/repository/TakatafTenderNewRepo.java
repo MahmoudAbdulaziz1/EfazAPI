@@ -62,17 +62,17 @@ public class TakatafTenderNewRepo {
                 ps.setTimestamp(6, new Timestamp(tender_expire_date));
                 ps.setInt(7, 0);
                 ps.setInt(8, 1);
-                if (tender_company_display_date==0){
-                    ps.setTimestamp(9, null);
+                if (tender_company_display_date == 0) {
+                    ps.setTimestamp(10, null);
 
-                }else {
-                    ps.setTimestamp(9, new Timestamp(tender_company_display_date));
+                } else {
+                    ps.setTimestamp(10, new Timestamp(tender_company_display_date));
                 }
 
-                if (tender_company_display_date==0){
-                    ps.setTimestamp(10, null);
-                }else {
-                    ps.setTimestamp(10, new Timestamp(tender_company_expired_date));
+                if (tender_company_expired_date == 0) {
+                    ps.setTimestamp(9, null);
+                } else {
+                    ps.setTimestamp(9, new Timestamp(tender_company_expired_date));
                 }
                 return ps;
             }
@@ -164,6 +164,7 @@ public class TakatafTenderNewRepo {
                             long tender_company_display_date, long tender_company_expired_date,
                             List<TakatfTenderCategoryPOJO> cats) {
 
+        jdbcTemplate.update("DELETE FROM efaz_company.tkatf_tender_catgory_request WHERE t_tender_id= ?;", tender_id);
 
         for (int i = 0; i < cats.size(); i++) {
             int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
