@@ -1,6 +1,7 @@
 package com.taj.controller;
 
 import com.taj.model.*;
+import com.taj.model.school_history_admin_dashboard.SchoolOrdersHistoryModel;
 import com.taj.model.school_history_admin_dashboard.SchoolOrdersModel;
 import com.taj.model.school_history_admin_dashboard.SchoolShipModel;
 import com.taj.model.school_history_admin_dashboard.SingleSchoolOrdersModel;
@@ -46,9 +47,6 @@ public class AdminOrdersController {
         return repo.addShipping(dto.getShip(), dto.getShip_company_offer_id());
     }
 
-
-
-
     @GetMapping("/school/")
     public List<SchoolOrdersModel> getAllSchoolOrders() {
         return repo.getAllSchoolOrders();
@@ -57,6 +55,15 @@ public class AdminOrdersController {
     @GetMapping("/school/{id}")
     public SingleSchoolOrdersModel getSchoolOrder(@PathVariable int id) {
         return repo.getSchoolOrder(id);
+    }
+
+    @GetMapping("/school/history/")
+    public List<SchoolOrdersHistoryModel> getAllSchoolOrdersHistory() {
+        return repo.getAllSchoolOrdersHistory();
+    }
+    @GetMapping("/school/history/{id}")
+    public SingleSchoolOrdersModel getSchoolOrderHistory(@PathVariable int id) {
+        return repo.getSchoolOrderHistory(id);
     }
 
     @PostMapping("/school/ship")

@@ -19,6 +19,9 @@ import com.taj.model.school.request.image.GetCollectiveTenderPartOneDTO2;
 import com.taj.model.school.request.image.GetCollectiveTenders2;
 import com.taj.model.school.request.image.SchoolNewRequestsDTO2;
 import com.taj.model.school.request.image.getSchoolCustomNewRequestById;
+import com.taj.model.school_history_admin_dashboard.SchoolOrdersHistoryModel;
+import com.taj.model.school_history_admin_dashboard.SchoolOrdersModel;
+import com.taj.model.school_history_admin_dashboard.SingleSchoolOrdersModel;
 import com.taj.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -243,6 +246,42 @@ public class DasboardsAPIControll {
         return ResponseEntity.status(HttpStatus.OK).body(arr);
 
     }
+
+    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+    @GetMapping("takataf/tenders/history/admin")
+    public ResponseEntity<ArrayNode> getAdminTendersHistory() {
+        List<TakatafMyTenderPageDTO> model = repo.getAdminTendersHistory();
+        ArrayNode arr = mapper.createArrayNode();
+        for (int i = 0; i < model.size(); i++) {
+            ObjectNode nodes = mapper.createObjectNode();
+            nodes.put("tender_id", model.get(i).getTender_id());
+            nodes.put("tender_title", model.get(i).getTender_title());
+            nodes.put("tender_explain", model.get(i).getTender_explain());
+            if (model.get(i).getTender_company_display_date() == 0) {
+                String nullvalue = null;
+                nodes.put("tender_company_display_date", nullvalue);
+
+            } else {
+                nodes.put("tender_company_display_date", model.get(i).getTender_company_display_date());
+            }
+            if (model.get(i).getTender_company_expired_date() == 0) {
+                String nullvalue = null;
+                nodes.put("tender_company_expired_date", nullvalue);
+
+            } else {
+                nodes.put("tender_company_expired_date", model.get(i).getTender_company_expired_date());
+
+            }
+            nodes.put("tender_display_date", model.get(i).getTender_display_date());
+            nodes.put("tender_expire_date", model.get(i).getTender_expire_date());
+            nodes.put("response_count", model.get(i).getResponse_count());
+            nodes.put("cat_num", model.get(i).getCat_num());
+            arr.add(nodes);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(arr);
+
+    }
+
 
     @PreAuthorize("hasAuthority('admin')")
     @PutMapping("takataf/tenders/")
@@ -1665,6 +1704,26 @@ public class DasboardsAPIControll {
             return objectNode;
         }
 
+    }
+
+    @GetMapping("/admin/orders/school/")
+    public List<SchoolOrdersModel> getAllSchoolOrders() {
+        return adminRepo.getAllSchoolOrders();
+    }
+
+    @GetMapping("/admin/orders/school/{id}")
+    public SingleSchoolOrdersModel getSchoolOrder(@PathVariable int id) {
+        return adminRepo.getSchoolOrder(id);
+    }
+
+    @GetMapping("/admin/orders/school/history/")
+    public List<SchoolOrdersHistoryModel> getAllSchoolOrdersHistory() {
+        return adminRepo.getAllSchoolOrdersHistory();
+    }
+
+    @GetMapping("/admin/orders/school/history/{id}")
+    public SingleSchoolOrdersModel getSchoolOrderHistory(@PathVariable int id) {
+        return adminRepo.getSchoolOrderHistory(id);
     }
 
 

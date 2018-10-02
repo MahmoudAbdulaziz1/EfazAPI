@@ -108,7 +108,7 @@ public class TakatafTenderNewRepo {
 
     public List<TakatafTenderPOJO> getTenders() {
         String sql = "SELECT tender_id, tender_logo, tender_title, tender_explain, tender_display_date, tender_expire_date , " +
-                "                 tender_company_display_date, tender_company_expired_date," +
+                "                 IFNULL(tender_company_display_date,'1970-01-01 02:00:00'), IFNULL(tender_company_expired_date,'1970-01-01 02:00:00')," +
                 "                 count(distinct request_id) AS response_count " +
                 "                                FROM takatf_tender AS t  " +
                 "                                LEFT JOIN efaz_company.takatf_request_tender AS req ON t.tender_id = req.request_tender_id GROUP BY tender_id;";
@@ -122,7 +122,7 @@ public class TakatafTenderNewRepo {
     public TakatafTenderPOJO getTender(int id) {
 
         String sql = "SELECT tender_id, tender_logo, tender_title, tender_explain, tender_display_date, tender_expire_date , " +
-                " tender_company_display_date, tender_company_expired_date, " +
+                " IFNULL(tender_company_display_date,'1970-01-01 02:00:00'), IFNULL(tender_company_expired_date,'1970-01-01 02:00:00'), " +
                 " count(distinct request_id) AS response_count " +
                 "                FROM takatf_tender AS t  " +
                 "                LEFT JOIN efaz_company.takatf_request_tender AS req ON t.tender_id = req.request_tender_id WHERE tender_id=? GROUP BY tender_id; ";
@@ -134,20 +134,34 @@ public class TakatafTenderNewRepo {
     }
 
     public List<TakatafMyTenderPageDTO> getAdminTenders() {
-        String sql = "SELECT " +
-                " tender_id, tender_title, tender_explain, tender_display_date, tender_expire_date ," +
-                " IFNULL(tender_company_display_date,'1970-01-01 02:00:00')AS tender_company_display_date," +
-                " IFNULL(tender_company_expired_date,'1970-01-01 02:00:00')AS tender_company_expired_date," +
-                " count(distinct request_id) AS response_count, " +
-                " count(DISTINCT ten.t_category_id) AS cat_count " +
-                "FROM " +
-                " (takatf_tender AS t  " +
-                "LEFT JOIN " +
-                " efaz_company.tkatf_tender_catgory_request AS ten ON t.tender_id = ten.t_tender_id " +
-                "LEFT JOIN " +
-                " efaz_company.takatf_request_tender AS req ON t.tender_id = req.request_tender_id) " +
-                " GROUP BY " +
-                " t.tender_id;";
+        String sql = "SELECT\n" +
+                "\ttender_id,\n" +
+                "\ttender_title,\n" +
+                "\ttender_explain,\n" +
+                "\ttender_display_date,\n" +
+                "\ttender_expire_date,\n" +
+                "\tIFNULL( tender_company_display_date, '1970-01-01 02:00:00' ) AS tender_company_display_date,\n" +
+                "\tIFNULL( tender_company_expired_date, '1970-01-01 02:00:00' ) AS tender_company_expired_date,\n" +
+                "\tcount( DISTINCT request_id ) AS response_count,\n" +
+                "\tcount( DISTINCT ten.t_category_id ) AS cat_count  \n" +
+                "FROM\n" +
+                "\t(\n" +
+                "\t\ttakatf_tender AS t\n" +
+                "\t\tLEFT JOIN efaz_company.tkatf_tender_catgory_request AS ten ON t.tender_id = ten.t_tender_id\n" +
+                "\t\tLEFT JOIN efaz_company.takatf_request_tender AS req ON t.tender_id = req.request_tender_id \n" +
+                "\t) \n" +
+                "WHERE\n" +
+                "\ttender_company_expired_date = '1970-01-01 02:00:00' \n" +
+                "\tOR tender_company_expired_date >= NOW( ) \n" +
+                "\tOR ISNULL( tender_company_expired_date ) \n" +
+                "GROUP BY\n" +
+                "\ttender_id,\n" +
+                "\ttender_title,\n" +
+                "\ttender_explain,\n" +
+                "\ttender_display_date,\n" +
+                "\ttender_expire_date,\n" +
+                "\ttender_company_display_date,\n" +
+                "\ttender_company_expired_date;";
         return jdbcTemplate.query(sql,
                 (resultSet, i) -> new com.taj.model.TakatafMyTenderPageDTO(resultSet.getInt(1),
                         resultSet.getString(2), resultSet.getString(3),
@@ -155,6 +169,53 @@ public class TakatafTenderNewRepo {
                         , resultSet.getTimestamp(7).getTime(),
                         resultSet.getInt(8), resultSet.getInt(9)));
     }
+
+
+
+
+
+    public List<TakatafMyTenderPageDTO> getAdminTendersHistory() {
+        String sql = "SELECT\n" +
+                "\ttender_id,\n" +
+                "\ttender_title,\n" +
+                "\ttender_explain,\n" +
+                "\ttender_display_date,\n" +
+                "\ttender_expire_date,\n" +
+                "\tIFNULL( tender_company_display_date, '1970-01-01 02:00:00' ) AS tender_company_display_date,\n" +
+                "\tIFNULL( tender_company_expired_date, '1970-01-01 02:00:00' ) AS tender_company_expired_date,\n" +
+                "\tcount( DISTINCT request_id ) AS response_count,\n" +
+                "\tcount( DISTINCT ten.t_category_id ) AS cat_count \n" +
+                "FROM\n" +
+                "\t(\n" +
+                "\t\ttakatf_tender AS t\n" +
+                "\t\tLEFT JOIN efaz_company.tkatf_tender_catgory_request AS ten ON t.tender_id = ten.t_tender_id\n" +
+                "\t\tLEFT JOIN efaz_company.takatf_request_tender AS req ON t.tender_id = req.request_tender_id \n" +
+                "\t) \n" +
+                "WHERE\n" +
+                "\ttender_company_expired_date < NOW( ) \n" +
+                "\tAND ! ( tender_company_expired_date = '1970-01-01 02:00:00' OR ISNULL( tender_company_expired_date ) ) \n" +
+                "GROUP BY\n" +
+                "\ttender_id,\n" +
+                "\ttender_title,\n" +
+                "\ttender_explain,\n" +
+                "\ttender_display_date,\n" +
+                "\ttender_expire_date,\n" +
+                "\ttender_company_display_date,\n" +
+                "\ttender_company_expired_date;";
+        return jdbcTemplate.query(sql,
+                (resultSet, i) -> new com.taj.model.TakatafMyTenderPageDTO(resultSet.getInt(1),
+                        resultSet.getString(2), resultSet.getString(3),
+                        resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(), resultSet.getTimestamp(6).getTime()
+                        , resultSet.getTimestamp(7).getTime(),
+                        resultSet.getInt(8), resultSet.getInt(9)));
+    }
+
+
+
+
+
+
+
 
 
     public int updateTender(int tender_id, byte[] tender_logo,

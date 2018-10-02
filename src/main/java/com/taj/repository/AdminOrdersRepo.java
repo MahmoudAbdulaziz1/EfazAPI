@@ -4,6 +4,7 @@ import com.taj.model.AdminHistoryOrdersModel;
 import com.taj.model.AdminOrdersModel;
 import com.taj.model.AdminSingleOrderHistoryModel;
 import com.taj.model.AdminSingleOrderModel;
+import com.taj.model.school_history_admin_dashboard.SchoolOrdersHistoryModel;
 import com.taj.model.school_history_admin_dashboard.SchoolOrdersModel;
 import com.taj.model.school_history_admin_dashboard.SingleSchoolOrdersModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -192,6 +193,39 @@ public class AdminOrdersRepo {
 
     }
 
+    public List<SchoolOrdersHistoryModel> getAllSchoolOrdersHistory() {
+        String sql = "SELECT\n" +
+                "\tresponsed_request_id AS request_id,\n" +
+                "\tresponsed_cost,\n" +
+                "\tresponse_date,\n" +
+                "\tresponse_desc,\n" +
+                "\trequest_display_date,\n" +
+                "\trequest_expired_date,\n" +
+                "\ttender.school_id,\n" +
+                "\tschool_name,\n" +
+                "\tschool_logo_image,\n" +
+                "\tresponsed_company_id AS company_id,\n" +
+                "\tcompany_name,\n" +
+                "\tcompany_logo_image,\n" +
+                "\t( SELECT COUNT( responsed_request_id ) FROM efaz_company.efaz_company_response_school_request AS r WHERE request_id = r.responsed_request_id ) AS request_count \n" +
+                "FROM\n" +
+                "\tefaz_company.efaz_company_response_school_request AS req\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_tender AS tender ON req.responsed_request_id = tender.request_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_profile AS spro ON tender.school_id = spro.school_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_profile AS cpro ON responsed_company_id = cpro.company_id \n" +
+                "WHERE\n" +
+                "\tis_aproved = 1 \n" +
+                "\tOR request_expired_date < NOW( );";
+
+        return jdbcTemplate.query(sql,
+                (resultSet, i) -> new SchoolOrdersHistoryModel(resultSet.getInt(1), resultSet.getDouble(2), resultSet.getTimestamp(3).getTime(),
+                        resultSet.getString(4), resultSet.getTimestamp(5).getTime(), resultSet.getTimestamp(6).getTime(), resultSet.getInt(7),
+                        resultSet.getString(8),
+                        resultSet.getBytes(9), resultSet.getInt(10), resultSet.getString(11), resultSet.getBytes(12), resultSet.getInt(13)));
+
+
+    }
+
     public SingleSchoolOrdersModel getSchoolOrder(int id) {
 
         String sql = "SELECT\n" +
@@ -219,9 +253,50 @@ public class AdminOrdersRepo {
                 "\tLEFT JOIN efaz_company.efaz_company_profile AS cpro ON responsed_company_id = cpro.company_id\n" +
                 "\tLEFT JOIN school_requst_images AS img ON images_id = img.image_id\n" +
                 "\tLEFT JOIN efaz_company.efaz_school_tender_shipping AS sh ON sh.ship_school_request_id = responsed_request_id \n" +
+                "WHERE " +
+                " is_aproved = 0 AND request_expired_date >= NOW( )" +
+                " AND responsed_request_id =?;";
+
+        return jdbcTemplate.queryForObject(sql, new Object[]{id},
+                (resultSet, i) -> new SingleSchoolOrdersModel(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getString(3),
+                        resultSet.getString(4), resultSet.getTimestamp(5).getTime(), resultSet.getTimestamp(6).getTime(),
+                        resultSet.getDouble(7), resultSet.getTimestamp(8).getTime(), resultSet.getString(9), resultSet.getInt(10), resultSet.getString(11),
+                        resultSet.getBytes(12), resultSet.getInt(13), resultSet.getString(14), resultSet.getBytes(15), resultSet.getInt(16), resultSet.getDouble(17)));
+
+
+    }
+
+
+    public SingleSchoolOrdersModel getSchoolOrderHistory(int id) {
+
+        String sql = "SELECT\n" +
+                "\tresponsed_request_id AS request_id,\n" +
+                "\timage_one AS request_image,\n" +
+                "\trequest_title,\n" +
+                "\trequest_explaination,\n" +
+                "\trequest_display_date,\n" +
+                "\trequest_expired_date,\n" +
+                "\tresponsed_cost,\n" +
+                "\tresponse_date,\n" +
+                "\tresponse_desc,\n" +
+                "\ttender.school_id,\n" +
+                "\tschool_name,\n" +
+                "\tschool_logo_image,\n" +
+                "\tresponsed_company_id AS company_id,\n" +
+                "\tcompany_name,\n" +
+                "\tcompany_logo_image,\n" +
+                "\t( SELECT COUNT( responsed_request_id ) FROM efaz_company.efaz_company_response_school_request AS r WHERE request_id = r.responsed_request_id ) AS request_count,\n" +
+                "\tIFNULL( ship, 0 ) AS ship \n" +
+                "FROM\n" +
+                "\tefaz_company.efaz_company_response_school_request AS req\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_tender AS tender ON req.responsed_request_id = tender.request_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_profile AS spro ON tender.school_id = spro.school_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_profile AS cpro ON responsed_company_id = cpro.company_id\n" +
+                "\tLEFT JOIN school_requst_images AS img ON images_id = img.image_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_tender_shipping AS sh ON sh.ship_school_request_id = responsed_request_id \n" +
                 "WHERE\n" +
-                "\tis_aproved = 0 \n" +
-                "\tAND responsed_request_id =?;";
+                " (is_aproved = 1 OR request_expired_date < NOW( ))" +
+                " AND responsed_request_id =?;";
 
         return jdbcTemplate.queryForObject(sql, new Object[]{id},
                 (resultSet, i) -> new SingleSchoolOrdersModel(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getString(3),

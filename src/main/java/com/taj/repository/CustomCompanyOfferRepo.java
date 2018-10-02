@@ -93,9 +93,28 @@ public class CustomCompanyOfferRepo {
 
     public List<CustomCompanyOfferModel> getAllOffers() {
         System.out.println(new Date());
-        String sql = "SELECT offer_id, image_one, image_two,image_three, image_four, offer_title, offer_explaination, offer_cost, offer_display_date, offer_expired_date, offer_deliver_date, " +
-                "offer_company_id, offer_count FROM efaz_company.efaz_company_offer AS offer INNER JOIN efaz_company.company_offer_images AS image " +
-                "ON offer.offer_image_id = image.images_id;";
+        String sql = "SELECT\n" +
+                "\toffer_id,\n" +
+                "\timage_one,\n" +
+                "\timage_two,\n" +
+                "\timage_three,\n" +
+                "\timage_four,\n" +
+                "\toffer_title,\n" +
+                "\toffer_explaination,\n" +
+                "\toffer_cost,\n" +
+                "\toffer_display_date,\n" +
+                "\toffer_expired_date,\n" +
+                "\toffer_deliver_date,\n" +
+                "\toffer_company_id,\n" +
+                "\toffer_count,\n" +
+                "\tcity,\n" +
+                "\tarea,\n" +
+                "\tlng,\n" +
+                "\tlat \n" +
+                "FROM\n" +
+                "\tefaz_company.efaz_company_offer AS offer\n" +
+                "\tINNER JOIN efaz_company.company_offer_images AS image ON offer.offer_image_id = image.images_id\n" +
+                "\tINNER JOIN efaz_company_offer_place AS p ON p.id = offer_id;";
         List<CustomCompanyOfferModel> list2 = jdbcTemplate.query(sql, (resultSet, i) -> new CustomCompanyOfferModel(resultSet.getInt(1),
                 resultSet.getBytes(2), resultSet.getBytes(3), resultSet.getBytes(4), resultSet.getBytes(5)
                 , resultSet.getString(6), resultSet.getString(7), resultSet.getDouble(8), resultSet.getTimestamp(9).getTime(), resultSet.getTimestamp(10).getTime(),
@@ -235,7 +254,7 @@ public class CustomCompanyOfferRepo {
                 "\tefaz_company_offer AS offer\n" +
                 "\tLEFT JOIN efaz_company.efaz_company_offer_place AS d ON offer.offer_id = d.id \n" +
                 "WHERE\n" +
-                "\toffer_id = ?;";
+                "\toffer_company_id = ?;";
 
         List<CompanyOfferModelDto> list = jdbcTemplate.query(sql, new Object[]{id},
                 (resultSet, i) -> new CompanyOfferModelDto(resultSet.getInt(1), resultSet.getInt(2), resultSet.getString(3)
