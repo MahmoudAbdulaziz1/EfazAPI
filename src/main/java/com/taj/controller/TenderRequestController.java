@@ -52,9 +52,9 @@ public class TenderRequestController {
 
             //System.out.println(map.get("t_date")+" +++ "+ date+" ++++++ "+ date.getTime()+ " ++++ "+ new Timestamp(0));
 
-            long categoryId = (long) map.get("id");
+            int categoryId = (int) map.get("id");
             String categoryName = (String) map.get("category_name");
-            long count = (long) map.get("count");
+            int count = (int) map.get("count");
 
 
             test2Model.setId(categoryId);
@@ -90,9 +90,9 @@ public class TenderRequestController {
 //                if (res.containsKey(obj)) {
                 if (map.get("school_id").equals(obj.getSchool_id())) {
                     TenderRequestCategoriesModel test2Model = new TenderRequestCategoriesModel();
-                    long categoryId = (long) map.get("id");
+                    int categoryId = (int) map.get("id");
                     String categoryName = (String) map.get("category_name");
-                    long count = (long) map.get("count");
+                    int count = (int) map.get("count");
 
 
                     test2Model.setId(categoryId);

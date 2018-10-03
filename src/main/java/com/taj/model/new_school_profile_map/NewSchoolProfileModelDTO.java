@@ -13,14 +13,14 @@ public class NewSchoolProfileModelDTO {
     @NotNull
     @NotBlank
     @NotEmpty
-    @Size(max = 450, min = 1, message="name should have at least 1 characters")
+    @Size(max = 450, min = 1, message = "name should have at least 1 characters")
     private String school_name;
     @NotNull
     private byte[] school_logo_image;
     @NotNull
     @NotBlank
     @NotEmpty
-    @Size(max = 450, min = 1, message="address should have at least 1 characters")
+    @Size(max = 450, min = 1, message = "address should have at least 1 characters")
     private String school_address;
 
     private String school_service_desc;
@@ -40,7 +40,7 @@ public class NewSchoolProfileModelDTO {
     private float lat;
 
     public NewSchoolProfileModelDTO(@Min(1) int school_id, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "name should have at least 1 characters") String school_name, @NotNull byte[] school_logo_image, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "address should have at least 1 characters") String school_address, String school_service_desc, String school_link_youtube, String school_website_url,
-                                    float school_lng, float school_lat, @NotNull byte[] school_cover_image, String school_phone_number, String area, String city, float lng, float lat) {
+                                    float school_lng, float school_lat, @NotNull byte[] school_cover_image, String school_phone_number, String city, String area, float lng, float lat) {
         this.school_id = school_id;
         this.school_name = school_name;
         this.school_logo_image = school_logo_image;

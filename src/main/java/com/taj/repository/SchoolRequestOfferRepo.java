@@ -1,6 +1,8 @@
 package com.taj.repository;
 
-import com.taj.model.*;
+import com.taj.model.CompanyOfferModel;
+import com.taj.model.GetSchoolsRequestOffersWitCoast;
+import com.taj.model.SchoolRequestOfferModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -21,23 +23,23 @@ public class SchoolRequestOfferRepo {
     JdbcTemplate jdbcTemplate;
 
 
-    public boolean checkIfExist(int offer_id){
+    public boolean checkIfExist(int offer_id) {
         Integer cnt = jdbcTemplate.queryForObject(
                 "SELECT count(*) FROM  efaz_school_request_offer WHERE request_id=?;",
                 Integer.class, offer_id);
         return cnt != null && cnt > 0;
     }
 
-    public boolean checkIfExistByIds(int school_id, int offer_id){
+    public boolean checkIfExistByIds(int school_id, int offer_id) {
         Integer cnt = jdbcTemplate.queryForObject(
                 "SELECT count(*) FROM  efaz_school_request_offer WHERE requsted_school_id=? AND requsted_offer_id=?;",
                 Integer.class, school_id, offer_id);
         return cnt != null && cnt > 0;
     }
 
-    public boolean checkIfExistByDate(int school_id, int offer_id){
+    public boolean checkIfExistByDate(int school_id, int offer_id) {
         int id = jdbcTemplate.queryForObject("Select request_id FROM efaz_school_request_offer WHERE requsted_school_id=? AND requsted_offer_id=?;",
-                 Integer.class,school_id, offer_id);
+                Integer.class, school_id, offer_id);
 //        SchoolRequestOfferDateModel model = jdbcTemplate.queryForObject("Select * FROM efaz_school_request_offer_date WHERE id=?;",
 //                new Object[]{id}, (resultSet, i) -> new SchoolRequestOfferDateModel(resultSet.getInt(1), resultSet.getTimestamp(2).getTime()));
         Integer cnt = jdbcTemplate.queryForObject(
@@ -47,17 +49,16 @@ public class SchoolRequestOfferRepo {
     }
 
 
-
     public int addSchoolRequestOffer(int requsted_school_id, int requsted_offer_id, int is_accepted, int request_offer_count) {
-        if (checkIfExistByIds(requsted_school_id, requsted_offer_id)){
-            if (checkIfExistByDate(requsted_school_id, requsted_offer_id)){
-                return jdbcTemplate.update("UPDATE efaz_school_request_offer SET request_offer_count=?" +
-                        " WHERE requsted_school_id=? AND requsted_offer_id=?",  request_offer_count, requsted_school_id, requsted_offer_id);
-            }else {
-                return -1000;
-            }
+        if (checkIfExistByIds(requsted_school_id, requsted_offer_id)) {
+            //if (checkIfExistByDate(requsted_school_id, requsted_offer_id)){
+            return jdbcTemplate.update("UPDATE efaz_school_request_offer SET request_offer_count=?" +
+                    " WHERE requsted_school_id=? AND requsted_offer_id=?", request_offer_count, requsted_school_id, requsted_offer_id);
+            //}else {
+            //   return -1000;
+            //}
 
-        }else {
+        } else {
 
             KeyHolder key = new GeneratedKeyHolder();
             jdbcTemplate.update(new PreparedStatementCreator() {
@@ -144,7 +145,7 @@ public class SchoolRequestOfferRepo {
     public int updateResponseSchoolRequest(int request_id, int requsted_school_id, int requsted_offer_id, int is_accepted, int request_offer_count) {
 
         return jdbcTemplate.update("UPDATE efaz_school_request_offer SET requsted_school_id=?, requsted_offer_id=?, is_accepted=? , request_offer_count=?" +
-                        " WHERE request_id=?", requsted_school_id, requsted_offer_id, is_accepted, request_offer_count, request_id);
+                " WHERE request_id=?", requsted_school_id, requsted_offer_id, is_accepted, request_offer_count, request_id);
     }
 
     public int deleteResponseSchoolRequest(int seen_id) {

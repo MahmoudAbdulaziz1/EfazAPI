@@ -120,7 +120,7 @@ public class TenderRequestRepo {
                 "\tid,\n" +
                 "\tcategory_name,\n" +
                 "\tcount,\n" +
-                "\tIFNULL( school_id, 0 ) AS school_id,\n" +
+                "\tIFNULL( school_id, 0 ) AS school_id, " +
                 "\t( SELECT DISTINCT t_date FROM takatf_request_tender WHERE request_tender_id = tender_id AND request_school_id = school_id ) AS t_date,\n" +
                 "\tIFNULL( school_name, 0 ) AS school_name,\n" +
                 "\tschool_logo_image \n" +

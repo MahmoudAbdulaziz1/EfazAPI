@@ -23,27 +23,27 @@ public class RetailGetAllModel {
     @Size(max = 450, min = 1, message = "explain should have at least 1 characters")
     private String tender_explain;
 
-    private @NotNull long tender_company_display_date;
-    @NotNull
-    private long tender_company_expired_date;
-
     private @NotNull long tender_display_date;
     @NotNull
     private long tender_expire_date;
+
+    private @NotNull long tender_company_display_date;
+    @NotNull
+    private long tender_company_expired_date;
 
     private int response_count;
     private int cat_num;
     private int school_id;
 
-    public RetailGetAllModel(int tender_id, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String tender_title, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String tender_explain, @NotNull long tender_company_display_date,
-                             @NotNull long tender_company_expired_date, @NotNull long tender_display_date, @NotNull long tender_expire_date, int response_count, int cat_num, int school_id) {
+    public RetailGetAllModel(int tender_id, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String tender_title, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String tender_explain, @NotNull long tender_display_date, @NotNull long tender_expire_date,
+                             @NotNull long tender_company_display_date, @NotNull long tender_company_expired_date, int response_count, int cat_num, int school_id) {
         this.tender_id = tender_id;
         this.tender_title = tender_title;
         this.tender_explain = tender_explain;
-        this.tender_company_display_date = tender_company_display_date;
-        this.tender_company_expired_date = tender_company_expired_date;
         this.tender_display_date = tender_display_date;
         this.tender_expire_date = tender_expire_date;
+        this.tender_company_display_date = tender_company_display_date;
+        this.tender_company_expired_date = tender_company_expired_date;
         this.response_count = response_count;
         this.cat_num = cat_num;
         this.school_id = school_id;

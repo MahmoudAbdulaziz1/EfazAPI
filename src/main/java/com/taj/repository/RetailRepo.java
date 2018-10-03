@@ -21,25 +21,33 @@ public class RetailRepo {
     public int retailAddRequest(int retail,
                                 int retail_school_id,
                                 int retail_tender_id) {
-        return jdbcTemplate.update("INSERT INTO efaz_company.takataf_retail_school_request VALUES(?,?,?,?);",
-                null, retail, retail_school_id, retail_tender_id);
+        if (isExistRequest(retail_school_id, retail_tender_id)) {
+            return jdbcTemplate.update("INSERT INTO efaz_company.takataf_retail_school_request VALUES(?,?,?,?);",
+                    null, retail, retail_school_id, retail_tender_id);
+        }else {
+            return -100;
+        }
     }
 
 
     public int confirmRetailRequest(
             int retail_school_id,
             int retail_tender_id) {
-        int res = jdbcTemplate.update("DELETE FROM  efaz_company.takatf_request_tender WHERE  request_school_id=? AND request_tender_id=?;",
-                retail_school_id, retail_tender_id);
-        if (res == 1) {
-            jdbcTemplate.update("DELETE FROM  efaz_company.takataf_request_cat_count WHERE  scool_id=? AND tend_id=?;",
+        if (isExistRequest(retail_school_id, retail_tender_id)) {
+            int res = jdbcTemplate.update("DELETE FROM  efaz_company.takatf_request_tender WHERE  request_school_id=? AND request_tender_id=?;",
                     retail_school_id, retail_tender_id);
+            if (res == 1) {
+                jdbcTemplate.update("DELETE FROM  efaz_company.takataf_request_cat_count WHERE  scool_id=? AND tend_id=?;",
+                        retail_school_id, retail_tender_id);
 
-            return jdbcTemplate.update("DELETE FROM  efaz_company.takataf_retail_school_request WHERE  retail_school_id=? AND retail_tender_id=?;",
-                    retail_school_id, retail_tender_id);
+                return jdbcTemplate.update("DELETE FROM  efaz_company.takataf_retail_school_request WHERE  retail_school_id=? AND retail_tender_id=?;",
+                        retail_school_id, retail_tender_id);
 
-        } else {
-            return 0;
+            } else {
+                return 0;
+            }
+        }else {
+            return -100;
         }
 
     }
@@ -57,13 +65,12 @@ public class RetailRepo {
     public List<RetailGetAllModel> getRetailTenders() {
         String sql = "SELECT\n" +
                 "\ttender_id,\n" +
-                "\ttender_logo,\n" +
                 "\ttender_title,\n" +
                 "\ttender_explain,\n" +
                 "\ttender_display_date,\n" +
                 "\ttender_expire_date,\n" +
-                "\tIFNULL( tender_company_display_date, '1970-01-01 02:00:00' ) AS tender_company_display_date,\n" +
-                "\tIFNULL( tender_company_expired_date, '1970-01-01 02:00:00' ) AS tender_company_expired_date,\n" +
+                "\tIFNULL( tender_company_display_date, STR_TO_DATE('1970-01-01 02:00:00','%Y-%m-%d %H:%i:%s') ) AS tender_company_display_date, " +
+                "\tIFNULL( tender_company_expired_date, STR_TO_DATE('1970-01-01 02:00:00','%Y-%m-%d %H:%i:%s') ) AS tender_company_expired_date,\n" +
                 "\tcount(DISTINCT req.request_id ) AS response_count,\n" +
                 "count( DISTINCT ten.t_category_id ) AS cat_count, retail_school_id AS school_id \t\n" +
                 "FROM\n" +
@@ -92,26 +99,29 @@ public class RetailRepo {
 
 
     public List<Map<String, Object>> getTenderRequestObjectWithCompanyDates(int school_id, int tender_id) {
-        String sql = "SELECT\n" +
+
+
+        String sql2 = "SELECT DISTINCT\n" +
                 "\ttender_id,\n" +
                 "\ttender_logo,\n" +
                 "\ttender_title,\n" +
                 "\ttender_explain,\n" +
                 "\ttender_display_date,\n" +
                 "\ttender_expire_date,\n" +
-                "\tIFNULL( tender_company_display_date,  STR_TO_DATE('1970-01-01 02:00:00','%Y-%m-%d %H:%i:%s') ) AS tender_company_display_date,\n" +
-                "\tIFNULL( tender_company_expired_date,  STR_TO_DATE('1970-01-01 02:00:00','%Y-%m-%d %H:%i:%s') ) AS tender_company_expired_date,\n" +
-                "\tcount( DISTINCT req.request_school_id ) AS response_count,\n" +
-                "\tcategory_id,\n" +
+                "\tIFNULL( tender_company_display_date, STR_TO_DATE('1970-01-01 02:00:00','%Y-%m-%d %H:%i:%s') ) AS tender_company_display_date, " +
+                "\tIFNULL( tender_company_expired_date, STR_TO_DATE('1970-01-01 02:00:00','%Y-%m-%d %H:%i:%s') ) AS tender_company_expired_date,\n" +
+                "\t( SELECT COUNT( DISTINCT request_school_id ) FROM takatf_request_tender WHERE request_tender_id = ? ) AS response_count,\n" +
+                "\tcategory_id AS id,\n" +
                 "\tcategory_name,\n" +
                 "\tcount,\n" +
                 "\tschool_id,\n" +
+                "\t( SELECT DISTINCT t_date FROM takatf_request_tender WHERE request_tender_id = tender_id AND request_school_id = school_id ) AS t_date,\n" +
                 "\tschool_name,\n" +
                 "\tschool_logo_image \n" +
                 "FROM\n" +
                 "\tefaz_company.takataf_retail_school_request AS retail\n" +
                 "\tLEFT JOIN efaz_company.takatf_tender AS tender ON retail.retail_tender_id = tender.tender_id\n" +
-                "\tLEFT JOIN efaz_company.takatf_request_tender AS req ON req.request_tender_id = tender.tender_id\n" +
+                "\tINNER JOIN efaz_company.takatf_request_tender AS req ON req.request_tender_id = tender.tender_id\n" +
                 "\tLEFT JOIN efaz_company.takataf_request_cat_count AS tr ON tender_id = tr.tend_id \n" +
                 "\tAND tr.scool_id = retail.retail_school_id\n" +
                 "\tLEFT JOIN efaz_company.efaz_company_category AS ca ON tr.cat_id = category_id\n" +
@@ -119,25 +129,21 @@ public class RetailRepo {
                 "\tINNER JOIN efaz_company.efaz_school_profile sp ON tr.scool_id = sp.school_id \n" +
                 "WHERE\n" +
                 "\tretail_school_id = ? \n" +
-                "\tAND retail_tender_id = ? \n" +
-                "GROUP BY\n" +
-                "\ttender_id,\n" +
-                "\ttender_logo,\n" +
-                "\ttender_title,\n" +
-                "\ttender_explain,\n" +
-                "\ttender_display_date,\n" +
-                "\ttender_expire_date,\n" +
-                "\ttender_company_display_date,\n" +
-                "\ttender_company_expired_date,\n" +
-                "\tcategory_id,\n" +
-                "\tcategory_name,\n" +
-                "\tcount,\n" +
-                "\tschool_id,\n" +
-                "\tschool_name,\n" +
-                "\tschool_logo_image;";
-        return jdbcTemplate.queryForList(sql, new Object[]{school_id, tender_id});
+                "\tAND retail_tender_id = ?;";
+
+
+        return jdbcTemplate.queryForList(sql2, new Object[]{tender_id, school_id, tender_id});
 
     }
+
+
+    public boolean isExistRequest(int school_id, int tender_id) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_company.takatf_request_tender WHERE request_school_id=? AND request_tender_id=?;",
+                Integer.class, school_id, tender_id);
+        return cnt != null && cnt > 0;
+    }
+
 
 
 }

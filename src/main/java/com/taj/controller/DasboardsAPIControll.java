@@ -294,13 +294,13 @@ public class DasboardsAPIControll {
         }
 
 
-        if (model.getTender_display_date() < new Timestamp(System.currentTimeMillis()).getTime()
-                || model.getTender_expire_date() < new Timestamp(System.currentTimeMillis()).getTime()) {
-            ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("state", 400);
-            objectNode.put("message", "Validation Failed school date in past");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
-        }
+//        if (model.getTender_display_date() < new Timestamp(System.currentTimeMillis()).getTime()
+//                || model.getTender_expire_date() < new Timestamp(System.currentTimeMillis()).getTime()) {
+//            ObjectNode objectNode = mapper.createObjectNode();
+//            objectNode.put("state", 400);
+//            objectNode.put("message", "Validation Failed school date in past");
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+//        }
 
         if (model.getTender_display_date() >= model.getTender_expire_date()) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -309,20 +309,24 @@ public class DasboardsAPIControll {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
 
+        if (model.getTender_company_expired_date() == 0 || model.getTender_company_expired_date() == 0) {
 
-        if (model.getTender_company_display_date() < new Timestamp(System.currentTimeMillis()).getTime()
-                || model.getTender_company_expired_date() < new Timestamp(System.currentTimeMillis()).getTime()) {
-            ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("state", 400);
-            objectNode.put("message", "Validation Failed company date in past");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
-        }
+        } else {
 
-        if (model.getTender_company_display_date() >= model.getTender_company_expired_date()) {
-            ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("state", 400);
-            objectNode.put("message", "Validation Failed company display date is greater than  expired date");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            if (model.getTender_company_display_date() < new Timestamp(System.currentTimeMillis()).getTime()
+                    || model.getTender_company_expired_date() < new Timestamp(System.currentTimeMillis()).getTime()) {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("state", 400);
+                objectNode.put("message", "Validation Failed company date in past");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            }
+
+            if (model.getTender_company_display_date() >= model.getTender_company_expired_date()) {
+                ObjectNode objectNode = mapper.createObjectNode();
+                objectNode.put("state", 400);
+                objectNode.put("message", "Validation Failed company display date is greater than  expired date");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+            }
         }
 
 

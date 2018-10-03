@@ -1,5 +1,7 @@
 package com.taj.model.retail_collective;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Created by User on 10/2/2018.
  */
@@ -7,7 +9,9 @@ public class RetailModel {
 
     private int id;
     private int retail;
+    @NotNull
     private int retail_school_id;
+    @NotNull
     private int retail_tender_id;
 
     public RetailModel(int id, int retail, int retail_school_id, int retail_tender_id) {
