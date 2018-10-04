@@ -12,10 +12,12 @@ public class CollectiveTenderCompaniesRequestForCompanyModel {
     private String company_desc;
     private byte[] company_logo_image;
     private long response_date;
+    private String response_desc;
 
 
     public CollectiveTenderCompaniesRequestForCompanyModel(int response_id, double responsed_cost, int company_id,
-                                                           String company_name, String company_desc, byte[] company_logo_image, long response_date) {
+                                                           String company_name, String company_desc, byte[] company_logo_image,
+                                                           long response_date, String response_desc) {
         this.response_id = response_id;
         this.responsed_cost = responsed_cost;
         this.company_id = company_id;
@@ -23,16 +25,18 @@ public class CollectiveTenderCompaniesRequestForCompanyModel {
         this.company_desc = company_desc;
         this.company_logo_image = company_logo_image;
         this.response_date = response_date;
+        this.response_desc = response_desc;
     }
 
     public CollectiveTenderCompaniesRequestForCompanyModel(double responsed_cost, int company_id, String company_name,
-                                                           String company_desc, byte[] company_logo_image, long response_date) {
+                                                           String company_desc, byte[] company_logo_image, long response_date, String response_desc) {
         this.responsed_cost = responsed_cost;
         this.company_id = company_id;
         this.company_name = company_name;
         this.company_desc = company_desc;
         this.company_logo_image = company_logo_image;
         this.response_date = response_date;
+        this.response_desc = response_desc;
     }
 
     public CollectiveTenderCompaniesRequestForCompanyModel() {
@@ -92,5 +96,13 @@ public class CollectiveTenderCompaniesRequestForCompanyModel {
 
     public void setResponse_date(long response_date) {
         this.response_date = response_date;
+    }
+
+    public String getResponse_desc() {
+        return response_desc;
+    }
+
+    public void setResponse_desc(String response_desc) {
+        this.response_desc = response_desc;
     }
 }

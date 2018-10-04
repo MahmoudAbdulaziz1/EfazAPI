@@ -136,6 +136,7 @@ public class TakatafTenderNewRepo {
     public List<TakatafMyTenderPageDTO> getAdminTenders() {
         String sql = "SELECT\n" +
                 "\ttender_id,\n" +
+                "tender_logo, " +
                 "\ttender_title,\n" +
                 "\ttender_explain,\n" +
                 "\ttender_display_date,\n" +
@@ -163,20 +164,18 @@ public class TakatafTenderNewRepo {
                 "\ttender_company_display_date,\n" +
                 "\ttender_company_expired_date;";
         return jdbcTemplate.query(sql,
-                (resultSet, i) -> new com.taj.model.TakatafMyTenderPageDTO(resultSet.getInt(1),
-                        resultSet.getString(2), resultSet.getString(3),
-                        resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(), resultSet.getTimestamp(6).getTime()
-                        , resultSet.getTimestamp(7).getTime(),
-                        resultSet.getInt(8), resultSet.getInt(9)));
+                (resultSet, i) -> new com.taj.model.TakatafMyTenderPageDTO(resultSet.getInt(1), resultSet.getBytes(2),
+                        resultSet.getString(3), resultSet.getString(4),
+                        resultSet.getTimestamp(5).getTime(), resultSet.getTimestamp(6).getTime(), resultSet.getTimestamp(7).getTime()
+                        , resultSet.getTimestamp(8).getTime(),
+                        resultSet.getInt(9), resultSet.getInt(10)));
     }
-
-
-
 
 
     public List<TakatafMyTenderPageDTO> getAdminTendersHistory() {
         String sql = "SELECT\n" +
                 "\ttender_id,\n" +
+                "tender_logo,"+
                 "\ttender_title,\n" +
                 "\ttender_explain,\n" +
                 "\ttender_display_date,\n" +
@@ -203,19 +202,12 @@ public class TakatafTenderNewRepo {
                 "\ttender_company_display_date,\n" +
                 "\ttender_company_expired_date;";
         return jdbcTemplate.query(sql,
-                (resultSet, i) -> new com.taj.model.TakatafMyTenderPageDTO(resultSet.getInt(1),
-                        resultSet.getString(2), resultSet.getString(3),
-                        resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(), resultSet.getTimestamp(6).getTime()
-                        , resultSet.getTimestamp(7).getTime(),
-                        resultSet.getInt(8), resultSet.getInt(9)));
+                (resultSet, i) -> new com.taj.model.TakatafMyTenderPageDTO(resultSet.getInt(1), resultSet.getBytes(2),
+                        resultSet.getString(3), resultSet.getString(4),
+                        resultSet.getTimestamp(5).getTime(), resultSet.getTimestamp(6).getTime(), resultSet.getTimestamp(7).getTime()
+                        , resultSet.getTimestamp(8).getTime(),
+                        resultSet.getInt(9), resultSet.getInt(10)));
     }
-
-
-
-
-
-
-
 
 
     public int updateTender(int tender_id, byte[] tender_logo,

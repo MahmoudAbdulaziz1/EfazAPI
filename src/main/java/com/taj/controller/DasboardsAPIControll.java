@@ -221,6 +221,7 @@ public class DasboardsAPIControll {
             ObjectNode nodes = mapper.createObjectNode();
             nodes.put("tender_id", model.get(i).getTender_id());
             nodes.put("tender_title", model.get(i).getTender_title());
+            nodes.put("tender_logo", model.get(i).getTender_logo());
             nodes.put("tender_explain", model.get(i).getTender_explain());
             if (model.get(i).getTender_company_display_date() == 0) {
                 String nullvalue = null;
@@ -256,6 +257,7 @@ public class DasboardsAPIControll {
             ObjectNode nodes = mapper.createObjectNode();
             nodes.put("tender_id", model.get(i).getTender_id());
             nodes.put("tender_title", model.get(i).getTender_title());
+            nodes.put("tender_logo", model.get(i).getTender_logo());
             nodes.put("tender_explain", model.get(i).getTender_explain());
             if (model.get(i).getTender_company_display_date() == 0) {
                 String nullvalue = null;
@@ -1160,7 +1162,6 @@ public class DasboardsAPIControll {
         } else {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("value", "not success");
-
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
         }
 

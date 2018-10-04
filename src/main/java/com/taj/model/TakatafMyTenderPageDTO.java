@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
  */
 public class TakatafMyTenderPageDTO {
     private int tender_id;
+    private byte[] tender_logo;
     @NotNull
     @NotBlank
     @NotEmpty
@@ -32,7 +33,7 @@ public class TakatafMyTenderPageDTO {
     private int response_count;
     private int cat_num;
 
-    public TakatafMyTenderPageDTO(int tender_id,
+    public TakatafMyTenderPageDTO(int tender_id,byte[] tender_logo,
                                   @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String tender_title,
                                   @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String tender_explain,
                                   @NotNull long tender_display_date, @NotNull long tender_expire_date, long tender_company_display_date, long tender_company_expired_date,
@@ -46,14 +47,15 @@ public class TakatafMyTenderPageDTO {
         this.cat_num = cat_num;
         this.tender_company_display_date = tender_company_display_date;
         this.tender_company_expired_date = tender_company_expired_date;
+        this.tender_logo = tender_logo;
     }
 
-    public TakatafMyTenderPageDTO(
+    public TakatafMyTenderPageDTO(byte[] tender_logo,
             @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String tender_title,
             @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String tender_explain,
             @NotNull long tender_display_date, @NotNull long tender_expire_date, long tender_company_display_date, long tender_company_expired_date,
             int response_count, int cat_num) {
-
+        this.tender_id = tender_id;
         this.tender_title = tender_title;
         this.tender_explain = tender_explain;
         this.tender_display_date = tender_display_date;
@@ -138,5 +140,13 @@ public class TakatafMyTenderPageDTO {
 
     public void setTender_company_expired_date(long tender_company_expired_date) {
         this.tender_company_expired_date = tender_company_expired_date;
+    }
+
+    public byte[] getTender_logo() {
+        return tender_logo;
+    }
+
+    public void setTender_logo(byte[] tender_logo) {
+        this.tender_logo = tender_logo;
     }
 }

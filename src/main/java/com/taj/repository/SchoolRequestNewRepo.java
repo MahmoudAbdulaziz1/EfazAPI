@@ -135,8 +135,6 @@ public class SchoolRequestNewRepo {
     }
 
 
-
-
     public SchoolRequestWithImageByIdDto getRequestByIDWithImage(int id) {
 
 
@@ -175,22 +173,12 @@ public class SchoolRequestNewRepo {
                 "\timage_one;";
 
 
-
         return jdbcTemplate.queryForObject(sql,
                 new Object[]{id}, (resultSet, i) -> new SchoolRequestWithImageByIdDto(resultSet.getInt(1),
                         resultSet.getString(2), resultSet.getString(3), resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime()
                         , resultSet.getInt(6), resultSet.getString(7), resultSet.getBytes(8), resultSet.getString(9),
                         resultSet.getInt(10), resultSet.getInt(11), resultSet.getBytes(12)));
     }
-
-
-
-
-
-
-
-
-
 
 
     public List<SchoolRequestNewDto2> getRequestsBySchoolID(int id) {
@@ -241,7 +229,6 @@ public class SchoolRequestNewRepo {
 
     public List<getSchoolCustomNewRequestById> getRequestOfSchoolByID(int id) {
 
-
         String sql = "SELECT\n" +
                 "\trequest_id,\n" +
                 "\trequest_title,\n" +
@@ -288,28 +275,6 @@ public class SchoolRequestNewRepo {
                 "\tis_aproved,\n" +
                 "\timage_one,\n" +
                 "\tresponse_desc;";
-        String sql1 = "SELECT  " +
-                "                request_id, request_title, request_explaination, request_display_date, " +
-                " request_expired_date, school_id, " +
-                "                request_category_name,  " +
-                "                count( responsed_request_id) AS response_count, company_name, company_logo_image, category_name " +
-                "                 ,responsed_cost, response_date  " +
-                "                 FROM efaz_school_tender AS tender  " +
-                "                 LEFT JOIN efaz_company.efaz_company_response_school_request AS req " +
-                "                ON tender.request_id = req.responsed_request_id " +
-                "                Left JOIN efaz_company.efaz_company_profile as cp ON req.responsed_company_id = cp.company_id " +
-                "                Left JOIN " +
-                "                efaz_company.efaz_school_request_category AS cat " +
-                "                 ON " +
-                "                 tender.requests_category_id = cat.request_category_id " +
-                "                  Left JOIN " +
-                "                efaz_company.efaz_company_category AS cc " +
-                "                 ON " +
-                "                 cp.company_category_id = cc.category_id " +
-                "                WHERE  request_id=?" +
-                "                  GROUP BY request_id, request_title, request_explaination, request_display_date,request_expired_date, school_id," +
-                "                 request_category_name,company_name, company_logo_image, category_name,responsed_cost, response_date;";
-
 
         return jdbcTemplate.query(sql,
                 new Object[]{id}, (resultSet, i) -> new getSchoolCustomNewRequestById(resultSet.getInt(1),

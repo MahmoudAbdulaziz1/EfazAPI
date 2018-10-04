@@ -13,18 +13,18 @@ public class SchoolProfileModel {
     @NotNull
     @NotBlank
     @NotEmpty
-    @Size(max = 450, min = 1, message="name should have at least 1 characters")
+    @Size(max = 450, min = 1, message = "name should have at least 1 characters")
     private String school_name;
     @NotNull
     private byte[] school_logo_image;
     @NotNull
     @NotBlank
     @NotEmpty
-    @Size(max = 450, min = 1, message="address should have at least 1 characters")
+    @Size(max = 450, min = 1, message = "address should have at least 1 characters")
     private String school_address;
 
     private String school_service_desc;
-//    @NotNull
+    //    @NotNull
 //    @NotBlank
 //    @NotEmpty
 //    @Size(max = 450, min = 1, message="company_name should have at least 1 characters")
@@ -37,7 +37,7 @@ public class SchoolProfileModel {
 
     public SchoolProfileModel(int school_id, String school_name, byte[] school_logo_image, String school_address,
                               String school_service_desc, String school_link_youtube, String school_website_url, float school_lng,
-                              float school_lat,byte[] school_cover_image, String school_phone_number) {
+                              float school_lat, byte[] school_cover_image, String school_phone_number) {
         this.school_id = school_id;
         this.school_name = school_name;
         this.school_logo_image = school_logo_image;
@@ -51,9 +51,9 @@ public class SchoolProfileModel {
         this.school_phone_number = school_phone_number;
     }
 
-    public SchoolProfileModel( String school_name, byte[] school_logo_image, String school_address,
+    public SchoolProfileModel(String school_name, byte[] school_logo_image, String school_address,
                               String school_service_desc, String school_link_youtube, String school_website_url, float school_lng,
-                               float school_lat,byte[] school_cover_image, String school_phone_number) {
+                              float school_lat, byte[] school_cover_image, String school_phone_number) {
         this.school_name = school_name;
         this.school_logo_image = school_logo_image;
         this.school_address = school_address;
