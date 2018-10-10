@@ -5,20 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.*;
+import com.taj.model.company_offer_response_count.CustomeCompanyOfferModel2DToModel;
+import com.taj.model.company_offer_response_count.getCustomeCompanyOffer2Model;
 import com.taj.model.new_company_history.CompanyHistoryDto;
 import com.taj.model.new_company_history.CompanyHistoryDto2;
 import com.taj.model.new_school_history.SchoolRequestHistoryDtoDTO;
 import com.taj.model.new_school_history.SchoolRequestHistoryDtoDTO2;
 import com.taj.model.new_school_profile_map.NewCustomSchoolProfileModelDTO;
 import com.taj.model.new_school_profile_map.NewSchoolProfileModelDTO;
+import com.taj.model.new_school_request.*;
 import com.taj.model.offer_description.CustomCompanyModelWithViewAndDescRes;
-import com.taj.model.offer_description.CustomeCompanyOfferModel2DTo;
-import com.taj.model.offer_description.getCustomeCompanyOffer2;
 import com.taj.model.offer_description.getCustomeOffer2;
-import com.taj.model.school.request.image.GetCollectiveTenderPartOneDTO2;
-import com.taj.model.school.request.image.GetCollectiveTenders2;
 import com.taj.model.school.request.image.SchoolNewRequestsDTO2;
-import com.taj.model.school.request.image.getSchoolCustomNewRequestById;
 import com.taj.model.school_history_admin_dashboard.SchoolOrdersHistoryModel;
 import com.taj.model.school_history_admin_dashboard.SchoolOrdersModel;
 import com.taj.model.school_history_admin_dashboard.SingleSchoolOrdersModel;
@@ -1171,13 +1169,13 @@ public class DasboardsAPIControll {
     @PreAuthorize("hasAuthority('school')")
     @GetMapping("/school/tenders/school/{id}")
     //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
-    public List<SchoolRequestNewDto2> getSchoolRequestsBySchool(@PathVariable int id) {
+    public List<SchoolRequestNewDto2Model> getSchoolRequestsBySchool(@PathVariable int id) {
         return schoolRequestNewRepo.getRequestsBySchoolID(id);
     }
 
     @PreAuthorize("hasAuthority('school')")
     @GetMapping("/school/tenders/")
-    public List<SchoolRequestNewDto> getSchoolSingleRequest() {
+    public List<SchoolRequestNewDtoModel> getSchoolSingleRequest() {
         return schoolRequestNewRepo.getRequestsAll();
     }
 
@@ -1192,7 +1190,8 @@ public class DasboardsAPIControll {
             return objectNode;
         }
         int res = schoolRequestNewRepo.updateRequest(model.getRequest_id(), model.getRequest_title(), model.getRequest_explaination(),
-                model.getRequest_display_date(), model.getRequest_expired_date(), model.getSchool_id(), model.getRequest_category_id());
+                model.getRequest_display_date(), model.getRequest_expired_date(), model.getSchool_id(), model.getRequest_category_id(),
+                model.getRequest_count());
 
         if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -1201,6 +1200,7 @@ public class DasboardsAPIControll {
             objectNode.put("request_explaination", model.getRequest_explaination());
             objectNode.put("request_display_date", model.getRequest_display_date());
             objectNode.put("request_expired_date", model.getRequest_expired_date());
+            objectNode.put("request_count", model.getRequest_count());
             objectNode.put("school_id", model.getSchool_id());
             objectNode.put("request_category_id", model.getRequest_category_id());
 
@@ -1269,16 +1269,16 @@ public class DasboardsAPIControll {
 
     @PreAuthorize("hasAuthority('school')")
     @GetMapping("/school/tenders/request/school/{id}")
-    public GetCollectiveTenders2 getRequestOfSchoolByID(@PathVariable int id) {
-        List<getSchoolCustomNewRequestById> obj = schoolRequestNewRepo.getRequestOfSchoolByID(id);
-        GetCollectiveTenderPartOneDTO2 tender = new GetCollectiveTenderPartOneDTO2(obj.get(0).getRequest_id(), obj.get(0).getRequest_title(),
-                obj.get(0).getRequest_explaination(), obj.get(0).getRequest_display_date(), obj.get(0).getRequest_expired_date(),
+    public GetCollectiveTenders2Model getRequestOfSchoolByID(@PathVariable int id) {
+        List<getSchoolCustomNewRequestByIdModel> obj = schoolRequestNewRepo.getRequestOfSchoolByID(id);
+        GetCollectiveTenderPartOneDTO2Model tender = new GetCollectiveTenderPartOneDTO2Model(obj.get(0).getRequest_id(), obj.get(0).getRequest_title(),
+                obj.get(0).getRequest_explaination(), obj.get(0).getRequest_display_date(), obj.get(0).getRequest_expired_date(), obj.get(0).getRequest_count(),
                 obj.get(0).getSchool_id(), obj.get(0).getResponse_count(), obj.get(0).getImage_one());
 
 
         List<GetCollectiveTenderPartYTwoDTO> companies = new ArrayList<>();
         if (obj.get(0).getResponse_count() > 0) {
-            for (getSchoolCustomNewRequestById one : obj) {
+            for (getSchoolCustomNewRequestByIdModel one : obj) {
                 //if( one.getRequest_category_name().equals(null) )
                 GetCollectiveTenderPartYTwoDTO part2 = new GetCollectiveTenderPartYTwoDTO(one.getRequest_category_name() + "", one.getCompany_name() + "",
                         one.getCompany_logo_image(), one.getCategory_name() + "", one.getResponsed_cost(), one.getResponse_date(),
@@ -1288,10 +1288,10 @@ public class DasboardsAPIControll {
         }
 
         if (obj.get(0).getResponse_count() == 0) {
-            GetCollectiveTenders2 tenders = new GetCollectiveTenders2(tender, null);
+            GetCollectiveTenders2Model tenders = new GetCollectiveTenders2Model(tender, null);
             return tenders;
         } else {
-            GetCollectiveTenders2 tenders = new GetCollectiveTenders2(tender, companies);
+            GetCollectiveTenders2Model tenders = new GetCollectiveTenders2Model(tender, companies);
             return tenders;
         }
 
@@ -1524,12 +1524,12 @@ public class DasboardsAPIControll {
     ///getCompanyOffersWithDesc
     @PreAuthorize("hasAuthority('company')")
     @GetMapping("/company/offer/{id}/company")
-    public ResponseEntity<getCustomeCompanyOffer2> getSingleCompanyOfferWithDesc(@PathVariable int id) {
-        List<CustomeCompanyOfferModel2DTo> offers = customCompanyOfferRepo.getCompanyOffersWithDesc(id);
+    public ResponseEntity<getCustomeCompanyOffer2Model> getSingleCompanyOfferWithDesc(@PathVariable int id) {
+        List<CustomeCompanyOfferModel2DToModel> offers = customCompanyOfferRepo.getCompanyOffersWithDesc(id);
         if (offers != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(new getCustomeCompanyOffer2("200", offers));
+            return ResponseEntity.status(HttpStatus.OK).body(new getCustomeCompanyOffer2Model("200", offers));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new getCustomeCompanyOffer2("400", offers));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new getCustomeCompanyOffer2Model("400", offers));
         }
 
     }

@@ -3,11 +3,12 @@ package com.taj.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.taj.model.*;
-import com.taj.model.school.request.image.GetCollectiveTenderPartOneDTO2;
-import com.taj.model.school.request.image.GetCollectiveTenders2;
+import com.taj.model.GetCollectiveTenderPartYTwoDTO;
+import com.taj.model.RequstResponsePOJO;
+import com.taj.model.SchoolRequestNewDto;
+import com.taj.model.SchoolRequestsDTO;
+import com.taj.model.new_school_request.*;
 import com.taj.model.school.request.image.SchoolNewRequestsDTO2;
-import com.taj.model.school.request.image.getSchoolCustomNewRequestById;
 import com.taj.model.school_request_image_web.SchoolRequestWithImageByIdDto;
 import com.taj.repository.AddSchoolRequestImagesRepo;
 import com.taj.repository.SchoolRequestNewRepo;
@@ -96,28 +97,28 @@ public class SchoolRequestNewController {
     }
 
     @GetMapping("/")
-    public List<SchoolRequestNewDto> getSchoolSingleRequest() {
+    public List<SchoolRequestNewDtoModel> getSchoolSingleRequest() {
         return repo.getRequestsAll();
     }
 
 
     @GetMapping("/school/{id}")
     //@PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
-    public List<SchoolRequestNewDto2> getSchoolRequestsBySchool(@PathVariable int id) {
+    public List<SchoolRequestNewDto2Model> getSchoolRequestsBySchool(@PathVariable int id) {
         return repo.getRequestsBySchoolID(id);
     }
 
     @GetMapping("/request/school/{id}")
-    public GetCollectiveTenders2 getRequestOfSchoolByID(@PathVariable int id) {
-        List<getSchoolCustomNewRequestById> obj = repo.getRequestOfSchoolByID(id);
-        GetCollectiveTenderPartOneDTO2 tender = new GetCollectiveTenderPartOneDTO2(obj.get(0).getRequest_id(), obj.get(0).getRequest_title(),
-                obj.get(0).getRequest_explaination(), obj.get(0).getRequest_display_date(), obj.get(0).getRequest_expired_date(),
+    public GetCollectiveTenders2Model getRequestOfSchoolByID(@PathVariable int id) {
+        List<getSchoolCustomNewRequestByIdModel> obj = repo.getRequestOfSchoolByID(id);
+        GetCollectiveTenderPartOneDTO2Model tender = new GetCollectiveTenderPartOneDTO2Model(obj.get(0).getRequest_id(), obj.get(0).getRequest_title(),
+                obj.get(0).getRequest_explaination(), obj.get(0).getRequest_display_date(), obj.get(0).getRequest_expired_date(), obj.get(0).getRequest_count(),
                 obj.get(0).getSchool_id(), obj.get(0).getResponse_count(), obj.get(0).getImage_one());
 
 
         List<GetCollectiveTenderPartYTwoDTO> companies = new ArrayList<>();
         if (obj.get(0).getResponse_count() > 0) {
-            for (getSchoolCustomNewRequestById one : obj) {
+            for (getSchoolCustomNewRequestByIdModel one : obj) {
                 //if( one.getRequest_category_name().equals(null) )
                 GetCollectiveTenderPartYTwoDTO part2 = new GetCollectiveTenderPartYTwoDTO(one.getRequest_category_name() + "", one.getCompany_name() + "",
                         one.getCompany_logo_image(), one.getCategory_name() + "", one.getResponsed_cost(), one.getResponse_date(),
@@ -127,10 +128,10 @@ public class SchoolRequestNewController {
         }
 
         if (obj.get(0).getResponse_count() == 0) {
-            GetCollectiveTenders2 tenders = new GetCollectiveTenders2(tender, null);
+            GetCollectiveTenders2Model tenders = new GetCollectiveTenders2Model(tender, null);
             return tenders;
         } else {
-            GetCollectiveTenders2 tenders = new GetCollectiveTenders2(tender, companies);
+            GetCollectiveTenders2Model tenders = new GetCollectiveTenders2Model(tender, companies);
             return tenders;
         }
 
@@ -153,7 +154,8 @@ public class SchoolRequestNewController {
             return objectNode;
         }
         int res = repo.updateRequest(model.getRequest_id(), model.getRequest_title(), model.getRequest_explaination(),
-                model.getRequest_display_date(), model.getRequest_expired_date(), model.getSchool_id(), model.getRequest_category_id());
+                model.getRequest_display_date(), model.getRequest_expired_date(), model.getSchool_id(), model.getRequest_category_id(),
+                model.getRequest_count());
 
         if (res == 1) {
             ObjectNode objectNode = mapper.createObjectNode();
@@ -162,6 +164,7 @@ public class SchoolRequestNewController {
             objectNode.put("request_explaination", model.getRequest_explaination());
             objectNode.put("request_display_date", model.getRequest_display_date());
             objectNode.put("request_expired_date", model.getRequest_expired_date());
+            objectNode.put("request_count", model.getRequest_count());
             objectNode.put("school_id", model.getSchool_id());
             objectNode.put("request_category_id", model.getRequest_category_id());
 

@@ -196,6 +196,7 @@ public class AdminLoginRepo {
                         resultSet.getTimestamp(7).getTime(), resultSet.getString(8), resultSet.getString(9), resultSet.getFloat(10), resultSet.getFloat(11),
                         resultSet.getString(12)));
     }
+
     public List<AdminLogin> getAdminByArea(String area) {
         String sql = "SELECT * FROM admin_login WHERE area LIKE ?;";
         return jdbcTemplate.query(sql, new Object[]{"%" + area + "%"},
@@ -204,4 +205,37 @@ public class AdminLoginRepo {
                         resultSet.getTimestamp(7).getTime(), resultSet.getString(8), resultSet.getString(9), resultSet.getFloat(10), resultSet.getFloat(11),
                         resultSet.getString(12)));
     }
+
+    public int deleteAccount(int id) {
+        if (isExist(id,"admin")) {
+            String sql = "DELETE FROM admin_login Where id=? AND role='admin'";
+            return jdbcTemplate.update(sql, id);
+        } else {
+            return -1000;
+        }
+    }
+
+    public boolean isExist(int id,  String role) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM admin_login WHERE id=? AND role=?;",
+                Integer.class, id, role);
+        return cnt != null && cnt > 0;
+    }
+
+    public boolean isExistById(int id) {
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM admin_login WHERE id=?;",
+                Integer.class, id);
+        return cnt != null && cnt > 0;
+    }
+
+    public int changePassword(int id, String password){
+        if (isExistById(id)){
+            String encodedPassword = bCryptPasswordEncoder.encode(password);
+            String sql = "UPDATE admin_login SET password=? WHERE id=?;";
+            return jdbcTemplate.update(sql, encodedPassword, id);
+        }
+        return -1000;
+    }
+
 }

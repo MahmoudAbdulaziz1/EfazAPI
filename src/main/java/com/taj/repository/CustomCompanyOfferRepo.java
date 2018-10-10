@@ -1,6 +1,8 @@
 package com.taj.repository;
 
 import com.taj.model.*;
+import com.taj.model.company_offer_response_count.CompanyOfferModelDtoModel;
+import com.taj.model.company_offer_response_count.CustomeCompanyOfferModel2DToModel;
 import com.taj.model.new_company_history.CompanyHistoryDto;
 import com.taj.model.new_company_history.CompanyHistoryDto2;
 import com.taj.model.offer_description.CompanyOfferModelDto;
@@ -233,7 +235,7 @@ public class CustomCompanyOfferRepo {
     }
 
 
-    public List<CustomeCompanyOfferModel2DTo> getCompanyOffersWithDesc(int id) {
+    public List<CustomeCompanyOfferModel2DToModel> getCompanyOffersWithDesc(int id) {
 
         String sql = "SELECT\n" +
                 "\toffer_id,\n" +
@@ -249,19 +251,20 @@ public class CustomCompanyOfferRepo {
                 "\tcity,\n" +
                 "\tarea,\n" +
                 "\tlng,\n" +
-                "\tlat \n" +
+                "\tlat, " +
+                " (SELECT COUNT(*) FROM  efaz_company.efaz_school_request_offer WHERE requsted_offer_id = offer_id)AS request_count " +
                 "FROM\n" +
                 "\tefaz_company_offer AS offer\n" +
                 "\tLEFT JOIN efaz_company.efaz_company_offer_place AS d ON offer.offer_id = d.id \n" +
                 "WHERE\n" +
                 "\toffer_company_id = ?;";
 
-        List<CompanyOfferModelDto> list = jdbcTemplate.query(sql, new Object[]{id},
-                (resultSet, i) -> new CompanyOfferModelDto(resultSet.getInt(1), resultSet.getInt(2), resultSet.getString(3)
+        List<CompanyOfferModelDtoModel> list = jdbcTemplate.query(sql, new Object[]{id},
+                (resultSet, i) -> new CompanyOfferModelDtoModel(resultSet.getInt(1), resultSet.getInt(2), resultSet.getString(3)
                         , resultSet.getString(4), resultSet.getDouble(5), resultSet.getTimestamp(6), resultSet.getTimestamp(7),
                         resultSet.getTimestamp(8), resultSet.getInt(9), resultSet.getInt(10), resultSet.getString(11), resultSet.getString(12),
-                        resultSet.getFloat(13), resultSet.getFloat(14)));
-        List<CustomeCompanyOfferModel2DTo> list2 = new ArrayList<>();
+                        resultSet.getFloat(13), resultSet.getFloat(14), resultSet.getInt(15)));
+        List<CustomeCompanyOfferModel2DToModel> list2 = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
 
             int offer_id = list.get(i).getOffer_id();
@@ -281,8 +284,9 @@ public class CustomCompanyOfferRepo {
             String area = list.get(i).getArea();
             float lng = list.get(i).getLng();
             float lat = list.get(i).getLat();
-            CustomeCompanyOfferModel2DTo test = new CustomeCompanyOfferModel2DTo(offer_id, image_one, image_two, image_three, image_four, offer_title, offer_explain,
-                    offer_cost, display, expired, deliver, company_id, count, city, area, lng, lat);
+            int request_count = list.get(i).getRequest_count();
+            CustomeCompanyOfferModel2DToModel test = new CustomeCompanyOfferModel2DToModel(offer_id, image_one, image_two, image_three, image_four, offer_title, offer_explain,
+                    offer_cost, display, expired, deliver, company_id, count, city, area, lng, lat, request_count);
             list2.add(i, test);
         }
 

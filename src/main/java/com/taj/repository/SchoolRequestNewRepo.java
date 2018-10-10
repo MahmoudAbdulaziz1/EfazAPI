@@ -1,7 +1,12 @@
 package com.taj.repository;
 
-import com.taj.model.*;
-import com.taj.model.school.request.image.getSchoolCustomNewRequestById;
+import com.taj.model.SchoolRequestNewDto;
+import com.taj.model.SchoolRequestNewDtoById;
+import com.taj.model.SchoolRequestNewDtoWitCompany;
+import com.taj.model.SchoolRequestsDTO;
+import com.taj.model.new_school_request.SchoolRequestNewDto2Model;
+import com.taj.model.new_school_request.SchoolRequestNewDtoModel;
+import com.taj.model.new_school_request.getSchoolCustomNewRequestByIdModel;
 import com.taj.model.school_request_image_web.SchoolRequestWithImageByIdDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -74,11 +79,13 @@ public class SchoolRequestNewRepo {
     }
 
 
-    public List<SchoolRequestNewDto> getRequestsAll() {
+    public List<SchoolRequestNewDtoModel> getRequestsAll() {
 
         String sql = "SELECT " +
                 "request_id, request_title, request_explaination, request_display_date, " +
-                "    request_expired_date, school_id," +
+                "    request_expired_date," +
+                " IFNULL(request_count,0) AS request_count" +
+                ", school_id," +
                 "    request_category_name, " +
                 "    count(distinct responsed_request_id) AS response_count" +
                 " FROM efaz_school_tender AS tender INNER JOIN" +
@@ -90,9 +97,9 @@ public class SchoolRequestNewRepo {
                 "                         GROUP BY request_id;";
 
         return jdbcTemplate.query(sql,
-                (resultSet, i) -> new SchoolRequestNewDto(resultSet.getInt(1),
+                (resultSet, i) -> new SchoolRequestNewDtoModel(resultSet.getInt(1),
                         resultSet.getString(2), resultSet.getString(3), resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime()
-                        , resultSet.getInt(6), resultSet.getString(7), resultSet.getInt(8)));
+                        , resultSet.getInt(6), resultSet.getInt(7), resultSet.getString(8), resultSet.getInt(9)));
     }
 
 
@@ -181,7 +188,7 @@ public class SchoolRequestNewRepo {
     }
 
 
-    public List<SchoolRequestNewDto2> getRequestsBySchoolID(int id) {
+    public List<SchoolRequestNewDto2Model> getRequestsBySchoolID(int id) {
 
 
         String sql = "SELECT\n" +
@@ -189,7 +196,8 @@ public class SchoolRequestNewRepo {
                 "\trequest_title,\n" +
                 "\trequest_explaination,\n" +
                 "\trequest_display_date,\n" +
-                "\trequest_expired_date,\n" +
+                "\trequest_expired_date," +
+                " IFNULL(request_count,0) AS request_count, " +
                 "\tschool_id,\n" +
                 "\trequest_category_name,\n" +
                 "\tcount( responsed_request_id ) AS response_count,\n" +
@@ -205,13 +213,13 @@ public class SchoolRequestNewRepo {
                 "\tLEFT JOIN efaz_company.efaz_company_response_school_request AS req ON tender.request_id = req.responsed_request_id\n" +
                 "\tLEFT JOIN efaz_company.efaz_company_profile AS p ON req.responsed_company_id = p.company_id \n" +
                 "WHERE\n" +
-                "\ttender.school_id = ? \n" +
+                "\ttender.school_id = ?  \n" +
                 "GROUP BY\n" +
                 "\trequest_id,\n" +
                 "\trequest_title,\n" +
                 "\trequest_explaination,\n" +
                 "\trequest_display_date,\n" +
-                "\trequest_expired_date,\n" +
+                "\trequest_expired_date, request_count, \n" +
                 "\tschool_id,\n" +
                 "\trequest_category_name,\n" +
                 "\tcompany_name,\n" +
@@ -222,19 +230,20 @@ public class SchoolRequestNewRepo {
 
 
         return jdbcTemplate.query(sql,
-                new Object[]{id}, (resultSet, i) -> new SchoolRequestNewDto2(resultSet.getInt(1),
-                        resultSet.getString(2), resultSet.getString(3), resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime()
-                        , resultSet.getInt(6), resultSet.getString(7), resultSet.getInt(8), resultSet.getInt(14)));
+                new Object[]{id}, (resultSet, i) -> new SchoolRequestNewDto2Model(resultSet.getInt(1),
+                        resultSet.getString(2), resultSet.getString(3), resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(),
+                        resultSet.getInt(6), resultSet.getInt(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getInt(15)));
     }
 
-    public List<getSchoolCustomNewRequestById> getRequestOfSchoolByID(int id) {
+    public List<getSchoolCustomNewRequestByIdModel> getRequestOfSchoolByID(int id) {
 
         String sql = "SELECT\n" +
                 "\trequest_id,\n" +
                 "\trequest_title,\n" +
                 "\trequest_explaination,\n" +
                 "\trequest_display_date,\n" +
-                "\trequest_expired_date,\n" +
+                "\trequest_expired_date," +
+                " IFNULL(request_count, 0)AS request_count," +
                 "\tschool_id,\n" +
                 "\trequest_category_name,\n" +
                 "\tcount( responsed_request_id ) AS response_count,\n" +
@@ -277,11 +286,11 @@ public class SchoolRequestNewRepo {
                 "\tresponse_desc;";
 
         return jdbcTemplate.query(sql,
-                new Object[]{id}, (resultSet, i) -> new getSchoolCustomNewRequestById(resultSet.getInt(1),
+                new Object[]{id}, (resultSet, i) -> new getSchoolCustomNewRequestByIdModel(resultSet.getInt(1),
                         resultSet.getString(2), resultSet.getString(3), resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime()
-                        , resultSet.getInt(6), resultSet.getString(7), resultSet.getInt(8), resultSet.getString(9), resultSet.getBytes(10),
-                        resultSet.getString(11), resultSet.getDouble(12), resultSet.getTimestamp(13).getTime(), resultSet.getInt(14),
-                        resultSet.getInt(15), resultSet.getInt(16), resultSet.getBytes(17), resultSet.getString(18)));
+                        , resultSet.getInt(6), resultSet.getInt(7), resultSet.getString(8), resultSet.getInt(9), resultSet.getString(10),
+                        resultSet.getBytes(11), resultSet.getString(12), resultSet.getDouble(13), resultSet.getTimestamp(14).getTime(),
+                        resultSet.getInt(15), resultSet.getInt(16), resultSet.getInt(17), resultSet.getBytes(18), resultSet.getString(19)));
     }
 
 
@@ -326,7 +335,7 @@ public class SchoolRequestNewRepo {
 
     public int updateRequest(int request_id, String request_title, String request_explaination,
                              long request_display_date, long request_expired_date, int school_id,
-                             String request_category_id) {
+                             String request_category_id, int request_count) {
 
         int category = jdbcTemplate.queryForObject("SELECT request_category_id  FROM efaz_company.efaz_school_request_category WHERE  request_category_name LIKE ?;",
                 Integer.class, "%" + request_category_id + "%");
@@ -337,7 +346,7 @@ public class SchoolRequestNewRepo {
                         " receive_palce_id=?, extended_payment=?, request_count=? " +
                         " where request_id=?;", null, null, request_title, request_explaination, new Timestamp(request_display_date)
                 , new Timestamp(request_expired_date), null, null, null, null, school_id, category,
-                null, null, null, request_id);
+                null, null, request_count, request_id);
 
     }
 

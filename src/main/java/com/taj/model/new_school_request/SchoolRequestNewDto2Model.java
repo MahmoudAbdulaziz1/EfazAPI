@@ -1,11 +1,14 @@
-package com.taj.model;
+package com.taj.model.new_school_request;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
- * Created by User on 8/15/2018.
+ * Created by User on 10/1/2018.
  */
-public class SchoolRequestsDTO {
+public class SchoolRequestNewDto2Model {
 
 
     private int request_id;
@@ -23,41 +26,29 @@ public class SchoolRequestsDTO {
     private long request_display_date;
     @NotNull
     private long request_expired_date;
+    private int request_count;
     private int school_id;
     @NotNull
     private String request_category_name;
     @NotNull
-    private int request_count;
+    private int response_count;
+    private int is_aproved;
 
-
-    public SchoolRequestsDTO() {
-    }
-
-    public SchoolRequestsDTO(int request_id,
-                             @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String request_title,
-                             @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String request_explaination,
-                             @NotNull long request_display_date, @NotNull long request_expired_date, int school_id, @NotNull String request_category_name, int request_count) {
+    public SchoolRequestNewDto2Model(int request_id, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String request_title, @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String request_explaination, @NotNull long request_display_date,
+                                     @NotNull long request_expired_date, int request_count, int school_id, @NotNull String request_category_name, @NotNull int response_count, int is_aproved) {
         this.request_id = request_id;
         this.request_title = request_title;
         this.request_explaination = request_explaination;
         this.request_display_date = request_display_date;
         this.request_expired_date = request_expired_date;
+        this.request_count = request_count;
         this.school_id = school_id;
         this.request_category_name = request_category_name;
-        this.request_count = request_count;
+        this.response_count = response_count;
+        this.is_aproved = is_aproved;
     }
 
-    public SchoolRequestsDTO(@NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "title should have at least 1 characters") String request_title,
-                             @NotNull @NotBlank @NotEmpty @Size(max = 450, min = 1, message = "explain should have at least 1 characters") String request_explaination,
-                             @NotNull long request_display_date, @NotNull long request_expired_date,
-                             int school_id, @NotNull @Min(1) String request_category_name, int request_count) {
-        this.request_title = request_title;
-        this.request_explaination = request_explaination;
-        this.request_display_date = request_display_date;
-        this.request_expired_date = request_expired_date;
-        this.school_id = school_id;
-        this.request_category_name = request_category_name;
-        this.request_count = request_count;
+    public SchoolRequestNewDto2Model() {
     }
 
     public int getRequest_id() {
@@ -100,20 +91,20 @@ public class SchoolRequestsDTO {
         this.request_expired_date = request_expired_date;
     }
 
+    public int getRequest_count() {
+        return request_count;
+    }
+
+    public void setRequest_count(int request_count) {
+        this.request_count = request_count;
+    }
+
     public int getSchool_id() {
         return school_id;
     }
 
     public void setSchool_id(int school_id) {
         this.school_id = school_id;
-    }
-
-    public String getRequest_category_id() {
-        return request_category_name;
-    }
-
-    public void setRequest_category_id(String request_category_name) {
-        this.request_category_name = request_category_name;
     }
 
     public String getRequest_category_name() {
@@ -124,11 +115,19 @@ public class SchoolRequestsDTO {
         this.request_category_name = request_category_name;
     }
 
-    public int getRequest_count() {
-        return request_count;
+    public int getResponse_count() {
+        return response_count;
     }
 
-    public void setRequest_count(int request_count) {
-        this.request_count = request_count;
+    public void setResponse_count(int response_count) {
+        this.response_count = response_count;
+    }
+
+    public int getIs_aproved() {
+        return is_aproved;
+    }
+
+    public void setIs_aproved(int is_aproved) {
+        this.is_aproved = is_aproved;
     }
 }

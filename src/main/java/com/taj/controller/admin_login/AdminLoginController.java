@@ -3,6 +3,7 @@ package com.taj.controller.admin_login;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.admin_login.AdminLogin;
+import com.taj.model.admin_login.ChangePasswordDto;
 import com.taj.repository.admin_login.AdminLoginRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -89,16 +90,63 @@ public class AdminLoginController {
     public AdminLogin getAdminById(@PathVariable int id) {
         return repo.getAdminById(id);
     }
+
     @GetMapping("/name/{name}")
     public List<AdminLogin> getAdminByName(@PathVariable String name) {
         return repo.getAdminByName(name);
     }
+
     @GetMapping("/area/{area}")
     public List<AdminLogin> getAdminByArea(@PathVariable String area) {
         return repo.getAdminByArea(area);
     }
+
     @GetMapping("/city/{city}")
     public List<AdminLogin> getAdminByCity(@PathVariable String city) {
         return repo.getAdminByCity(city);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ObjectNode> deleteAccount(@PathVariable int id) {
+        int res = repo.deleteAccount(id);
+        ObjectNode node = mapper.createObjectNode();
+        if (res == 1) {
+            node.put(STATUS, 200);
+            node.put(MESSAGE, "deleted");
+            return ResponseEntity.status(HttpStatus.OK).body(node);
+        } else if (res == -1000) {
+            node.put(STATUS, 400);
+            node.put(MESSAGE, "no account for this id");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(node);
+        } else {
+            node.put(STATUS, 400);
+            node.put(MESSAGE, "Failed");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(node);
+        }
+    }
+
+    @PutMapping("/update/password/")
+    public ResponseEntity<ObjectNode> changePassword(@Valid @RequestBody ChangePasswordDto model, Errors errors) {
+        ObjectNode node = mapper.createObjectNode();
+        if (errors.hasErrors()) {
+            node.put(STATUS, 400);
+            node.put(MESSAGE, "Validation Error");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(node);
+        }
+        int res = repo.changePassword(model.getId(), model.getPassword());
+        if (res == 1) {
+            node.put(STATUS, 200);
+            node.put(MESSAGE, "updated");
+            return ResponseEntity.status(HttpStatus.OK).body(node);
+        } else if (res == -1000) {
+            node.put(STATUS, 400);
+            node.put(MESSAGE, "no account for this id");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(node);
+        } else {
+            node.put(STATUS, 400);
+            node.put(MESSAGE, "Failed");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(node);
+        }
+    }
+
 }

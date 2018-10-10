@@ -35,7 +35,7 @@ public class TakatafTenderRequestRepo {
             for (int i = 0; i < category.size(); i++) {
                 int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
                         Integer.class, "%" + category.get(i).getCat_name().trim() + "%");
-                res = jdbcTemplate.update("UPDATE takataf_request_cat_count SET count=? WHERE cat_id=? AND scool_id=? AND tend_id=?",category.get(i).getCount(),
+                res = jdbcTemplate.update("UPDATE takataf_request_cat_count SET count=? WHERE cat_id=? AND scool_id=? AND tend_id=?", category.get(i).getCount(),
                         categorys, request_school_id, request_tender_id);
             }
 
@@ -43,37 +43,43 @@ public class TakatafTenderRequestRepo {
         }
 
     }
-
-
 
 
     public int updateRequest(int request_school_id, int request_tender_id, List<Takataf_schoolApplayCollectiveTender> category) {
         int res = 0;
         if (isExistApp(request_school_id, request_tender_id)) {
-            System.out.println(isExistApp(request_school_id, request_tender_id)+" ");
+
             for (int i = 0; i < category.size(); i++) {
                 int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
                         Integer.class, "%" + category.get(i).getCat_name().trim() + "%");
-                res = jdbcTemplate.update("UPDATE takataf_request_cat_count SET count=? WHERE cat_id=? AND scool_id=? AND tend_id=?",category.get(i).getCount(),
-                        categorys, request_school_id, request_tender_id);
+                System.out.println(isExistApp(request_school_id, request_tender_id) + " "+ categorys);
+                if (isExistAppCount(request_school_id, request_tender_id, categorys)){
+                    res = jdbcTemplate.update("UPDATE takataf_request_cat_count SET count=? WHERE cat_id=? AND scool_id=? AND tend_id=?", category.get(i).getCount(),
+                            categorys, request_school_id, request_tender_id);
+                }else {
+                    res = jdbcTemplate.update("INSERT INTO takataf_request_cat_count VALUES (?,?,?,?,?)", null, categorys, request_school_id,
+                            request_tender_id, category.get(i).getCount());
+                }
+
             }
 
             return res;
         } else {
-            System.out.println(isExistApp(request_school_id, request_tender_id)+" else");
-
-            for (int i = 0; i < category.size(); i++) {
-                int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
-                        Integer.class, "%" + category.get(i).getCat_name().trim() + "%");
-                res = jdbcTemplate.update("INSERT INTO takataf_request_cat_count VALUES (?,?,?,?,?)", null, categorys, request_school_id,
-                        request_tender_id, category.get(i).getCount());
+            System.out.println(isExistApp(request_school_id, request_tender_id) + " else");
+            try {
+                for (int i = 0; i < category.size(); i++) {
+                    int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
+                            Integer.class, "%" + category.get(i).getCat_name().trim() + "%");
+                    res = jdbcTemplate.update("INSERT INTO takataf_request_cat_count VALUES (?,?,?,?,?)", null, categorys, request_school_id,
+                            request_tender_id, category.get(i).getCount());
+                }
+            } catch (Exception e) {
             }
 
             return res;
         }
 
     }
-
 
 
     public boolean isExistApp(int school_id, int tender_id) {
@@ -81,6 +87,16 @@ public class TakatafTenderRequestRepo {
         Integer cnt = jdbcTemplate.queryForObject(
                 "SELECT count(*) FROM efaz_company.takatf_request_tender WHERE request_school_id=? AND request_tender_id=?;",
                 Integer.class, school_id, tender_id);
+        return cnt != null && cnt > 0;
+
+
+    }
+
+    public boolean isExistAppCount(int school_id, int tender_id, int cat_id) {
+
+        Integer cnt = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM efaz_company.takataf_request_cat_count WHERE scool_id=? AND tend_id=? AND cat_id=?;",
+                Integer.class, school_id, tender_id, cat_id);
         return cnt != null && cnt > 0;
 
 
@@ -137,15 +153,11 @@ public class TakatafTenderRequestRepo {
                 "\ttender_expire_date,\n" +
                 "\tschool_id;";
 
-        return  jdbcTemplate.queryForList(sql, new Object[]{tend_id});
+        return jdbcTemplate.queryForList(sql, new Object[]{tend_id});
     }
 
 
-
-
-
-
-    public List<TakatafSinfleSchoolRequestDTO>  getAllRequestsWithNameByTender(int tend_id) {
+    public List<TakatafSinfleSchoolRequestDTO> getAllRequestsWithNameByTender(int tend_id) {
         String sql = " SELECT " +
                 " tender_id, tender_title, tender_explain, tender_display_date, tender_expire_date ,  " +
                 " count(distinct request_id) AS response_count, ifnull(id,0) AS id, ifnull(category_name,0) AS  category_name " +
@@ -200,7 +212,7 @@ public class TakatafTenderRequestRepo {
 
     }
 
-    public List<CategoryNameDto> categoryData(int tend_id){
+    public List<CategoryNameDto> categoryData(int tend_id) {
         String sql = "SELECT\n" +
                 "\tcategory_name \n" +
                 "FROM\n" +
@@ -253,7 +265,7 @@ public class TakatafTenderRequestRepo {
                 "                tender_expire_date,\n" +
                 "                co.cat_id;";
 
-        String sql2 ="SELECT\n" +
+        String sql2 = "SELECT\n" +
                 "\ttender_id,\n" +
                 "\ttender_title,\n" +
                 "\ttender_explain,\n" +
@@ -281,7 +293,7 @@ public class TakatafTenderRequestRepo {
                 "\tcount;";
 
 
-        return jdbcTemplate.query(sql2, new Object[]{ school_id, id,},
+        return jdbcTemplate.query(sql2, new Object[]{school_id, id,},
                 (resultSet, i) -> new TakatafSingleSchoolRequestByIDDTO2(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getString(3),
                         resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(), resultSet.getInt(6),
