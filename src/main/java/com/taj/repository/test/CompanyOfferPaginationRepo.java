@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 /**
- * Created by User on 10/10/2018.
+ * Created by Mahooud El swisy on 10/10/2018.
  */
 public interface CompanyOfferPaginationRepo extends PagingAndSortingRepository<CompanyOfferEntity, Integer> {
     @Query("select o.offer_title from CompanyOfferEntity as o " +
