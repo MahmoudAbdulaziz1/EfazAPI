@@ -16,10 +16,12 @@ public class CollectiveTenderBySchoolDto {
     private int response_count;
     private int view_count;
     private String category_name;
+    private  double responsed_cost;
+    private String response_desc;
 
     public CollectiveTenderBySchoolDto(int tender_id, byte[] tender_logo, String tender_title, String tender_explain, long tender_display_date,
                                        long tender_expire_date, long tender_company_display_date, long tender_company_expired_date,
-                                       int response_count, int view_count, String category_name) {
+                                       int response_count, int view_count, String category_name, double responsed_cost, String response_desc) {
         this.tender_id = tender_id;
         this.tender_logo = tender_logo;
         this.tender_title = tender_title;
@@ -31,11 +33,13 @@ public class CollectiveTenderBySchoolDto {
         this.response_count = response_count;
         this.view_count = view_count;
         this.category_name = category_name;
+        this.responsed_cost = responsed_cost;
+        this.response_desc = response_desc;
     }
 
     public CollectiveTenderBySchoolDto(byte[] tender_logo, String tender_title, String tender_explain, long tender_display_date,
                                        long tender_expire_date, long tender_company_display_date, long tender_company_expired_date,
-                                       int response_count, int view_count, String category_name) {
+                                       int response_count, int view_count, String category_name, double responsed_cost, String response_desc) {
         this.tender_logo = tender_logo;
         this.tender_title = tender_title;
         this.tender_explain = tender_explain;
@@ -46,6 +50,8 @@ public class CollectiveTenderBySchoolDto {
         this.response_count = response_count;
         this.view_count = view_count;
         this.category_name = category_name;
+        this.responsed_cost = responsed_cost;
+        this.response_desc = response_desc;
     }
 
     public CollectiveTenderBySchoolDto() {
@@ -137,5 +143,21 @@ public class CollectiveTenderBySchoolDto {
 
     public void setCategory_name(String category_name) {
         this.category_name = category_name;
+    }
+
+    public double getResponsed_cost() {
+        return responsed_cost;
+    }
+
+    public void setResponsed_cost(double responsed_cost) {
+        this.responsed_cost = responsed_cost;
+    }
+
+    public String getResponse_desc() {
+        return response_desc;
+    }
+
+    public void setResponse_desc(String response_desc) {
+        this.response_desc = response_desc;
     }
 }

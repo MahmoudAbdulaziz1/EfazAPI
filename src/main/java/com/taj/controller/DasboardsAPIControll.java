@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.taj.model.*;
+import com.taj.model.collective_image.TenderRequestTenderModel2Dto;
 import com.taj.model.company_offer_response_count.CustomeCompanyOfferModel2DToModel;
 import com.taj.model.company_offer_response_count.getCustomeCompanyOffer2Model;
 import com.taj.model.new_company_history.CompanyHistoryDto;
@@ -462,7 +463,7 @@ public class DasboardsAPIControll {
 
     @PreAuthorize("hasAuthority('admin') OR hasAuthority('school')")
     @GetMapping("request/tender/{id}")
-    public TenderRequestTenderModel2 getTenderRequestObject(@PathVariable int id) {
+    public TenderRequestTenderModel2Dto getTenderRequestObject(@PathVariable int id) {
         Map<TenderRequestSchoolModel, List<TenderRequestCategoriesModel>> res = new HashMap<>();
         List<Map<String, Object>> list = tenderRequestRepo.getTenderRequestObjectWithCompanyDates(id);
         List<TenderRequestSchoolModel> schoolsList = new ArrayList<>();
@@ -560,7 +561,8 @@ public class DasboardsAPIControll {
         if (Long.parseLong(list.get(0).get("response_count").toString()) == 0) {
             List<CategoryNameDto> category = takatafTenderRequestRepo.categoryData(id);
 
-            TenderRequestTenderModel2 mainModel = new TenderRequestTenderModel2(Long.parseLong(list.get(0).get("tender_id").toString()),
+            TenderRequestTenderModel2Dto mainModel = new TenderRequestTenderModel2Dto(Long.parseLong(list.get(0).get("tender_id").toString()),
+                    (byte[]) list.get(0).get("tender_logo"),
                     (String) list.get(0).get("tender_title"),
                     (String) list.get(0).get("tender_explain"), ((Timestamp) (list.get(0).get("tender_display_date"))).getTime(),
                     ((Timestamp) list.get(0).get("tender_expire_date")).getTime(),
@@ -572,7 +574,8 @@ public class DasboardsAPIControll {
             return mainModel;
         } else {
             List<CategoryNameDto> category = takatafTenderRequestRepo.categoryData(id);
-            TenderRequestTenderModel2 mainModel = new TenderRequestTenderModel2(Long.parseLong(list.get(0).get("tender_id").toString()),
+            TenderRequestTenderModel2Dto mainModel = new TenderRequestTenderModel2Dto(Long.parseLong(list.get(0).get("tender_id").toString()),
+                    (byte[]) list.get(0).get("tender_logo"),
                     (String) list.get(0).get("tender_title"),
                     (String) list.get(0).get("tender_explain"), ((Timestamp) (list.get(0).get("tender_display_date"))).getTime(),
                     ((Timestamp) list.get(0).get("tender_expire_date")).getTime(),

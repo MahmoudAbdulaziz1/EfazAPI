@@ -28,7 +28,7 @@ public class SchoolRequestController {
     @Autowired
     ObjectMapper mapper;
 
-//    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+    //    @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     @PostMapping("/addRequest")
     public JsonNode addSchoolRequest(@Valid @RequestBody SchoolRequestsModel model, Errors errors) {
 
@@ -84,7 +84,7 @@ public class SchoolRequestController {
     }
 
     @GetMapping("/getRequest/{id}")
-   // @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
+    // @PreAuthorize("hasAuthority('school') or hasAuthority('admin')")
     public SchoolRequestsModel getSchoolRequest(@PathVariable int id) {
         return repo.getRequestByID(id);
     }
@@ -163,7 +163,7 @@ public class SchoolRequestController {
 
 
     @GetMapping("/filterTitle/{title}")
-   //@PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
+    //@PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
     public List<SchoolRequestsModel> filterByTitle(@PathVariable String title) {
         return repo.filterByTitle(title);
     }
@@ -184,6 +184,7 @@ public class SchoolRequestController {
     public List<schoolRequestWithImageDto> filterByCategoryWithImage(@PathVariable int cat) {
         return repo.filterByCategoryWithImage(cat);
     }
+
     @GetMapping("/filterPlace/{place}")
     //@PreAuthorize("hasAuthority('school') or hasAuthority('company') or hasAuthority('admin')")
     public List<SchoolRequestsModel> filterByReceivePlace(@PathVariable int place) {
@@ -209,13 +210,13 @@ public class SchoolRequestController {
         SchoolHistoryRequestDTO request = new SchoolHistoryRequestDTO(dto.get(0).getRequest_id(), dto.get(0).getRequest_title(),
                 dto.get(0).getRequest_count(), dto.get(0).getRequest_date(), dto.get(0).getResponse_date());
         List<SchoolHistoryResponseDTO> response = new ArrayList<>();
-        for (SchoolRequestHistoryDto dtos :dto){
+        for (SchoolRequestHistoryDto dtos : dto) {
             SchoolHistoryResponseDTO obj = new SchoolHistoryResponseDTO(dtos.getResponsed_cost(),
                     dtos.getResponsed_company_id(), dtos.getResponse_id());
             response.add(obj);
         }
         SchoolHistoryAllDto reesult = new SchoolHistoryAllDto(request, response);
-        return  reesult;
+        return reesult;
     }
 
     @GetMapping("/get/order/{id}")
@@ -231,13 +232,18 @@ public class SchoolRequestController {
         SchoolHistoryRequestDTO request = new SchoolHistoryRequestDTO(dto.get(0).getRequest_id(), dto.get(0).getRequest_title(),
                 dto.get(0).getRequest_count(), dto.get(0).getRequest_date(), dto.get(0).getResponse_date());
         List<SchoolHistoryResponseDTO> response = new ArrayList<>();
-        for (SchoolRequestHistoryDto dtos :dto){
+        for (SchoolRequestHistoryDto dtos : dto) {
             SchoolHistoryResponseDTO obj = new SchoolHistoryResponseDTO(dtos.getResponsed_cost(),
                     dtos.getResponsed_company_id(), dtos.getResponse_id());
             response.add(obj);
         }
         SchoolHistoryAllDto reesult = new SchoolHistoryAllDto(request, response);
-        return  reesult;
+        return reesult;
+    }
+
+    @GetMapping("/filter/school/{school_id}")
+    public List<schoolRequestWithImageDto> filterBySchoolWithImage(@PathVariable int school_id) {
+        return repo.filterBySchoolWithImage(school_id);
     }
 
 

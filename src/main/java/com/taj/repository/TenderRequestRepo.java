@@ -109,7 +109,7 @@ public class TenderRequestRepo {
     public List<Map<String, Object>> getTenderRequestObjectWithCompanyDates(int id) {
 
         String sql3 = "SELECT\n" +
-                "\ttender_id,\n" +
+                "\ttender_id, tender_logo, \n" +
                 "\ttender_title,\n" +
                 "\ttender_explain,\n" +
                 "\ttender_display_date,\n" +

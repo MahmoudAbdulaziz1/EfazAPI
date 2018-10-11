@@ -1,21 +1,31 @@
 package com.taj.model;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Created by User on 9/2/2018.
  */
 public class CompanyRequestCollectiveTenderModel {
 
     private int response_id;
+    @NotNull
     private int response_takataf_company_id;
+    @NotNull
     private int response_takataf_request_id;
+    @NotNull
     private double responsed_cost;
     private int is_aproved;
     private long response_date;
     private int responsed_from;
     private int responsed_to;
+    @NotNull
+    private String response_desc;
+    private long updated_date;
 
-    public CompanyRequestCollectiveTenderModel(int response_id, int response_takataf_company_id, int response_takataf_request_id,
-                                               double responsed_cost, int is_aproved, long response_date, int responsed_from, int responsed_to) {
+    public CompanyRequestCollectiveTenderModel(int response_id, int response_takataf_company_id,
+                                               int response_takataf_request_id, double responsed_cost, int is_aproved,
+                                               long response_date, int responsed_from, int responsed_to,
+                                               String response_desc, long updated_date) {
         this.response_id = response_id;
         this.response_takataf_company_id = response_takataf_company_id;
         this.response_takataf_request_id = response_takataf_request_id;
@@ -24,10 +34,13 @@ public class CompanyRequestCollectiveTenderModel {
         this.response_date = response_date;
         this.responsed_from = responsed_from;
         this.responsed_to = responsed_to;
+        this.response_desc = response_desc;
+        this.updated_date = updated_date;
     }
 
     public CompanyRequestCollectiveTenderModel(int response_takataf_company_id, int response_takataf_request_id,
-                                               double responsed_cost, int is_aproved, long response_date, int responsed_from, int responsed_to) {
+                                               double responsed_cost, int is_aproved, long response_date,
+                                               int responsed_from, int responsed_to, String response_desc, long updated_date) {
         this.response_takataf_company_id = response_takataf_company_id;
         this.response_takataf_request_id = response_takataf_request_id;
         this.responsed_cost = responsed_cost;
@@ -35,6 +48,8 @@ public class CompanyRequestCollectiveTenderModel {
         this.response_date = response_date;
         this.responsed_from = responsed_from;
         this.responsed_to = responsed_to;
+        this.response_desc = response_desc;
+        this.updated_date = updated_date;
     }
 
     public CompanyRequestCollectiveTenderModel() {
@@ -102,5 +117,21 @@ public class CompanyRequestCollectiveTenderModel {
 
     public void setResponsed_to(int responsed_to) {
         this.responsed_to = responsed_to;
+    }
+
+    public String getResponse_desc() {
+        return response_desc;
+    }
+
+    public void setResponse_desc(String response_desc) {
+        this.response_desc = response_desc;
+    }
+
+    public long getUpdated_date() {
+        return updated_date;
+    }
+
+    public void setUpdated_date(long updated_date) {
+        this.updated_date = updated_date;
     }
 }

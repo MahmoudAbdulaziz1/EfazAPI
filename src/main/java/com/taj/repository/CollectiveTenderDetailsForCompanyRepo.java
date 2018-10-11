@@ -16,9 +16,9 @@ public class CollectiveTenderDetailsForCompanyRepo {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    public List<CollectiveTenderDetailsForCompanyModel> getTenderDetails(int id){
+    public List<CollectiveTenderDetailsForCompanyModel> getTenderDetails(int id) {
         String sql = "SELECT\n" +
-                " tender_id,\n" +
+                " tender_id, tender_logo, \n" +
                 " tender_title,\n" +
                 " tender_explain,\n" +
                 " tender_company_display_date,\n" +
@@ -46,8 +46,8 @@ public class CollectiveTenderDetailsForCompanyRepo {
                 "category_name;";
 
         return jdbcTemplate.query(sql, new Object[]{id, id},
-                (resultSet, i) -> new CollectiveTenderDetailsForCompanyModel(resultSet.getInt(1), resultSet.getString(2),
-                        resultSet.getString(3), resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(),
-                        resultSet.getInt(6), resultSet.getInt(7), resultSet.getString(8), resultSet.getInt(9)));
+                (resultSet, i) -> new CollectiveTenderDetailsForCompanyModel(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getString(3),
+                        resultSet.getString(4), resultSet.getTimestamp(5).getTime(), resultSet.getTimestamp(6).getTime(),
+                        resultSet.getInt(7), resultSet.getInt(8), resultSet.getString(9), resultSet.getInt(10)));
     }
 }

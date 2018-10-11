@@ -6,6 +6,7 @@ package com.taj.model;
 public class CollectiveTenderDetailsForCompanyModel {
 
     private int tender_id;
+    private byte[] tender_logo;
     private String tender_title;
     private String tender_explain;
     private long tender_company_display_date;
@@ -15,10 +16,11 @@ public class CollectiveTenderDetailsForCompanyModel {
     private String category_name;
     private int sum;
 
-    public CollectiveTenderDetailsForCompanyModel(int tender_id, String tender_title, String tender_explain,
+    public CollectiveTenderDetailsForCompanyModel(int tender_id, byte[] tender_logo, String tender_title, String tender_explain,
                                                   long tender_company_display_date, long tender_company_expired_date,
                                                   double response_count, int cat_id, String category_name, int sum) {
         this.tender_id = tender_id;
+        this.tender_logo = tender_logo;
         this.tender_title = tender_title;
         this.tender_explain = tender_explain;
         this.tender_company_display_date = tender_company_display_date;
@@ -29,9 +31,11 @@ public class CollectiveTenderDetailsForCompanyModel {
         this.sum = sum;
     }
 
-    public CollectiveTenderDetailsForCompanyModel(String tender_title, String tender_explain,
-                                                  long tender_company_display_date, long tender_company_expired_date, double response_count, int cat_id, String category_name, int sum) {
+    public CollectiveTenderDetailsForCompanyModel(String tender_title, byte[] tender_logo, String tender_explain,
+                                                  long tender_company_display_date, long tender_company_expired_date,
+                                                  double response_count, int cat_id, String category_name, int sum) {
         this.tender_title = tender_title;
+        this.tender_logo = tender_logo;
         this.tender_explain = tender_explain;
         this.tender_company_display_date = tender_company_display_date;
         this.tender_company_expired_date = tender_company_expired_date;
@@ -114,5 +118,13 @@ public class CollectiveTenderDetailsForCompanyModel {
 
     public void setSum(int sum) {
         this.sum = sum;
+    }
+
+    public byte[] getTender_logo() {
+        return tender_logo;
+    }
+
+    public void setTender_logo(byte[] tender_logo) {
+        this.tender_logo = tender_logo;
     }
 }

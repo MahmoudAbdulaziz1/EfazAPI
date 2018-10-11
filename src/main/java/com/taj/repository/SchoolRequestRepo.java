@@ -300,9 +300,6 @@ public class SchoolRequestRepo {
     }
 
 
-
-
-
     public List<SchoolRequestHistoryDtoDTO2> getHistoryRequestsBySchoolId3(int id) {
 
         String sql2 = "SELECT\n" +
@@ -345,9 +342,6 @@ public class SchoolRequestRepo {
     }
 
 
-
-
-
     public List<SchoolRequestHistoryDto> getOrderRequestsBySchoolId(int id) {
         String sql = "SELECT request_id, request_title, count( s.responsed_request_id) AS request_count, request_display_date, response_date, responsed_cost, responsed_company_id, response_id  " +
                 "FROM efaz_company.efaz_school_tender AS t " +
@@ -366,6 +360,61 @@ public class SchoolRequestRepo {
                 new Object[]{id}, (resultSet, i) -> new SchoolRequestHistoryDto(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3),
                         resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(), resultSet.getDouble(6),
                         resultSet.getInt(7), resultSet.getInt(8)));
+    }
+
+
+    public List<schoolRequestWithImageDto> filterBySchoolWithImage(int school_id) {
+
+        String sql1 = "SELECT\n" +
+                "\ttender.request_id,\n" +
+                "\trequest_title,\n" +
+                "\trequest_explaination,\n" +
+                "\trequest_display_date,\n" +
+                "\trequest_expired_date,\n" +
+                "\tifnull( request_is_available, 0 ) AS request_is_available,\n" +
+                "\tifnull( request_is_conformied, 0 ) AS request_is_conformied,\n" +
+                "\ttender.school_id,\n" +
+                "\tifnull( school_name, 0 ) AS school_name,\n" +
+                "\tifnull( school_logo_image, 0 ) AS school_logo_image,\n" +
+                "\trequests_category_id,\n" +
+                "\trequest_category_name,\n" +
+                "\tifnull( extended_payment, 0 ) AS extended_payment,\n" +
+                "\tcount( response_id ) AS request_count,\n" +
+                "\tcount( seen_id ) AS views_count,\n" +
+                "\timage_one \n" +
+                "FROM\n" +
+                "\tefaz_company.efaz_school_tender AS tender\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_profile AS PROFILE ON tender.school_id = PROFILE.school_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_school_request_category AS cat ON tender.requests_category_id = cat.request_category_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_see_request AS reqst ON tender.request_id = reqst.request_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_response_school_request AS req ON tender.request_id = req.responsed_request_id \n" +
+                "\tLEFT JOIN efaz_company.school_requst_images AS img ON tender.images_id = img.image_id\n" +
+                "WHERE\n" +
+                "\ttender.school_id = ? \n" +
+                "GROUP BY\n" +
+                "\ttender.request_id,\n" +
+                "\trequest_title,\n" +
+                "\trequest_explaination,\n" +
+                "\trequest_display_date,\n" +
+                "\trequest_expired_date,\n" +
+                "\trequest_is_available,\n" +
+                "\trequest_is_conformied,\n" +
+                "\ttender.school_id,\n" +
+                "\tschool_name,\n" +
+                "\tschool_logo_image,\n" +
+                "\trequests_category_id,\n" +
+                "\trequest_category_name,\n" +
+                "\textended_payment,\n" +
+                "\trequest_count,\n" +
+                "\timage_one;";
+
+
+        return jdbcTemplate.query(sql1,
+                new Object[]{school_id}, (resultSet, i) -> new schoolRequestWithImageDto(resultSet.getInt(1),
+                        resultSet.getString(2), resultSet.getString(3), resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(),
+                        resultSet.getInt(6), resultSet.getInt(7),
+                        resultSet.getInt(8), resultSet.getString(9), resultSet.getBytes(10), resultSet.getInt(11),
+                        resultSet.getString(12), resultSet.getInt(13), resultSet.getInt(14), resultSet.getInt(15), resultSet.getBytes(16)));
     }
 
 

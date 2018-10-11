@@ -338,7 +338,7 @@ public class CustomCompanyOfferRepo {
                 "image_two=?, image_three=?," + "image_four=?" + " where images_id=?", image_one, image_two, image_third, image_four, image_id);
 
 
-        if (res == 1) {
+//        if (res == 1) {
              jdbcTemplate.update("update efaz_company_offer set offer_image_id=?," +
                             "offer_title=?, offer_explaination=?," + "offer_cost=?, offer_display_date=?, offer_expired_date=?," +
                             "offer_deliver_date=?, offer_company_id=?, offer_count=?" + " where offer_id=?", image_id, offer_title,
@@ -346,9 +346,9 @@ public class CustomCompanyOfferRepo {
                      company_id, offer_count, offer_id);
             return jdbcTemplate.update("UPDATE efaz_company.efaz_company_offer_place SET city=?, area=?, lng=?, lat=? WHERE id=?",
                     city, area, lng,lat,offer_id);
-        } else {
-            return 0;
-        }
+//        } else {
+//            return 0;
+//        }
 
     }
 

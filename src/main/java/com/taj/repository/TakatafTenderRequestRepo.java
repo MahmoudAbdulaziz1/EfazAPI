@@ -52,11 +52,11 @@ public class TakatafTenderRequestRepo {
             for (int i = 0; i < category.size(); i++) {
                 int categorys = jdbcTemplate.queryForObject("SELECT category_id  FROM  efaz_company.efaz_company_category WHERE  category_name LIKE ?;",
                         Integer.class, "%" + category.get(i).getCat_name().trim() + "%");
-                System.out.println(isExistApp(request_school_id, request_tender_id) + " "+ categorys);
-                if (isExistAppCount(request_school_id, request_tender_id, categorys)){
+                System.out.println(isExistApp(request_school_id, request_tender_id) + " " + categorys);
+                if (isExistAppCount(request_school_id, request_tender_id, categorys)) {
                     res = jdbcTemplate.update("UPDATE takataf_request_cat_count SET count=? WHERE cat_id=? AND scool_id=? AND tend_id=?", category.get(i).getCount(),
                             categorys, request_school_id, request_tender_id);
-                }else {
+                } else {
                     res = jdbcTemplate.update("INSERT INTO takataf_request_cat_count VALUES (?,?,?,?,?)", null, categorys, request_school_id,
                             request_tender_id, category.get(i).getCount());
                 }
@@ -245,25 +245,6 @@ public class TakatafTenderRequestRepo {
     }
 
     public List<TakatafSingleSchoolRequestByIDDTO2> getAllRequestsWithNameByIdzs2(int id, int school_id) {
-        String sql = "SELECT tender_id,\n" +
-                "                tender_title,\n" +
-                "                tender_explain,\n" +
-                "                tender_display_date,\n" +
-                "                tender_expire_date,\n" +
-                "                count( DISTINCT request_id ) AS response_count,\n" +
-                "                co.cat_id AS id,\n" +
-                "                category_name, count\n" +
-                "FROM efaz_company.takataf_request_cat_count as co\n" +
-                "LEFT JOIN efaz_company_category as cat ON co.cat_id= cat.category_id\n" +
-                "LEFT JOIN takatf_tender AS t ON co.tend_id= t.tender_id\n" +
-                "LEFT JOIN efaz_company.takatf_request_tender AS req ON co.tend_id = req.request_tender_id\n" +
-                "WHERE tend_id= ? AND scool_id=? \n" +
-                "GROUP BY category_name, count,tender_id,\n" +
-                "                tender_title,\n" +
-                "                tender_explain,\n" +
-                "                tender_display_date,\n" +
-                "                tender_expire_date,\n" +
-                "                co.cat_id;";
 
         String sql2 = "SELECT\n" +
                 "\ttender_id,\n" +
@@ -293,7 +274,7 @@ public class TakatafTenderRequestRepo {
                 "\tcount;";
 
 
-        return jdbcTemplate.query(sql2, new Object[]{school_id, id,},
+        return jdbcTemplate.query(sql2, new Object[]{school_id, id},
                 (resultSet, i) -> new TakatafSingleSchoolRequestByIDDTO2(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getString(3),
                         resultSet.getTimestamp(4).getTime(), resultSet.getTimestamp(5).getTime(), resultSet.getInt(6),
@@ -301,35 +282,73 @@ public class TakatafTenderRequestRepo {
 
     }
 
-    public List<CollectiveTenderBySchoolDto> getCollectiveTender(int categoryId) {
-        String sql = "SELECT\n" +
-                "                tender_id,\n" +
-                "                tender_logo,\n" +
-                "                tender_title,\n" +
-                "                tender_explain,\n" +
-                "                tender_display_date,\n" +
-                "                tender_expire_date,\n" +
-                "                tender_company_display_date,\n" +
-                "                tender_company_expired_date,\n" +
-                "                count( DISTINCT request_id ) AS response_count,\n" +
-                "                count( DISTINCT seen_id ) AS view_count,\n" +
-                "                category_name \n" +
-                "                FROM\n" +
-                "                takatf_tender AS t\n" +
-                "                LEFT JOIN efaz_company.takatf_request_tender AS req ON t.tender_id = req.request_tender_id\n" +
-                "                LEFT JOIN efaz_company.takatf_school_see_tender AS see ON t.tender_id = see.seen_tender_id\n" +
-                "                LEFT JOIN efaz_company.tkatf_tender_catgory_request AS cat ON t.tender_id = cat.t_tender_id\n" +
-                "                LEFT JOIN efaz_company.efaz_company_category AS n ON cat.t_category_id = n.category_id \n" +
-                "                WHERE\n" +
-                "                cat.t_category_id = ? AND (t.tender_expire_date < now() AND tender_company_expired_date>= NOW())\n" +
-                "                GROUP BY\n" +
-                "                \ttender_id;";
+    public List<CollectiveTenderBySchoolDto> getCollectiveTender(int categoryId, int companyId) {
+//        String sql = "SELECT\n" +
+//                "                tender_id,\n" +
+//                "                tender_logo,\n" +
+//                "                tender_title,\n" +
+//                "                tender_explain,\n" +
+//                "                tender_display_date,\n" +
+//                "                tender_expire_date,\n" +
+//                "                tender_company_display_date,\n" +
+//                "                tender_company_expired_date,\n" +
+//                "                count( DISTINCT request_id ) AS response_count,\n" +
+//                "                count( DISTINCT seen_id ) AS view_count,\n" +
+//                "                category_name \n" +
+//                "                FROM\n" +
+//                "                takatf_tender AS t\n" +
+//                "                LEFT JOIN efaz_company.takatf_request_tender AS req ON t.tender_id = req.request_tender_id\n" +
+//                "                LEFT JOIN efaz_company.takatf_school_see_tender AS see ON t.tender_id = see.seen_tender_id\n" +
+//                "                LEFT JOIN efaz_company.tkatf_tender_catgory_request AS cat ON t.tender_id = cat.t_tender_id\n" +
+//                "                LEFT JOIN efaz_company.efaz_company_category AS n ON cat.t_category_id = n.category_id \n" +
+//                "                WHERE\n" +
+//                "                cat.t_category_id = ? AND (t.tender_expire_date < now() AND tender_company_expired_date>= NOW())\n" +
+//                "                GROUP BY\n" +
+//                "                \ttender_id;";
 
-        return jdbcTemplate.query(sql, new Object[]{categoryId},
+
+        String sql = "SELECT\n" +
+                "\ttender_id,\n" +
+                "\ttender_logo,\n" +
+                "\ttender_title,\n" +
+                "\ttender_explain,\n" +
+                "\ttender_display_date,\n" +
+                "\ttender_expire_date,\n" +
+                "\ttender_company_display_date,\n" +
+                "\ttender_company_expired_date,\n" +
+                "\tcount( DISTINCT response_id ) AS response_count,\n" +
+                "\tcount( DISTINCT seen_id ) AS view_count,\n" +
+                "\tcategory_name,\n" +
+                "\tifNULL( responsed_cost, 0 ) AS responsed_cost,\n" +
+                "\tIFNULL( response_desc, '' ) AS response_desc \n" +
+                "FROM\n" +
+                "\ttakatf_tender AS t\n" +
+                "\tLEFT JOIN efaz_company.takatf_request_tender AS req ON t.tender_id = req.request_tender_id\n" +
+                "\tLEFT JOIN efaz_company.takatf_school_see_tender AS see ON t.tender_id = see.seen_tender_id\n" +
+                "\tLEFT JOIN takataf_company_request_tender AS ct ON t.tender_id = response_takataf_request_id AND response_takataf_company_id=?" +
+                "\tLEFT JOIN efaz_company.tkatf_tender_catgory_request AS cat ON t.tender_id = cat.t_tender_id\n" +
+                "\tLEFT JOIN efaz_company.efaz_company_category AS n ON cat.t_category_id = n.category_id \n" +
+                "WHERE\n" +
+                "\tcat.t_category_id = ? \n" +
+                "\tAND ( t.tender_expire_date < now( ) AND tender_company_expired_date >= NOW( ) ) \n" +
+                "GROUP BY\n" +
+                "\ttender_id,\n" +
+                "\ttender_logo,\n" +
+                "\ttender_title,\n" +
+                "\ttender_explain,\n" +
+                "\ttender_display_date,\n" +
+                "\ttender_expire_date,\n" +
+                "\ttender_company_display_date,\n" +
+                "\ttender_company_expired_date,\n" +
+                "\tcategory_name,\n" +
+                "\tresponsed_cost,\n" +
+                "\tresponse_desc;";
+
+        return jdbcTemplate.query(sql, new Object[]{companyId, categoryId},
                 (resultSet, i) -> new CollectiveTenderBySchoolDto(resultSet.getInt(1), resultSet.getBytes(2), resultSet.getString(3),
                         resultSet.getString(4), resultSet.getTimestamp(5).getTime(), resultSet.getTimestamp(6).getTime(),
                         resultSet.getTimestamp(7).getTime(), resultSet.getTimestamp(8).getTime(), resultSet.getInt(9),
-                        resultSet.getInt(10), resultSet.getString(11)));
+                        resultSet.getInt(10), resultSet.getString(11), resultSet.getDouble(12), resultSet.getString(13)));
 
     }
 

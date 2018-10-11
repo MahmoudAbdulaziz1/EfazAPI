@@ -99,8 +99,13 @@ public class TakatafTenderNewRepo {
 
 
     public List<CategoriesInUse> getCategoriesInUse() {
-        String sql2 = "SELECT DISTINCT category_name FROM efaz_company.tkatf_tender_catgory_request as re\n" +
-                "LEFT JOIN efaz_company_category as cat ON  re.t_category_id = cat.category_id ;";
+        String sql2 = "SELECT DISTINCT\n" +
+                "\tcategory_name \n" +
+                "FROM\n" +
+                "\tefaz_company.tkatf_tender_catgory_request AS re\n" +
+                "\tLEFT JOIN efaz_company_category AS cat ON re.t_category_id = cat.category_id\n" +
+                "\tLEFT JOIN takatf_tender as t ON re.t_tender_id = t.tender_id\n" +
+                "\tWHERE (tender_expire_date>= NOW() OR tender_company_expired_date>=NOW());";
         List<CategoriesInUse> data = jdbcTemplate.query(sql2,
                 (resultSet, i1) -> new CategoriesInUse(resultSet.getString(1)));
         return data;
@@ -175,7 +180,7 @@ public class TakatafTenderNewRepo {
     public List<TakatafMyTenderPageDTO> getAdminTendersHistory() {
         String sql = "SELECT\n" +
                 "\ttender_id,\n" +
-                "tender_logo,"+
+                "tender_logo," +
                 "\ttender_title,\n" +
                 "\ttender_explain,\n" +
                 "\ttender_display_date,\n" +
@@ -255,7 +260,7 @@ public class TakatafTenderNewRepo {
                         " tender_display_date=?, tender_expire_date=?, tender_is_confirmed=?, tender_is_available=?, tender_company_expired_date=?," +
                         " tender_company_display_date=? WHERE tender_id=?", tender_logo, tender_title, tender_explain,
                 new Timestamp(tender_display_date), new Timestamp(tender_expire_date), 0, 1,
-                new Timestamp(tender_company_display_date), new Timestamp(tender_company_expired_date), tender_id);
+                new Timestamp(tender_company_expired_date), new Timestamp(tender_company_display_date), tender_id);
         System.out.println(cats.size());
 
 
